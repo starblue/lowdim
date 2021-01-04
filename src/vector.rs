@@ -15,6 +15,7 @@ pub trait Vector<S>
 where
     S: Integer,
     Self: Clone + Copy,
+    Self: ops::Index<usize, Output = S>,
     Self: VectorOps<S, Self>,
     Self: for<'a> VectorOps<S, &'a Self>,
 {
