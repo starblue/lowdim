@@ -24,9 +24,13 @@ where
         F: Fn(usize) -> S;
 
     /// Apply min by component
-    fn min(&self, other: Self) -> Self;
+    fn min(&self, other: Self) -> Self {
+        Self::with(|i| Integer::min(self[i], other[i]))
+    }
     /// Apply max by component
-    fn max(&self, other: Self) -> Self;
+    fn max(&self, other: Self) -> Self {
+        Self::with(|i| Integer::max(self[i], other[i]))
+    }
 
     /// The L1, taxicab or Manhatten norm.
     fn norm_l1(&self) -> S;

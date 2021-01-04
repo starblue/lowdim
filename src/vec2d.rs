@@ -55,18 +55,6 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
         Vec2d { x: f(0), y: f(1) }
     }
 
-    fn min(&self, other: Self) -> Self {
-        Vec2d {
-            x: self.x.min(other.x),
-            y: self.y.min(other.y),
-        }
-    }
-    fn max(&self, other: Self) -> Self {
-        Vec2d {
-            x: self.x.max(other.x),
-            y: self.y.max(other.y),
-        }
-    }
     /// The L1, taxicab or Manhatten norm.
     fn norm_l1(&self) -> S {
         self.x.abs() + self.y.abs()
@@ -78,7 +66,7 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
 
     /// The maximum, Chebychev or L∞ norm.
     fn norm_infty(&self) -> S {
-        self.x.max(self.y)
+        Integer::max(self.x().abs(), self.y().abs())
     }
     /// Creates a vector of the 8 vectors with L∞ norm equal to 1.
     fn unit_vecs_l_infty() -> Vec<Self> {
