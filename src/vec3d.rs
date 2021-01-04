@@ -265,3 +265,123 @@ impl<'a, S: Integer> SubAssign<&'a Vec3d<S>> for Vec3d<S> {
         *self = Vec3d::with(|i| self[i] - other[i])
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::convert::TryFrom;
+
+    use crate::v3d;
+    use crate::Vec3d;
+    use crate::Vector;
+
+    #[test]
+    fn test_new_x_y() {
+        let v = Vec3d::new(3, 7, 1);
+        assert_eq!(3, v.x());
+        assert_eq!(7, v.y());
+        assert_eq!(1, v.z());
+    }
+
+    #[test]
+    fn test_with() {
+        assert_eq!(v3d(2, 3, 4), Vec3d::with(|i| i64::try_from(i + 2).unwrap()));
+    }
+
+    #[test]
+    fn test_norm_l1() {
+        assert_eq!(10, v3d(2, 3, 5).norm_l1());
+        assert_eq!(10, v3d(-2, 3, 5).norm_l1());
+        assert_eq!(10, v3d(2, -3, 5).norm_l1());
+        assert_eq!(10, v3d(-2, -3, 5).norm_l1());
+        assert_eq!(10, v3d(2, 3, -5).norm_l1());
+        assert_eq!(10, v3d(-2, 3, -5).norm_l1());
+        assert_eq!(10, v3d(2, -3, -5).norm_l1());
+        assert_eq!(10, v3d(-2, -3, -5).norm_l1());
+    }
+    #[test]
+    fn test_norm_infty() {
+        assert_eq!(5, v3d(2, 3, 5).norm_infty());
+        assert_eq!(5, v3d(-2, 3, 5).norm_infty());
+        assert_eq!(5, v3d(2, -3, 5).norm_infty());
+        assert_eq!(5, v3d(-2, -3, 5).norm_infty());
+        assert_eq!(5, v3d(2, 3, -5).norm_infty());
+        assert_eq!(5, v3d(-2, 3, -5).norm_infty());
+        assert_eq!(5, v3d(2, -3, -5).norm_infty());
+        assert_eq!(5, v3d(-2, -3, -5).norm_infty());
+    }
+
+    #[test]
+    fn test_index() {
+        let v = Vec3d::new(3, 7, 1);
+        assert_eq!(3, v[0]);
+        assert_eq!(7, v[1]);
+        assert_eq!(1, v[2]);
+    }
+
+    #[test]
+    fn test_add() {
+        let u = Vec3d::new(2, 1, 5);
+        let v = Vec3d::new(3, 7, 1);
+        assert_eq!(v3d(5, 8, 6), u + v);
+        assert_eq!(v3d(5, 8, 6), u + &v);
+        assert_eq!(v3d(5, 8, 6), &u + v);
+        assert_eq!(v3d(5, 8, 6), &u + &v);
+    }
+
+    #[test]
+    fn test_sub() {
+        let u = Vec3d::new(2, 1, 5);
+        let v = Vec3d::new(3, 7, 1);
+        assert_eq!(v3d(-1, -6, 4), u - v);
+        assert_eq!(v3d(-1, -6, 4), u - &v);
+        assert_eq!(v3d(-1, -6, 4), &u - v);
+        assert_eq!(v3d(-1, -6, 4), &u - &v);
+    }
+
+    #[test]
+    fn test_mul_sv() {
+        let v = Vec3d::new(3, 7, 1);
+        assert_eq!(v3d(6, 14, 2), 2 * v);
+        assert_eq!(v3d(6, 14, 2), 2 * &v);
+        assert_eq!(v3d(6, 14, 2), &2 * v);
+        assert_eq!(v3d(6, 14, 2), &2 * &v);
+    }
+
+    #[test]
+    fn test_mul_vv() {
+        let u = Vec3d::new(2, 1, 5);
+        let v = Vec3d::new(3, 7, 1);
+        assert_eq!(18, u * v);
+        assert_eq!(18, u * &v);
+        assert_eq!(18, &u * v);
+        assert_eq!(18, &u * &v);
+    }
+
+    #[test]
+    fn test_add_assign() {
+        let mut u = Vec3d::new(2, 1, 5);
+        u += Vec3d::new(3, 7, 1);
+        assert_eq!(v3d(5, 8, 6), u);
+    }
+
+    #[test]
+    fn test_sub_assign() {
+        let mut u = Vec3d::new(2, 1, 5);
+        u -= Vec3d::new(3, 7, 1);
+        assert_eq!(v3d(-1, -6, 4), u);
+    }
+
+    #[test]
+    fn test_min() {
+        let u = Vec3d::new(2, 1, 5);
+        let v = Vec3d::new(3, 7, 1);
+        assert_eq!(v3d(2, 1, 1), u.min(v));
+    }
+
+    #[test]
+    fn test_max() {
+        let u = Vec3d::new(2, 1, 5);
+        let v = Vec3d::new(3, 7, 1);
+        assert_eq!(v3d(3, 7, 5), u.max(v));
+    }
+}

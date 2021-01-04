@@ -260,3 +260,124 @@ impl<'a, S: Integer> SubAssign<&'a Vec2d<S>> for Vec2d<S> {
         *self = Vec2d::with(|i| self[i] - other[i])
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::convert::TryFrom;
+
+    use crate::v2d;
+    use crate::Vec2d;
+    use crate::Vector;
+
+    #[test]
+    fn test_new_x_y() {
+        let v = Vec2d::new(3, 7);
+        assert_eq!(3, v.x());
+        assert_eq!(7, v.y());
+    }
+
+    #[test]
+    fn test_rotate_left() {
+        let v: Vec2d<i64> = v2d(1, 2);
+        assert_eq!(v2d(-2, 1), v.rotate_left());
+    }
+    #[test]
+    fn test_rotate_right() {
+        let v: Vec2d<i64> = v2d(1, 2);
+        assert_eq!(v2d(2, -1), v.rotate_right());
+    }
+
+    #[test]
+    fn test_with() {
+        assert_eq!(v2d(2, 3), Vec2d::with(|i| i64::try_from(i + 2).unwrap()));
+    }
+
+    #[test]
+    fn test_norm_l1() {
+        assert_eq!(5, v2d(2, 3).norm_l1());
+        assert_eq!(5, v2d(-2, 3).norm_l1());
+        assert_eq!(5, v2d(2, -3).norm_l1());
+        assert_eq!(5, v2d(-2, -3).norm_l1());
+    }
+    #[test]
+    fn test_norm_infty() {
+        assert_eq!(3, v2d(2, 3).norm_infty());
+        assert_eq!(3, v2d(-2, 3).norm_infty());
+        assert_eq!(3, v2d(2, -3).norm_infty());
+        assert_eq!(3, v2d(-2, -3).norm_infty());
+    }
+
+    #[test]
+    fn test_index() {
+        let v = Vec2d::new(3, 7);
+        assert_eq!(3, v[0]);
+        assert_eq!(7, v[1]);
+    }
+
+    #[test]
+    fn test_add() {
+        let u = Vec2d::new(2, 1);
+        let v = Vec2d::new(3, 7);
+        assert_eq!(v2d(5, 8), u + v);
+        assert_eq!(v2d(5, 8), u + &v);
+        assert_eq!(v2d(5, 8), &u + v);
+        assert_eq!(v2d(5, 8), &u + &v);
+    }
+
+    #[test]
+    fn test_sub() {
+        let u = Vec2d::new(2, 1);
+        let v = Vec2d::new(3, 7);
+        assert_eq!(v2d(-1, -6), u - v);
+        assert_eq!(v2d(-1, -6), u - &v);
+        assert_eq!(v2d(-1, -6), &u - v);
+        assert_eq!(v2d(-1, -6), &u - &v);
+    }
+
+    #[test]
+    fn test_mul_sv() {
+        let v = Vec2d::new(3, 7);
+        assert_eq!(v2d(6, 14), 2 * v);
+        assert_eq!(v2d(6, 14), 2 * &v);
+        assert_eq!(v2d(6, 14), &2 * v);
+        assert_eq!(v2d(6, 14), &2 * &v);
+    }
+
+    #[test]
+    fn test_mul_vv() {
+        let u = Vec2d::new(2, 1);
+        let v = Vec2d::new(3, 7);
+        assert_eq!(13, u * v);
+        assert_eq!(13, u * &v);
+        assert_eq!(13, &u * v);
+        assert_eq!(13, &u * &v);
+    }
+
+    #[test]
+    fn test_add_assign() {
+        let mut u = Vec2d::new(2, 1);
+        u += Vec2d::new(3, 7);
+        assert_eq!(v2d(5, 8), u);
+    }
+
+    #[test]
+    fn test_sub_assign() {
+        let mut u = Vec2d::new(2, 1);
+        u -= Vec2d::new(3, 7);
+        assert_eq!(v2d(-1, -6), u);
+    }
+
+    #[test]
+    fn test_min() {
+        let u = Vec2d::new(2, 1);
+        let v = Vec2d::new(3, 7);
+        assert_eq!(v2d(2, 1), u.min(v));
+    }
+
+    #[test]
+    fn test_max() {
+        let u = Vec2d::new(2, 1);
+        let v = Vec2d::new(3, 7);
+        assert_eq!(v2d(3, 7), u.max(v));
+    }
+}

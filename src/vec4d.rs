@@ -274,3 +274,116 @@ impl<'a, S: Integer> SubAssign<&'a Vec4d<S>> for Vec4d<S> {
         *self = Vec4d::with(|i| self[i] - other[i])
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::convert::TryFrom;
+
+    use crate::v4d;
+    use crate::Vec4d;
+    use crate::Vector;
+
+    #[test]
+    fn test_new_x_y() {
+        let v = Vec4d::new(3, 7, 1, -2);
+        assert_eq!(3, v.x());
+        assert_eq!(7, v.y());
+        assert_eq!(1, v.z());
+        assert_eq!(-2, v.w());
+    }
+
+    #[test]
+    fn test_with() {
+        assert_eq!(
+            v4d(2, 3, 4, 5),
+            Vec4d::with(|i| i64::try_from(i + 2).unwrap())
+        );
+    }
+
+    #[test]
+    fn test_norm_l1() {
+        assert_eq!(18, v4d(2, 3, 5, 8).norm_l1());
+        assert_eq!(18, v4d(-2, -3, -5, -8).norm_l1());
+    }
+    #[test]
+    fn test_norm_infty() {
+        assert_eq!(8, v4d(2, 3, 5, 8).norm_infty());
+        assert_eq!(8, v4d(-2, -3, -5, -8).norm_infty());
+    }
+
+    #[test]
+    fn test_index() {
+        let v = Vec4d::new(3, 7, 1, -2);
+        assert_eq!(3, v[0]);
+        assert_eq!(7, v[1]);
+        assert_eq!(1, v[2]);
+        assert_eq!(-2, v[3]);
+    }
+
+    #[test]
+    fn test_add() {
+        let u = Vec4d::new(2, 1, 5, -4);
+        let v = Vec4d::new(3, 7, 1, 4);
+        assert_eq!(v4d(5, 8, 6, 0), u + v);
+        assert_eq!(v4d(5, 8, 6, 0), u + &v);
+        assert_eq!(v4d(5, 8, 6, 0), &u + v);
+        assert_eq!(v4d(5, 8, 6, 0), &u + &v);
+    }
+
+    #[test]
+    fn test_sub() {
+        let u = Vec4d::new(2, 1, 5, -4);
+        let v = Vec4d::new(3, 7, 1, 4);
+        assert_eq!(v4d(-1, -6, 4, -8), u - v);
+        assert_eq!(v4d(-1, -6, 4, -8), u - &v);
+        assert_eq!(v4d(-1, -6, 4, -8), &u - v);
+        assert_eq!(v4d(-1, -6, 4, -8), &u - &v);
+    }
+
+    #[test]
+    fn test_mul_sv() {
+        let v = Vec4d::new(3, 7, 1, 4);
+        assert_eq!(v4d(6, 14, 2, 8), 2 * v);
+        assert_eq!(v4d(6, 14, 2, 8), 2 * &v);
+        assert_eq!(v4d(6, 14, 2, 8), &2 * v);
+        assert_eq!(v4d(6, 14, 2, 8), &2 * &v);
+    }
+
+    #[test]
+    fn test_mul_vv() {
+        let u = Vec4d::new(2, 1, 5, -4);
+        let v = Vec4d::new(3, 7, 1, 4);
+        assert_eq!(2, u * v);
+        assert_eq!(2, u * &v);
+        assert_eq!(2, &u * v);
+        assert_eq!(2, &u * &v);
+    }
+
+    #[test]
+    fn test_add_assign() {
+        let mut u = Vec4d::new(2, 1, 5, 4);
+        u += Vec4d::new(3, 7, 1, -4);
+        assert_eq!(v4d(5, 8, 6, 0), u);
+    }
+
+    #[test]
+    fn test_sub_assign() {
+        let mut u = Vec4d::new(2, 1, 5, 4);
+        u -= Vec4d::new(3, 7, 1, -4);
+        assert_eq!(v4d(-1, -6, 4, 8), u);
+    }
+
+    #[test]
+    fn test_min() {
+        let u = Vec4d::new(2, 1, 5, -4);
+        let v = Vec4d::new(3, 7, 1, 4);
+        assert_eq!(v4d(2, 1, 1, -4), u.min(v));
+    }
+
+    #[test]
+    fn test_max() {
+        let u = Vec4d::new(2, 1, 5, -4);
+        let v = Vec4d::new(3, 7, 1, 4);
+        assert_eq!(v4d(3, 7, 5, 4), u.max(v));
+    }
+}

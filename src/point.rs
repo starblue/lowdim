@@ -312,3 +312,78 @@ where
         *self = Point::from(self.v - *other);
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::convert::TryFrom;
+
+    use crate::p2d;
+    use crate::p3d;
+    use crate::p4d;
+    use crate::v2d;
+    use crate::v3d;
+    use crate::v4d;
+    use crate::Point2d;
+    use crate::Point3d;
+    use crate::Point4d;
+    use crate::Vec2d;
+
+    #[test]
+    fn test_from_2d() {
+        let p: Point2d<i64> = Point2d::from(v2d(1, 2));
+        assert_eq!(p2d(1, 2), p);
+    }
+
+    #[test]
+    fn test_from_3d() {
+        let p: Point3d<i64> = Point3d::from(v3d(1, 2, 3));
+        assert_eq!(p3d(1, 2, 3), p);
+    }
+
+    #[test]
+    fn test_from_4d() {
+        let p: Point4d<i64> = Point4d::from(v4d(1, 2, 3, 4));
+        assert_eq!(p4d(1, 2, 3, 4), p);
+    }
+
+    #[test]
+    fn test_from_i32() {
+        let p: Point2d<i32> = Point2d::from(v2d(1, 2));
+        assert_eq!(p2d(1, 2), p);
+    }
+
+    #[test]
+    fn test_with() {
+        assert_eq!(p2d(2, 3), Point2d::with(|i| i64::try_from(i + 2).unwrap()));
+    }
+
+    #[test]
+    fn test_add_pv() {
+        let p: Point2d<i64> = Point2d::new(2, 1);
+        let v = Vec2d::new(3, 7);
+        assert_eq!(p2d(5, 8), p + v);
+        assert_eq!(p2d(5, 8), p + &v);
+        assert_eq!(p2d(5, 8), &p + v);
+        assert_eq!(p2d(5, 8), &p + &v);
+    }
+
+    #[test]
+    fn test_sub_pv() {
+        let p = Point2d::new(2, 1);
+        let v = Vec2d::new(3, 7);
+        assert_eq!(p2d(-1, -6), p - v);
+        assert_eq!(p2d(-1, -6), p - &v);
+        assert_eq!(p2d(-1, -6), &p - v);
+        assert_eq!(p2d(-1, -6), &p - &v);
+    }
+
+    #[test]
+    fn test_sub_pp() {
+        let p = Point2d::new(2, 1);
+        let q = Point2d::new(3, 7);
+        assert_eq!(v2d(-1, -6), p - q);
+        assert_eq!(v2d(-1, -6), p - &q);
+        assert_eq!(v2d(-1, -6), &p - q);
+        assert_eq!(v2d(-1, -6), &p - &q);
+    }
+}
