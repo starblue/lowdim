@@ -44,6 +44,18 @@ impl<S: Integer> VectorOps<S, Vec4d<S>> for Vec4d<S> {}
 impl<'a, S: Integer> VectorOps<S, &'a Vec4d<S>> for Vec4d<S> {}
 
 impl<S: Integer> Vector<S> for Vec4d<S> {
+    fn with<F>(f: F) -> Vec4d<S>
+    where
+        F: Fn(usize) -> S,
+    {
+        Vec4d {
+            x: f(0),
+            y: f(1),
+            z: f(2),
+            w: f(3),
+        }
+    }
+
     fn min(&self, other: Self) -> Self {
         Vec4d {
             x: self.x.min(other.x),

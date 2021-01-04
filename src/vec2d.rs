@@ -48,6 +48,13 @@ impl<S: Integer> VectorOps<S, Vec2d<S>> for Vec2d<S> {}
 impl<'a, S: Integer> VectorOps<S, &'a Vec2d<S>> for Vec2d<S> {}
 
 impl<S: Integer> Vector<S> for Vec2d<S> {
+    fn with<F>(f: F) -> Vec2d<S>
+    where
+        F: Fn(usize) -> S,
+    {
+        Vec2d { x: f(0), y: f(1) }
+    }
+
     fn min(&self, other: Self) -> Self {
         Vec2d {
             x: self.x.min(other.x),

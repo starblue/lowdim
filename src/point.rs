@@ -34,6 +34,12 @@ where
     fn from(v: V) -> Self {
         Point { s: PhantomData, v }
     }
+    pub fn with<F>(f: F) -> Point<S, V>
+    where
+        F: Fn(usize) -> S,
+    {
+        Point::from(V::with(f))
+    }
 
     pub fn min(&self, other: Self) -> Self {
         Point::from(self.v.min(other.v))

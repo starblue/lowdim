@@ -40,6 +40,17 @@ impl<S: Integer> VectorOps<S, Vec3d<S>> for Vec3d<S> {}
 impl<'a, S: Integer> VectorOps<S, &'a Vec3d<S>> for Vec3d<S> {}
 
 impl<S: Integer> Vector<S> for Vec3d<S> {
+    fn with<F>(f: F) -> Vec3d<S>
+    where
+        F: Fn(usize) -> S,
+    {
+        Vec3d {
+            x: f(0),
+            y: f(1),
+            z: f(2),
+        }
+    }
+
     fn min(&self, other: Self) -> Self {
         Vec3d {
             x: self.x.min(other.x),

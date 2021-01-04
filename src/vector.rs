@@ -18,6 +18,11 @@ where
     Self: VectorOps<S, Self>,
     Self: for<'a> VectorOps<S, &'a Self>,
 {
+    // Create a vector from a function which computes the coordinates.
+    fn with<F>(f: F) -> Self
+    where
+        F: Fn(usize) -> S;
+
     /// Apply min by component
     fn min(&self, other: Self) -> Self;
     /// Apply max by component
