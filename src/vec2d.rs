@@ -236,6 +236,38 @@ impl<'a> Mul<&'a Vec2d<i64>> for &'a i64 {
     }
 }
 
+impl<S: Integer> Mul<Vec2d<S>> for Vec2d<S> {
+    type Output = S;
+
+    fn mul(self, other: Vec2d<S>) -> S {
+        self.x * other.x + self.y * other.y
+    }
+}
+
+impl<'a, S: Integer> Mul<&'a Vec2d<S>> for Vec2d<S> {
+    type Output = S;
+
+    fn mul(self, other: &'a Vec2d<S>) -> S {
+        self.x * other.x + self.y * other.y
+    }
+}
+
+impl<'a, S: Integer> Mul<Vec2d<S>> for &'a Vec2d<S> {
+    type Output = S;
+
+    fn mul(self, other: Vec2d<S>) -> S {
+        self.x * other.x + self.y * other.y
+    }
+}
+
+impl<'a, S: Integer> Mul<&'a Vec2d<S>> for &'a Vec2d<S> {
+    type Output = S;
+
+    fn mul(self, other: &'a Vec2d<S>) -> S {
+        self.x * other.x + self.y * other.y
+    }
+}
+
 impl<S: Integer> AddAssign for Vec2d<S> {
     fn add_assign(&mut self, other: Vec2d<S>) {
         let x = self.x + other.x;

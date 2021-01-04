@@ -279,6 +279,38 @@ impl<'a> Mul<&'a Vec4d<i64>> for &'a i64 {
     }
 }
 
+impl<S: Integer> Mul<Vec4d<S>> for Vec4d<S> {
+    type Output = S;
+
+    fn mul(self, other: Vec4d<S>) -> S {
+        self.x * other.x + self.y * other.y + self.z * other.z + self.w * other.w
+    }
+}
+
+impl<'a, S: Integer> Mul<&'a Vec4d<S>> for Vec4d<S> {
+    type Output = S;
+
+    fn mul(self, other: &'a Vec4d<S>) -> S {
+        self.x * other.x + self.y * other.y + self.z * other.z + self.w * other.w
+    }
+}
+
+impl<'a, S: Integer> Mul<Vec4d<S>> for &'a Vec4d<S> {
+    type Output = S;
+
+    fn mul(self, other: Vec4d<S>) -> S {
+        self.x * other.x + self.y * other.y + self.z * other.z + self.w * other.w
+    }
+}
+
+impl<'a, S: Integer> Mul<&'a Vec4d<S>> for &'a Vec4d<S> {
+    type Output = S;
+
+    fn mul(self, other: &'a Vec4d<S>) -> S {
+        self.x * other.x + self.y * other.y + self.z * other.z + self.w * other.w
+    }
+}
+
 impl<S: Integer> AddAssign for Vec4d<S> {
     fn add_assign(&mut self, other: Vec4d<S>) {
         let x = self.x + other.x;

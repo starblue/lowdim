@@ -256,6 +256,38 @@ impl<'a> Mul<&'a Vec3d<i64>> for &'a i64 {
     }
 }
 
+impl<S: Integer> Mul<Vec3d<S>> for Vec3d<S> {
+    type Output = S;
+
+    fn mul(self, other: Vec3d<S>) -> S {
+        self.x * other.x + self.y * other.y + self.z * other.z
+    }
+}
+
+impl<'a, S: Integer> Mul<&'a Vec3d<S>> for Vec3d<S> {
+    type Output = S;
+
+    fn mul(self, other: &'a Vec3d<S>) -> S {
+        self.x * other.x + self.y * other.y + self.z * other.z
+    }
+}
+
+impl<'a, S: Integer> Mul<Vec3d<S>> for &'a Vec3d<S> {
+    type Output = S;
+
+    fn mul(self, other: Vec3d<S>) -> S {
+        self.x * other.x + self.y * other.y + self.z * other.z
+    }
+}
+
+impl<'a, S: Integer> Mul<&'a Vec3d<S>> for &'a Vec3d<S> {
+    type Output = S;
+
+    fn mul(self, other: &'a Vec3d<S>) -> S {
+        self.x * other.x + self.y * other.y + self.z * other.z
+    }
+}
+
 impl<S: Integer> AddAssign for Vec3d<S> {
     fn add_assign(&mut self, other: Vec3d<S>) {
         let x = self.x + other.x;
