@@ -6,7 +6,7 @@ use crate::Integer;
 use crate::Vec2d;
 
 /// A two-dimensional discrete matrix.
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
 pub struct Matrix2d<S: Integer> {
     pub a: S,
     pub b: S,

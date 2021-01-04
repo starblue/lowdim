@@ -16,7 +16,7 @@ use crate::Vector;
 use crate::VectorOps;
 
 /// A point in a discrete space.
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
 pub struct Point<S: Integer, V: Vector<S>> {
     s: PhantomData<S>,
     v: V,

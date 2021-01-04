@@ -10,7 +10,7 @@ use crate::Vector;
 use crate::VectorOps;
 
 /// A two-dimensional discrete vector.
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
 pub struct Vec4d<S = i64>
 where
     S: Integer,
