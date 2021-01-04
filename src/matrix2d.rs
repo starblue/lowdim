@@ -5,13 +5,12 @@ use std::ops::Sub;
 use crate::Integer;
 use crate::Vec2d;
 
+const DIM: usize = 2;
+
 /// A two-dimensional discrete matrix.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
 pub struct Matrix2d<S: Integer> {
-    pub a: S,
-    pub b: S,
-    pub c: S,
-    pub d: S,
+    a: [[S; DIM]; DIM],
 }
 
 impl<S: Integer> Matrix2d<S> {
@@ -23,32 +22,47 @@ impl<S: Integer> Matrix2d<S> {
     where
         S: From<T>,
     {
-        let a = S::from(a);
-        let b = S::from(b);
-        let c = S::from(c);
-        let d = S::from(d);
-        Matrix2d { a, b, c, d }
+        let r0 = [S::from(a), S::from(b)];
+        let r1 = [S::from(c), S::from(d)];
+        Matrix2d { a: [r0, r1] }
+    }
+    /// Creates a new 2d matrix from a function.
+    pub fn with<F>(f: F) -> Matrix2d<S>
+    where
+        F: Fn(usize, usize) -> S,
+    {
+        let r0 = [f(0, 0), f(0, 1)];
+        let r1 = [f(1, 0), f(1, 1)];
+        Matrix2d { a: [r0, r1] }
     }
     /// Creates a zero matrix.
     pub fn zero() -> Matrix2d<S>
     where
         S: From<i32>,
     {
-        Matrix2d::new(0, 0, 0, 0)
+        Matrix2d::with(|_i, _j| 0.into())
     }
     /// Creates a unit matrix.
     pub fn unit() -> Matrix2d<S>
     where
         S: From<i32>,
     {
-        Matrix2d::new(1, 0, 0, 1)
+        Matrix2d::with(|i, j| if i == j { 1.into() } else { 0.into() })
+    }
+    /// Accesses a row vector
+    pub fn row_vec(&self, i: usize) -> Vec2d<S> {
+        Vec2d::new(self.a[i][0], self.a[i][1])
+    }
+    /// Accesses a column vector
+    pub fn col_vec(&self, j: usize) -> Vec2d<S> {
+        Vec2d::new(self.a[0][j], self.a[1][j])
     }
     /// The determinant of the matrix
     pub fn det(&self) -> S
     where
         S: Copy + Sub<Output = S> + Mul<Output = S>,
     {
-        self.a * self.d - self.b * self.c
+        self.a[0][0] * self.a[1][1] - self.a[0][1] * self.a[1][0]
     }
     /// Creates a matrix for a left rotation by a right angle.
     pub fn rotate_left_90() -> Matrix2d<S>
@@ -73,8 +87,8 @@ where
     type Output = Vec2d<S>;
 
     fn mul(self, other: Vec2d<S>) -> Vec2d<S> {
-        let x = self.a * other.x() + self.b * other.y();
-        let y = self.c * other.x() + self.d * other.y();
+        let x = self.row_vec(0) * other;
+        let y = self.row_vec(1) * other;
         Vec2d::new(x, y)
     }
 }
@@ -86,8 +100,8 @@ where
     type Output = Vec2d<S>;
 
     fn mul(self, other: &'a Vec2d<S>) -> Vec2d<S> {
-        let x = self.a * other.x() + self.b * other.y();
-        let y = self.c * other.x() + self.d * other.y();
+        let x = self.row_vec(0) * other;
+        let y = self.row_vec(1) * other;
         Vec2d::new(x, y)
     }
 }
@@ -99,8 +113,8 @@ where
     type Output = Vec2d<S>;
 
     fn mul(self, other: Vec2d<S>) -> Vec2d<S> {
-        let x = self.a * other.x() + self.b * other.y();
-        let y = self.c * other.x() + self.d * other.y();
+        let x = self.row_vec(0) * other;
+        let y = self.row_vec(1) * other;
         Vec2d::new(x, y)
     }
 }
@@ -112,8 +126,8 @@ where
     type Output = Vec2d<S>;
 
     fn mul(self, other: &'a Vec2d<S>) -> Vec2d<S> {
-        let x = self.a * other.x() + self.b * other.y();
-        let y = self.c * other.x() + self.d * other.y();
+        let x = self.row_vec(0) * other;
+        let y = self.row_vec(1) * other;
         Vec2d::new(x, y)
     }
 }
@@ -125,11 +139,7 @@ where
     type Output = Matrix2d<S>;
 
     fn mul(self, other: Matrix2d<S>) -> Matrix2d<S> {
-        let a = self.a * other.a + self.b * other.c;
-        let b = self.a * other.b + self.b * other.d;
-        let c = self.c * other.a + self.d * other.c;
-        let d = self.c * other.b + self.d * other.d;
-        Matrix2d { a, b, c, d }
+        Matrix2d::with(|i, j| self.row_vec(i) * other.col_vec(j))
     }
 }
 
@@ -140,11 +150,7 @@ where
     type Output = Matrix2d<S>;
 
     fn mul(self, other: &'a Matrix2d<S>) -> Matrix2d<S> {
-        let a = self.a * other.a + self.b * other.c;
-        let b = self.a * other.b + self.b * other.d;
-        let c = self.c * other.a + self.d * other.c;
-        let d = self.c * other.b + self.d * other.d;
-        Matrix2d { a, b, c, d }
+        Matrix2d::with(|i, j| self.row_vec(i) * other.col_vec(j))
     }
 }
 
@@ -155,11 +161,7 @@ where
     type Output = Matrix2d<S>;
 
     fn mul(self, other: Matrix2d<S>) -> Matrix2d<S> {
-        let a = self.a * other.a + self.b * other.c;
-        let b = self.a * other.b + self.b * other.d;
-        let c = self.c * other.a + self.d * other.c;
-        let d = self.c * other.b + self.d * other.d;
-        Matrix2d { a, b, c, d }
+        Matrix2d::with(|i, j| self.row_vec(i) * other.col_vec(j))
     }
 }
 
@@ -170,10 +172,6 @@ where
     type Output = Matrix2d<S>;
 
     fn mul(self, other: &'a Matrix2d<S>) -> Matrix2d<S> {
-        let a = self.a * other.a + self.b * other.c;
-        let b = self.a * other.b + self.b * other.d;
-        let c = self.c * other.a + self.d * other.c;
-        let d = self.c * other.b + self.d * other.d;
-        Matrix2d { a, b, c, d }
+        Matrix2d::with(|i, j| self.row_vec(i) * other.col_vec(j))
     }
 }

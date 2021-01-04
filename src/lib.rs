@@ -20,6 +20,12 @@ pub use crate::vec4d::Vec4d;
 pub mod matrix2d;
 pub use crate::matrix2d::Matrix2d;
 
+pub mod matrix3d;
+pub use crate::matrix3d::Matrix3d;
+
+pub mod matrix4d;
+pub use crate::matrix4d::Matrix4d;
+
 pub mod point;
 pub use crate::point::p2d;
 pub use crate::point::p3d;
