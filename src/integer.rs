@@ -18,8 +18,6 @@ where
     Self: IntegerOps,
 {
     fn abs(self) -> Self;
-    fn min(self, other: Self) -> Self;
-    fn max(self, other: Self) -> Self;
 }
 
 impl IntegerOps for i32 {}
@@ -29,21 +27,9 @@ impl Integer for i32 {
     fn abs(self) -> Self {
         i32::abs(self)
     }
-    fn min(self, other: i32) -> Self {
-        Ord::min(self, other)
-    }
-    fn max(self, other: i32) -> Self {
-        Ord::max(self, other)
-    }
 }
 impl Integer for i64 {
     fn abs(self) -> Self {
         i64::abs(self)
-    }
-    fn min(self, other: i64) -> Self {
-        Ord::min(self, other)
-    }
-    fn max(self, other: i64) -> Self {
-        Ord::max(self, other)
     }
 }

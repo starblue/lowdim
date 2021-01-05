@@ -26,11 +26,11 @@ where
 
     /// Apply min by component
     fn min(&self, other: Self) -> Self {
-        Self::with(|i| Integer::min(self[i], other[i]))
+        Self::with(|i| self[i].min(other[i]))
     }
     /// Apply max by component
     fn max(&self, other: Self) -> Self {
-        Self::with(|i| Integer::max(self[i], other[i]))
+        Self::with(|i| self[i].max(other[i]))
     }
 
     /// The L1, taxicab or Manhatten norm.

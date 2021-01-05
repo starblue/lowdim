@@ -52,7 +52,9 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
 
     /// The L1, taxicab or Manhatten norm.
     fn norm_l1(&self) -> S {
-        self.x().abs() + self.y().abs()
+        let abs_x = self.x().abs();
+        let abs_y = self.y().abs();
+        abs_x + abs_y
     }
     /// Creates a vector of the 4 orthogonal vectors, i.e. those with L1 norm equal to 1.
     fn unit_vecs_l1() -> Vec<Self> {
@@ -61,7 +63,9 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
 
     /// The maximum, Chebychev or L∞ norm.
     fn norm_infty(&self) -> S {
-        Integer::max(self.x().abs(), self.y().abs())
+        let abs_x = self.x().abs();
+        let abs_y = self.y().abs();
+        abs_x.max(abs_y)
     }
     /// Creates a vector of the 8 vectors with L∞ norm equal to 1.
     fn unit_vecs_l_infty() -> Vec<Self> {

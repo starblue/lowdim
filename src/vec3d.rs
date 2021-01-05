@@ -48,7 +48,10 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
 
     /// The L1, taxicab or Manhatten norm.
     fn norm_l1(&self) -> S {
-        self.x().abs() + self.y().abs() + self.z().abs()
+        let abs_x = self.x().abs();
+        let abs_y = self.y().abs();
+        let abs_z = self.z().abs();
+        abs_x + abs_y + abs_z
     }
     /// Creates a vector of the 6 orthogonal vectors, i.e. those with L1 norm equal to 1.
     fn unit_vecs_l1() -> Vec<Self> {
@@ -64,7 +67,10 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
 
     /// The maximum, Chebychev or L-infinity norm.
     fn norm_infty(&self) -> S {
-        Integer::max(Integer::max(self.x().abs(), self.y().abs()), self.z().abs())
+        let abs_x = self.x().abs();
+        let abs_y = self.y().abs();
+        let abs_z = self.z().abs();
+        abs_x.max(abs_y).max(abs_z)
     }
     /// Creates a vector of the 26 vectors with L∞ norm equal to 1.
     fn unit_vecs_l_infty() -> Vec<Self> {
