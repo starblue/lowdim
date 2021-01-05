@@ -35,9 +35,12 @@ pub use crate::point::Point2d;
 pub use crate::point::Point3d;
 pub use crate::point::Point4d;
 
-pub mod rect;
-pub use crate::rect::r2d;
-pub use crate::rect::Rect2d;
+pub mod bbox;
+pub use crate::bbox::bb2d;
+pub use crate::bbox::BBox;
+pub use crate::bbox::BBox2d;
+pub use crate::bbox::BBox3d;
+pub use crate::bbox::BBox4d;
 
 pub mod array;
 pub use crate::array::Array2d;

@@ -7,68 +7,125 @@ use rand::distributions::uniform::SampleUniform;
 use rand::Rng;
 
 use crate::p2d;
-use crate::v2d;
 use crate::Integer;
+use crate::Point;
 use crate::Point2d;
 use crate::Vec2d;
+use crate::Vec3d;
+use crate::Vec4d;
+use crate::Vector;
 
-/// A rectangle in the discrete plane.
+/// A bounding box.
 ///
-/// The coordinates of the size must be non-negative.
+/// An axis-aligned volume of the same dimension as the space.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
-pub struct Rect2d<S: Integer> {
-    origin: Point2d<S>,
-    size: Vec2d<S>,
+pub struct BBox<S: Integer, V: Vector<S>> {
+    /// The corner of the box with the lowest coordinates.
+    min: Point<S, V>,
+    /// The corner of the box with the lowest coordinates.
+    max: Point<S, V>,
 }
 
-/// A two-dimensional rectangle.
-impl<S: Integer> Rect2d<S> {
-    /// Constructs a rectangle from origin and size.
-    pub fn new(origin: Point2d<S>, size: Vec2d<S>) -> Rect2d<S> {
-        assert!(size.x() >= 0.into() && size.y() >= 0.into());
-        Rect2d { origin, size }
+/// A 2d bounding box.
+pub type BBox2d<S = i64> = BBox<S, Vec2d<S>>;
+/// A 3d bounding box.
+pub type BBox3d<S = i64> = BBox<S, Vec3d<S>>;
+/// A 4d bounding box.
+pub type BBox4d<S = i64> = BBox<S, Vec4d<S>>;
+
+impl<S, V> BBox<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    /// Constructs a bounding box from origin and size.
+    pub fn new(origin: Point<S, V>, size: V) -> BBox<S, V> {
+        let min = origin;
+        let max = Point::with(|i| origin[i] + size[i] - S::from(1));
+        BBox { min, max }
     }
-    /// Constructs a rectangle from bounds.
+    /// Constructs a bounding box from a single point.
+    pub fn from_point(p: Point<S, V>) -> BBox<S, V> {
+        BBox { min: p, max: p }
+    }
+    /// Constructs a bounding box from two arbitrary corners.
+    pub fn from_points(p0: Point<S, V>, p1: Point<S, V>) -> BBox<S, V> {
+        let min = p0.min(p1);
+        let max = p0.max(p1);
+        BBox { min, max }
+    }
+    /// The minimal point in the bounding box.
+    pub fn min(&self) -> Point<S, V> {
+        self.min
+    }
+    /// The maximal point in the bounding box.
+    pub fn max(&self) -> Point<S, V> {
+        self.max
+    }
+}
+
+impl<S> BBox2d<S>
+where
+    S: Integer,
+{
+    /// Constructs a bounding box from bounds.
     ///
     /// As always, lower bounds are inclusive, upper bounds exclusive.
-    pub fn from_bounds(x0: S, x1: S, y0: S, y1: S) -> Rect2d<S> {
+    pub fn from_bounds(x0: S, x1: S, y0: S, y1: S) -> BBox2d<S> {
         assert!(x0 <= x1 && y0 <= y1);
-        let origin = p2d(x0, y0);
-        let size = v2d(x1 - x0, y1 - y0);
-        Rect2d::new(origin, size)
+        let min = p2d(x0, y0);
+        let max = p2d(x1 - S::from(1), y1 - S::from(1));
+        BBox { min, max }
     }
 
     /// Returns the lower bound in the x-coordinate (inclusive).
     pub fn x0(&self) -> S {
-        self.origin.x()
+        self.min.x()
     }
     /// Returns the upper bound in the x-coordinate (exclusive).
     pub fn x1(&self) -> S {
-        self.origin.x() + self.size.x()
+        self.max.x() + S::from(1)
     }
 
     /// Returns the lower bound in the y-coordinate (inclusive).
     pub fn y0(&self) -> S {
-        self.origin.y()
+        self.min.y()
     }
     /// Returns the upper bound in the y-coordinate (exclusive).
     pub fn y1(&self) -> S {
-        self.origin.y() + self.size.y()
+        self.max.y() + S::from(1)
     }
 
     /// Returns the width of the rectangle.
+    pub fn x_len(&self) -> usize
+    where
+        usize: TryFrom<S>,
+    {
+        usize::try_from(self.max.x() - self.min.x() + S::from(1)).unwrap_or(0)
+    }
+    /// Returns the width of the rectangle.
+    #[deprecated]
     pub fn width(&self) -> usize
     where
         usize: TryFrom<S>,
     {
-        usize::try_from(self.size.x()).unwrap_or(0)
+        self.x_len()
+    }
+
+    /// Returns the height of the rectangle.
+    pub fn y_len(&self) -> usize
+    where
+        usize: TryFrom<S>,
+    {
+        usize::try_from(self.max.y() - self.min.y() + S::from(1)).unwrap_or(0)
     }
     /// Returns the height of the rectangle.
+    #[deprecated]
     pub fn height(&self) -> usize
     where
         usize: TryFrom<S>,
     {
-        usize::try_from(self.size.y()).unwrap_or(0)
+        self.y_len()
     }
 
     /// Returns the area of the rectangle.
@@ -76,7 +133,7 @@ impl<S: Integer> Rect2d<S> {
     where
         usize: TryFrom<S>,
     {
-        self.width() * self.height()
+        self.x_len() * self.y_len()
     }
 
     /// Returns true if the point is inside the rectangle.
@@ -88,7 +145,7 @@ impl<S: Integer> Rect2d<S> {
     where
         usize: TryFrom<S>,
     {
-        self.width() == 0 || self.height() == 0
+        self.x_len() == 0 || self.y_len() == 0
     }
 
     /// The range of the x coordinate
@@ -111,11 +168,11 @@ impl<S: Integer> Rect2d<S> {
             if self.is_empty() {
                 None
             } else {
-                Some(self.origin)
+                Some(self.min)
             }
         };
         Iter {
-            rect: &self,
+            bbox: &self,
             next_point,
         }
     }
@@ -130,7 +187,7 @@ impl<S: Integer> Rect2d<S> {
         assert!(self.contains(p));
         let dx = usize::try_from(p.x() - self.x0()).unwrap_or(0);
         let dy = usize::try_from(p.y() - self.y0()).unwrap_or(0);
-        let w = self.width();
+        let w = self.x_len();
         dx + dy * w
     }
 
@@ -149,11 +206,11 @@ impl<S: Integer> Rect2d<S> {
     }
 }
 
-pub fn r2d<S: Integer>(x0: S, x1: S, y0: S, y1: S) -> Rect2d<S> {
-    Rect2d::from_bounds(x0, x1, y0, y1)
+pub fn bb2d<S: Integer>(x0: S, x1: S, y0: S, y1: S) -> BBox2d<S> {
+    BBox2d::from_bounds(x0, x1, y0, y1)
 }
 
-impl<'a, S: Integer> IntoIterator for &'a Rect2d<S>
+impl<'a, S: Integer> IntoIterator for &'a BBox2d<S>
 where
     usize: TryFrom<S>,
 {
@@ -166,7 +223,7 @@ where
     }
 }
 pub struct Iter<'a, S: Integer> {
-    rect: &'a Rect2d<S>,
+    bbox: &'a BBox2d<S>,
     next_point: Option<Point2d<S>>,
 }
 
@@ -179,12 +236,12 @@ impl<'a, S: Integer> Iterator for Iter<'a, S> {
                 // Move to next point
                 let new_x = p.x() + S::from(1);
                 self.next_point = {
-                    if new_x < self.rect.x1() {
+                    if new_x < self.bbox.x1() {
                         Some(p2d(new_x, p.y()))
                     } else {
                         let new_y = p.y() + S::from(1);
-                        if new_y < self.rect.y1() {
-                            Some(p2d(self.rect.x0(), new_y))
+                        if new_y < self.bbox.y1() {
+                            Some(p2d(self.bbox.x0(), new_y))
                         } else {
                             None
                         }
@@ -205,31 +262,78 @@ where
     fn len(&self) -> usize {
         match self.next_point {
             None => 0,
-            Some(p) => self.rect.area() - self.rect.seq_index(p),
+            Some(p) => self.bbox.area() - self.bbox.seq_index(p),
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::bb2d;
     use crate::p2d;
-    use crate::r2d;
 
     #[test]
-    fn test_accessors() {
-        let r = r2d(-2, 3, -1, 2);
+    fn test_min() {
+        let r = bb2d(-2, 3, -1, 2);
+        assert_eq!(r.min(), p2d(-2, -1));
+    }
+    #[test]
+    fn test_max() {
+        let r = bb2d(-2, 3, -1, 2);
+        assert_eq!(r.max(), p2d(2, 1));
+    }
+
+    #[test]
+    fn test_x0() {
+        let r = bb2d(-2, 3, -1, 2);
         assert_eq!(r.x0(), -2);
+    }
+    #[test]
+    fn test_x1() {
+        let r = bb2d(-2, 3, -1, 2);
         assert_eq!(r.x1(), 3);
+    }
+    #[test]
+    fn test_y0() {
+        let r = bb2d(-2, 3, -1, 2);
         assert_eq!(r.y0(), -1);
+    }
+    #[test]
+    fn test_y1() {
+        let r = bb2d(-2, 3, -1, 2);
         assert_eq!(r.y1(), 2);
+    }
+    #[test]
+    fn test_x_len() {
+        let r = bb2d(-2, 3, -1, 2);
+        assert_eq!(r.x_len(), 5);
+    }
+    #[test]
+    fn test_y_len() {
+        let r = bb2d(-2, 3, -1, 2);
+        assert_eq!(r.y_len(), 3);
+    }
+    #[test]
+    #[allow(deprecated)]
+    fn test_width() {
+        let r = bb2d(-2, 3, -1, 2);
         assert_eq!(r.width(), 5);
+    }
+    #[test]
+    #[allow(deprecated)]
+    fn test_height() {
+        let r = bb2d(-2, 3, -1, 2);
         assert_eq!(r.height(), 3);
+    }
+    #[test]
+    fn test_area() {
+        let r = bb2d(-2, 3, -1, 2);
         assert_eq!(r.area(), 15);
     }
 
     #[test]
     fn test_contains() {
-        let r = r2d(-2, 3, -1, 2);
+        let r = bb2d(-2, 3, -1, 2);
         assert_eq!(r.contains(p2d(0, 0)), true);
         assert_eq!(r.contains(p2d(-2, 0)), true);
         assert_eq!(r.contains(p2d(-3, 0)), false);
@@ -243,7 +347,7 @@ mod tests {
 
     #[test]
     fn test_iter() {
-        let r = r2d(1, 3, -1, 1);
+        let r = bb2d(1, 3, -1, 1);
         for p in r.iter() {
             println!("{:?}", p);
         }

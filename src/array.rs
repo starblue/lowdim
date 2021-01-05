@@ -3,9 +3,9 @@ use core::ops;
 use std::convert::TryFrom;
 use std::iter::repeat;
 
+use crate::BBox2d;
 use crate::Integer;
 use crate::Point2d;
-use crate::Rect2d;
 
 /// A two-dimensional array.
 ///
@@ -13,14 +13,14 @@ use crate::Rect2d;
 /// i.e. x- and y-index don't need to start at zero.
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]
 pub struct Array2d<S: Integer, T> {
-    bounds: Rect2d<S>,
+    bounds: BBox2d<S>,
     data: Vec<T>,
 }
 
 impl<S: Integer, T> Array2d<S, T> {
     /// Creates a new array with the given bounds
     /// that is filled with copies of a given element.
-    pub fn new(bounds: Rect2d<S>, d: T) -> Array2d<S, T>
+    pub fn new(bounds: BBox2d<S>, d: T) -> Array2d<S, T>
     where
         usize: TryFrom<S>,
         T: Clone,
@@ -31,7 +31,7 @@ impl<S: Integer, T> Array2d<S, T> {
 
     /// Creates a new array with the given bounds
     /// that is filled using a function which takes a location as input.
-    pub fn new_with<F>(bounds: Rect2d<S>, f: F) -> Array2d<S, T>
+    pub fn new_with<F>(bounds: BBox2d<S>, f: F) -> Array2d<S, T>
     where
         F: Fn(Point2d<S>) -> T,
         usize: TryFrom<S>,
@@ -54,7 +54,7 @@ impl<S: Integer, T> Array2d<S, T> {
         } else {
             S::try_from(v[0].len()).unwrap_or(0.into())
         };
-        let bounds = Rect2d::from_bounds(0.into(), x_len, 0.into(), y_len);
+        let bounds = BBox2d::from_bounds(0.into(), x_len, 0.into(), y_len);
         Array2d::new_with(bounds, |p| {
             let x = usize::try_from(p.x()).unwrap_or(0_usize);
             let y = usize::try_from(p.y()).unwrap_or(0_usize);
@@ -62,8 +62,8 @@ impl<S: Integer, T> Array2d<S, T> {
         })
     }
 
-    pub fn bounds(&self) -> Rect2d<S> {
-        self.bounds
+    pub fn bounds(&self) -> BBox2d<S> {
+        self.bounds.clone()
     }
 }
 
@@ -89,13 +89,13 @@ where
 
 #[cfg(test)]
 mod tests {
+    use crate::bb2d;
     use crate::p2d;
-    use crate::r2d;
     use crate::Array2d;
 
     #[test]
     fn test_index() {
-        let r = r2d(-2, 3, -1, 2);
+        let r = bb2d(-2, 3, -1, 2);
         let mut a = Array2d::new_with(r, |p| if p == p2d(0, 0) { '*' } else { '.' });
         assert_eq!(a[p2d(0, 0)], '*');
         a[p2d(1, 1)] = '+';
