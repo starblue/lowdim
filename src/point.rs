@@ -355,6 +355,30 @@ mod tests {
     }
 
     #[test]
+    fn test_xy_2d() {
+        let p: Point2d<i64> = Point2d::from(v2d(1, 2));
+        assert_eq!(1, p.x());
+        assert_eq!(2, p.y());
+    }
+
+    #[test]
+    fn test_xyz_3d() {
+        let p: Point3d<i64> = Point3d::from(v3d(1, 2, 3));
+        assert_eq!(1, p.x());
+        assert_eq!(2, p.y());
+        assert_eq!(3, p.z());
+    }
+
+    #[test]
+    fn test_xyzw_4d() {
+        let p: Point4d<i64> = Point4d::from(v4d(1, 2, 3, 4));
+        assert_eq!(1, p.x());
+        assert_eq!(2, p.y());
+        assert_eq!(3, p.z());
+        assert_eq!(4, p.w());
+    }
+
+    #[test]
     fn test_with() {
         assert_eq!(p2d(2, 3), Point2d::with(|i| i64::try_from(i + 2).unwrap()));
     }
@@ -407,5 +431,65 @@ mod tests {
         assert_eq!(v2d(-1, -6), p - &q);
         assert_eq!(v2d(-1, -6), &p - q);
         assert_eq!(v2d(-1, -6), &p - &q);
+    }
+
+    #[test]
+    fn test_add_assign() {
+        let mut u = Point2d::new(2, 1);
+        u += Vec2d::new(3, 7);
+        assert_eq!(p2d(5, 8), u);
+        u += &Vec2d::new(3, 7);
+        assert_eq!(p2d(8, 15), u);
+    }
+
+    #[test]
+    fn test_sub_assign() {
+        let mut u = Point2d::new(2, 1);
+        u -= Vec2d::new(3, 7);
+        assert_eq!(p2d(-1, -6), u);
+        u -= &Vec2d::new(3, 7);
+        assert_eq!(p2d(-4, -13), u);
+    }
+
+    #[test]
+    fn test_min_2d() {
+        let u = Point2d::new(2, 7);
+        let v = Point2d::new(3, 1);
+        assert_eq!(p2d(2, 1), u.min(v));
+    }
+
+    #[test]
+    fn test_min_3d() {
+        let u = Point3d::new(2, 1, 5);
+        let v = Point3d::new(3, 7, 1);
+        assert_eq!(p3d(2, 1, 1), u.min(v));
+    }
+
+    #[test]
+    fn test_min_4d() {
+        let u = Point4d::new(2, 1, 5, -4);
+        let v = Point4d::new(3, 7, 1, 4);
+        assert_eq!(p4d(2, 1, 1, -4), u.min(v));
+    }
+
+    #[test]
+    fn test_max_2d() {
+        let u = Point2d::new(2, 7);
+        let v = Point2d::new(3, 1);
+        assert_eq!(p2d(3, 7), u.max(v));
+    }
+
+    #[test]
+    fn test_max_3d() {
+        let u = Point3d::new(2, 7, 5);
+        let v = Point3d::new(3, 1, 1);
+        assert_eq!(p3d(3, 7, 5), u.max(v));
+    }
+
+    #[test]
+    fn test_max_4d() {
+        let u = Point4d::new(2, 7, 5, -4);
+        let v = Point4d::new(3, 1, 1, 4);
+        assert_eq!(p4d(3, 7, 5, 4), u.max(v));
     }
 }

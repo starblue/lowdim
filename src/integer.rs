@@ -33,3 +33,18 @@ impl Integer for i64 {
         i64::abs(self)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::Integer;
+
+    #[test]
+    fn test_abs_i32() {
+        assert_eq!(5, Integer::abs(5_i32));
+    }
+
+    #[test]
+    fn test_abs_i64() {
+        assert_eq!(5, Integer::abs(5_i64));
+    }
+}

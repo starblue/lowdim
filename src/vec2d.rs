@@ -341,6 +341,13 @@ mod tests {
     }
 
     #[test]
+    fn test_neg() {
+        let u = Vec2d::new(2, 1);
+        assert_eq!(v2d(-2, -1), -u);
+        assert_eq!(v2d(-2, -1), -&u);
+    }
+
+    #[test]
     fn test_mul_sv() {
         let v = Vec2d::new(3, 7);
         assert_eq!(v2d(6, 14), 2 * v);
@@ -364,6 +371,8 @@ mod tests {
         let mut u = Vec2d::new(2, 1);
         u += Vec2d::new(3, 7);
         assert_eq!(v2d(5, 8), u);
+        u += &Vec2d::new(3, 7);
+        assert_eq!(v2d(8, 15), u);
     }
 
     #[test]
@@ -371,6 +380,8 @@ mod tests {
         let mut u = Vec2d::new(2, 1);
         u -= Vec2d::new(3, 7);
         assert_eq!(v2d(-1, -6), u);
+        u -= &Vec2d::new(3, 7);
+        assert_eq!(v2d(-4, -13), u);
     }
 
     #[test]
