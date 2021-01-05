@@ -1,9 +1,10 @@
 use core::marker::PhantomData;
 
-use std::ops::Add;
-use std::ops::AddAssign;
-use std::ops::Sub;
-use std::ops::SubAssign;
+use core::ops::Add;
+use core::ops::AddAssign;
+use core::ops::Index;
+use core::ops::Sub;
+use core::ops::SubAssign;
 
 use crate::v2d;
 use crate::v3d;
@@ -136,6 +137,17 @@ where
     S: From<T>,
 {
     Point4d::new(S::from(x), S::from(y), S::from(z), S::from(w))
+}
+
+impl<S, V> Index<usize> for Point<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    type Output = S;
+    fn index(&self, i: usize) -> &S {
+        self.v.index(i)
+    }
 }
 
 impl<S, V> Add<V> for Point<S, V>
