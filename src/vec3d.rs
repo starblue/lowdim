@@ -37,6 +37,8 @@ impl<S: Integer> Vec3d<S> {
 
 impl<S: Integer> VectorOps<S, Vec3d<S>> for Vec3d<S> {}
 impl<'a, S: Integer> VectorOps<S, &'a Vec3d<S>> for Vec3d<S> {}
+impl<'a, S: Integer> VectorOps<S, Vec3d<S>, Vec3d<S>> for &'a Vec3d<S> {}
+impl<'a, S: Integer> VectorOps<S, &'a Vec3d<S>, Vec3d<S>> for &'a Vec3d<S> {}
 
 impl<S: Integer> Vector<S> for Vec3d<S> {
     fn with<F>(f: F) -> Vec3d<S>

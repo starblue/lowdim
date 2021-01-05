@@ -51,7 +51,7 @@ where
     /// Creates a vector containing the orthogonal neighbours of a point.
     pub fn neighbours_l1<'a>(&'a self) -> Vec<Self>
     where
-        &'a V: VectorOps<S, V>,
+        &'a V: VectorOps<S, V, V>,
     {
         V::unit_vecs_l1().into_iter().map(|v| self + v).collect()
     }
@@ -59,7 +59,7 @@ where
     /// Creates a vector containing the orthogonal and diagonal neighbours of a point.
     pub fn neighbours_l_infty<'a>(&'a self) -> Vec<Self>
     where
-        &'a V: VectorOps<S, V>,
+        &'a V: VectorOps<S, V, V>,
     {
         V::unit_vecs_l_infty()
             .into_iter()
@@ -164,7 +164,7 @@ impl<'a, S, V> Add<V> for &'a Point<S, V>
 where
     S: Integer,
     V: Vector<S>,
-    &'a V: VectorOps<S, V>,
+    &'a V: VectorOps<S, V, V>,
 {
     type Output = Point<S, V>;
 
@@ -176,7 +176,7 @@ impl<'a, S, V> Add<&'a V> for &'a Point<S, V>
 where
     S: Integer,
     V: Vector<S>,
-    &'a V: VectorOps<S, &'a V>,
+    &'a V: VectorOps<S, &'a V, V>,
 {
     type Output = Point<S, V>;
 
@@ -327,6 +327,8 @@ mod tests {
     use crate::Point3d;
     use crate::Point4d;
     use crate::Vec2d;
+    use crate::Vec3d;
+    use crate::Vec4d;
 
     #[test]
     fn test_from_2d() {
@@ -358,13 +360,33 @@ mod tests {
     }
 
     #[test]
-    fn test_add_pv() {
+    fn test_add_pv_2d() {
         let p: Point2d<i64> = Point2d::new(2, 1);
         let v = Vec2d::new(3, 7);
         assert_eq!(p2d(5, 8), p + v);
         assert_eq!(p2d(5, 8), p + &v);
         assert_eq!(p2d(5, 8), &p + v);
         assert_eq!(p2d(5, 8), &p + &v);
+    }
+
+    #[test]
+    fn test_add_pv_3d() {
+        let p: Point3d<i64> = Point3d::new(2, 1, 6);
+        let v = Vec3d::new(3, 7, 1);
+        assert_eq!(p3d(5, 8, 7), p + v);
+        assert_eq!(p3d(5, 8, 7), p + &v);
+        assert_eq!(p3d(5, 8, 7), &p + v);
+        assert_eq!(p3d(5, 8, 7), &p + &v);
+    }
+
+    #[test]
+    fn test_add_pv_4d() {
+        let p: Point4d<i64> = Point4d::new(2, 1, 6, -2);
+        let v = Vec4d::new(3, 7, 1, 5);
+        assert_eq!(p4d(5, 8, 7, 3), p + v);
+        assert_eq!(p4d(5, 8, 7, 3), p + &v);
+        assert_eq!(p4d(5, 8, 7, 3), &p + v);
+        assert_eq!(p4d(5, 8, 7, 3), &p + &v);
     }
 
     #[test]

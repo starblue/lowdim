@@ -40,6 +40,8 @@ impl<S: Integer> Vec4d<S> {
 
 impl<S: Integer> VectorOps<S, Vec4d<S>> for Vec4d<S> {}
 impl<'a, S: Integer> VectorOps<S, &'a Vec4d<S>> for Vec4d<S> {}
+impl<'a, S: Integer> VectorOps<S, Vec4d<S>, Vec4d<S>> for &'a Vec4d<S> {}
+impl<'a, S: Integer> VectorOps<S, &'a Vec4d<S>, Vec4d<S>> for &'a Vec4d<S> {}
 
 impl<S: Integer> Vector<S> for Vec4d<S> {
     fn with<F>(f: F) -> Vec4d<S>

@@ -41,6 +41,8 @@ impl<S: Integer> Vec2d<S> {
 
 impl<S: Integer> VectorOps<S, Vec2d<S>> for Vec2d<S> {}
 impl<'a, S: Integer> VectorOps<S, &'a Vec2d<S>> for Vec2d<S> {}
+impl<'a, S: Integer> VectorOps<S, Vec2d<S>, Vec2d<S>> for &'a Vec2d<S> {}
+impl<'a, S: Integer> VectorOps<S, &'a Vec2d<S>, Vec2d<S>> for &'a Vec2d<S> {}
 
 impl<S: Integer> Vector<S> for Vec2d<S> {
     fn with<F>(f: F) -> Vec2d<S>
