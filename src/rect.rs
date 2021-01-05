@@ -143,8 +143,8 @@ impl<S: Integer> Rect2d<S> {
         R: Rng,
         S: SampleUniform,
     {
-        let x = rng.gen_range(self.x0(), self.x1());
-        let y = rng.gen_range(self.y0(), self.y1());
+        let x = rng.gen_range(self.x0()..self.x1());
+        let y = rng.gen_range(self.y0()..self.y1());
         p2d(x, y)
     }
 }
