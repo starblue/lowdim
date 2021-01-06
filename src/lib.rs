@@ -44,3 +44,6 @@ pub use crate::bbox::BBox4d;
 
 pub mod array;
 pub use crate::array::Array2d;
+
+mod util;
+use crate::util::partial_then;

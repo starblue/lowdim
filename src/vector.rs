@@ -16,6 +16,7 @@ where
     S: Integer,
     Self: Clone + Copy,
     Self: ops::Index<usize, Output = S>,
+    Self: PartialOrd,
     Self: VectorOps<S, Self>,
     Self: for<'a> VectorOps<S, &'a Self>,
 {

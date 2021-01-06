@@ -1,3 +1,4 @@
+use core::cmp::Ordering;
 use core::marker::PhantomData;
 
 use core::ops::Add;
@@ -147,6 +148,16 @@ where
     type Output = S;
     fn index(&self, i: usize) -> &S {
         self.v.index(i)
+    }
+}
+
+impl<S, V> PartialOrd for Point<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    fn partial_cmp(&self, other: &Point<S, V>) -> Option<Ordering> {
+        self.v.partial_cmp(&other.v)
     }
 }
 
@@ -327,7 +338,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use std::convert::TryFrom;
+    use core::cmp::Ordering;
+    use core::convert::TryFrom;
 
     use crate::p2d;
     use crate::p3d;
@@ -393,6 +405,52 @@ mod tests {
     #[test]
     fn test_with() {
         assert_eq!(p2d(2, 3), Point2d::with(|i| i64::try_from(i + 2).unwrap()));
+    }
+
+    #[test]
+    fn test_index_2d() {
+        let v = Point2d::new(1, 2);
+        assert_eq!(1, v[0]);
+        assert_eq!(2, v[1]);
+    }
+    #[test]
+    fn test_index_3d() {
+        let v = Point3d::new(1, 2, 3);
+        assert_eq!(1, v[0]);
+        assert_eq!(2, v[1]);
+        assert_eq!(3, v[2]);
+    }
+    #[test]
+    fn test_index_4d() {
+        let v = Point4d::new(1, 2, 3, 4);
+        assert_eq!(1, v[0]);
+        assert_eq!(2, v[1]);
+        assert_eq!(3, v[2]);
+        assert_eq!(4, v[3]);
+    }
+
+    #[test]
+    fn test_partial_ord_none() {
+        let u = Point2d::new(2, 1);
+        let v = Point2d::new(3, -7);
+        assert_eq!(None, u.partial_cmp(&v));
+    }
+    #[test]
+    fn test_partial_ord_less() {
+        let u = Point2d::new(2, 1);
+        let v = Point2d::new(3, 7);
+        assert_eq!(Some(Ordering::Less), u.partial_cmp(&v));
+    }
+    #[test]
+    fn test_partial_ord_equal() {
+        let v = Point2d::new(3, 7);
+        assert_eq!(Some(Ordering::Equal), v.partial_cmp(&v));
+    }
+    #[test]
+    fn test_partial_ord_greater() {
+        let u = Point2d::new(2, 1);
+        let v = Point2d::new(3, 7);
+        assert_eq!(Some(Ordering::Greater), v.partial_cmp(&u));
     }
 
     #[test]

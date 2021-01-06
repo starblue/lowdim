@@ -1,3 +1,4 @@
+use core::cmp::Ordering;
 use core::ops::Add;
 use core::ops::AddAssign;
 use core::ops::Index;
@@ -6,6 +7,7 @@ use core::ops::Neg;
 use core::ops::Sub;
 use core::ops::SubAssign;
 
+use crate::partial_then;
 use crate::Integer;
 use crate::Vector;
 use crate::VectorOps;
@@ -97,6 +99,14 @@ impl<S: Integer> Index<usize> for Vec2d<S> {
     type Output = S;
     fn index(&self, i: usize) -> &S {
         self.0.index(i)
+    }
+}
+
+impl<S: Integer> PartialOrd for Vec2d<S> {
+    fn partial_cmp(&self, other: &Vec2d<S>) -> Option<Ordering> {
+        let x_ordering = Some(self.x().cmp(&other.x()));
+        let y_ordering = Some(self.y().cmp(&other.y()));
+        partial_then(x_ordering, y_ordering)
     }
 }
 
@@ -269,7 +279,8 @@ impl<'a, S: Integer> SubAssign<&'a Vec2d<S>> for Vec2d<S> {
 
 #[cfg(test)]
 mod tests {
-    use std::convert::TryFrom;
+    use core::cmp::Ordering;
+    use core::convert::TryFrom;
 
     use crate::v2d;
     use crate::Vec2d;
@@ -318,6 +329,30 @@ mod tests {
         let v = Vec2d::new(3, 7);
         assert_eq!(3, v[0]);
         assert_eq!(7, v[1]);
+    }
+
+    #[test]
+    fn test_partial_ord_none() {
+        let u = Vec2d::new(2, 1);
+        let v = Vec2d::new(3, -7);
+        assert_eq!(None, u.partial_cmp(&v));
+    }
+    #[test]
+    fn test_partial_ord_less() {
+        let u = Vec2d::new(2, 1);
+        let v = Vec2d::new(3, 7);
+        assert_eq!(Some(Ordering::Less), u.partial_cmp(&v));
+    }
+    #[test]
+    fn test_partial_ord_equal() {
+        let v = Vec2d::new(3, 7);
+        assert_eq!(Some(Ordering::Equal), v.partial_cmp(&v));
+    }
+    #[test]
+    fn test_partial_ord_greater() {
+        let u = Vec2d::new(2, 1);
+        let v = Vec2d::new(3, 7);
+        assert_eq!(Some(Ordering::Greater), v.partial_cmp(&u));
     }
 
     #[test]

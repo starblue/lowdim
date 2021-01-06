@@ -1,3 +1,4 @@
+use core::cmp::Ordering;
 use core::ops::Add;
 use core::ops::AddAssign;
 use core::ops::Index;
@@ -6,6 +7,7 @@ use core::ops::Neg;
 use core::ops::Sub;
 use core::ops::SubAssign;
 
+use crate::partial_then;
 use crate::Integer;
 use crate::Vector;
 use crate::VectorOps;
@@ -113,6 +115,19 @@ impl<S: Integer> Index<usize> for Vec4d<S> {
     type Output = S;
     fn index(&self, i: usize) -> &S {
         self.0.index(i)
+    }
+}
+
+impl<S: Integer> PartialOrd for Vec4d<S> {
+    fn partial_cmp(&self, other: &Vec4d<S>) -> Option<Ordering> {
+        let x_ordering = Some(self.x().cmp(&other.x()));
+        let y_ordering = Some(self.y().cmp(&other.y()));
+        let z_ordering = Some(self.z().cmp(&other.z()));
+        let w_ordering = Some(self.w().cmp(&other.w()));
+        partial_then(
+            partial_then(partial_then(x_ordering, y_ordering), z_ordering),
+            w_ordering,
+        )
     }
 }
 
@@ -284,7 +299,8 @@ impl<'a, S: Integer> SubAssign<&'a Vec4d<S>> for Vec4d<S> {
 
 #[cfg(test)]
 mod tests {
-    use std::convert::TryFrom;
+    use core::cmp::Ordering;
+    use core::convert::TryFrom;
 
     use crate::v4d;
     use crate::Vec4d;
@@ -325,6 +341,30 @@ mod tests {
         assert_eq!(7, v[1]);
         assert_eq!(1, v[2]);
         assert_eq!(-2, v[3]);
+    }
+
+    #[test]
+    fn test_partial_ord_none() {
+        let u = Vec4d::new(2, 1, 5, -4);
+        let v = Vec4d::new(2, 7, 1, 4);
+        assert_eq!(None, u.partial_cmp(&v));
+    }
+    #[test]
+    fn test_partial_ord_less() {
+        let u = Vec4d::new(2, 1, 1, -4);
+        let v = Vec4d::new(3, 1, 5, 4);
+        assert_eq!(Some(Ordering::Less), u.partial_cmp(&v));
+    }
+    #[test]
+    fn test_partial_ord_equal() {
+        let v = Vec4d::new(3, 7, 5, 4);
+        assert_eq!(Some(Ordering::Equal), v.partial_cmp(&v));
+    }
+    #[test]
+    fn test_partial_ord_greater() {
+        let u = Vec4d::new(2, 1, 1, -4);
+        let v = Vec4d::new(3, 1, 5, 4);
+        assert_eq!(Some(Ordering::Greater), v.partial_cmp(&u));
     }
 
     #[test]
