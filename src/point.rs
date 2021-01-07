@@ -33,9 +33,6 @@ where
     S: Integer,
     V: Vector<S>,
 {
-    fn from(v: V) -> Self {
-        Point { s: PhantomData, v }
-    }
     pub fn with<F>(f: F) -> Point<S, V>
     where
         F: Fn(usize) -> S,
@@ -138,6 +135,16 @@ where
     S: From<T>,
 {
     Point4d::new(S::from(x), S::from(y), S::from(z), S::from(w))
+}
+
+impl<S, V> From<V> for Point<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    fn from(v: V) -> Self {
+        Point { s: PhantomData, v }
+    }
 }
 
 impl<S, V> Index<usize> for Point<S, V>
