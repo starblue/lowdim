@@ -70,7 +70,7 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
     }
 
     /// The maximum, Chebychev or L-infinity norm.
-    fn norm_infty(&self) -> S {
+    fn norm_l_infty(&self) -> S {
         let abs_x = self.x().abs();
         let abs_y = self.y().abs();
         let abs_z = self.z().abs();
@@ -318,15 +318,15 @@ mod tests {
         assert_eq!(10, v3d(-2, -3, -5).norm_l1());
     }
     #[test]
-    fn test_norm_infty() {
-        assert_eq!(5, v3d(2, 3, 5).norm_infty());
-        assert_eq!(5, v3d(-2, 3, 5).norm_infty());
-        assert_eq!(5, v3d(2, -3, 5).norm_infty());
-        assert_eq!(5, v3d(-2, -3, 5).norm_infty());
-        assert_eq!(5, v3d(2, 3, -5).norm_infty());
-        assert_eq!(5, v3d(-2, 3, -5).norm_infty());
-        assert_eq!(5, v3d(2, -3, -5).norm_infty());
-        assert_eq!(5, v3d(-2, -3, -5).norm_infty());
+    fn test_norm_l_infty() {
+        assert_eq!(5, v3d(2, 3, 5).norm_l_infty());
+        assert_eq!(5, v3d(-2, 3, 5).norm_l_infty());
+        assert_eq!(5, v3d(2, -3, 5).norm_l_infty());
+        assert_eq!(5, v3d(-2, -3, 5).norm_l_infty());
+        assert_eq!(5, v3d(2, 3, -5).norm_l_infty());
+        assert_eq!(5, v3d(-2, 3, -5).norm_l_infty());
+        assert_eq!(5, v3d(2, -3, -5).norm_l_infty());
+        assert_eq!(5, v3d(-2, -3, -5).norm_l_infty());
     }
 
     #[test]

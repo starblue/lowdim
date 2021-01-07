@@ -51,7 +51,7 @@ where
     fn unit_vecs_l1() -> Vec<Self>;
 
     /// The maximum, Chebychev or L∞ norm.
-    fn norm_infty(&self) -> S;
+    fn norm_l_infty(&self) -> S;
 
     /// Creates a vector of the 8 vectors with L∞ norm equal to 1.
     fn unit_vecs_l_infty() -> Vec<Self>;

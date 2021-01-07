@@ -76,7 +76,7 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
     }
 
     /// The maximum, Chebychev or L-infinity norm.
-    fn norm_infty(&self) -> S {
+    fn norm_l_infty(&self) -> S {
         let abs_x = self.x().abs();
         let abs_y = self.y().abs();
         let abs_z = self.z().abs();
@@ -329,9 +329,9 @@ mod tests {
         assert_eq!(18, v4d(-2, -3, -5, -8).norm_l1());
     }
     #[test]
-    fn test_norm_infty() {
-        assert_eq!(8, v4d(2, 3, 5, 8).norm_infty());
-        assert_eq!(8, v4d(-2, -3, -5, -8).norm_infty());
+    fn test_norm_l_infty() {
+        assert_eq!(8, v4d(2, 3, 5, 8).norm_l_infty());
+        assert_eq!(8, v4d(-2, -3, -5, -8).norm_l_infty());
     }
 
     #[test]

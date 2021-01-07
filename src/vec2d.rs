@@ -66,7 +66,7 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
     }
 
     /// The maximum, Chebychev or L∞ norm.
-    fn norm_infty(&self) -> S {
+    fn norm_l_infty(&self) -> S {
         let abs_x = self.x().abs();
         let abs_y = self.y().abs();
         abs_x.max(abs_y)
@@ -329,11 +329,11 @@ mod tests {
         assert_eq!(5, v2d(-2, -3).norm_l1());
     }
     #[test]
-    fn test_norm_infty() {
-        assert_eq!(3, v2d(2, 3).norm_infty());
-        assert_eq!(3, v2d(-2, 3).norm_infty());
-        assert_eq!(3, v2d(2, -3).norm_infty());
-        assert_eq!(3, v2d(-2, -3).norm_infty());
+    fn test_norm_l_infty() {
+        assert_eq!(3, v2d(2, 3).norm_l_infty());
+        assert_eq!(3, v2d(-2, 3).norm_l_infty());
+        assert_eq!(3, v2d(2, -3).norm_l_infty());
+        assert_eq!(3, v2d(-2, -3).norm_l_infty());
     }
 
     #[test]
