@@ -47,16 +47,16 @@ where
         Point::from(self.v.max(other.v))
     }
 
-    /// Creates a vector containing the orthogonal neighbours of a point.
-    pub fn neighbours_l1<'a>(&'a self) -> Vec<Self>
+    /// Creates a vector containing the orthogonal neighbors of a point.
+    pub fn neighbors_l1<'a>(&'a self) -> Vec<Self>
     where
         &'a V: VectorOps<S, V, V>,
     {
         V::unit_vecs_l1().into_iter().map(|v| self + v).collect()
     }
 
-    /// Creates a vector containing the orthogonal and diagonal neighbours of a point.
-    pub fn neighbours_l_infty<'a>(&'a self) -> Vec<Self>
+    /// Creates a vector containing the orthogonal and diagonal neighbors of a point.
+    pub fn neighbors_l_infty<'a>(&'a self) -> Vec<Self>
     where
         &'a V: VectorOps<S, V, V>,
     {
