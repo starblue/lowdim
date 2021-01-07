@@ -18,6 +18,7 @@ where
     Self: IntegerOps,
 {
     fn abs(self) -> Self;
+    fn signum(self) -> Self;
 }
 
 impl IntegerOps for i32 {}
@@ -27,10 +28,16 @@ impl Integer for i32 {
     fn abs(self) -> Self {
         i32::abs(self)
     }
+    fn signum(self) -> Self {
+        i32::signum(self)
+    }
 }
 impl Integer for i64 {
     fn abs(self) -> Self {
         i64::abs(self)
+    }
+    fn signum(self) -> Self {
+        i64::signum(self)
     }
 }
 
@@ -41,10 +48,26 @@ mod tests {
     #[test]
     fn test_abs_i32() {
         assert_eq!(5, Integer::abs(5_i32));
+        assert_eq!(5, Integer::abs(-5_i32));
     }
 
     #[test]
     fn test_abs_i64() {
         assert_eq!(5, Integer::abs(5_i64));
+        assert_eq!(5, Integer::abs(-5_i64));
+    }
+
+    #[test]
+    fn test_signum_i32() {
+        assert_eq!(1, Integer::signum(5_i32));
+        assert_eq!(0, Integer::signum(0_i32));
+        assert_eq!(-1, Integer::signum(-5_i32));
+    }
+
+    #[test]
+    fn test_signum_i64() {
+        assert_eq!(1, Integer::signum(5_i64));
+        assert_eq!(0, Integer::signum(0_i64));
+        assert_eq!(-1, Integer::signum(-5_i64));
     }
 }

@@ -310,6 +310,18 @@ mod tests {
     }
 
     #[test]
+    fn test_signum() {
+        assert_eq!(v2d(1, 1), Vec2d::new(2, 3).signum());
+        assert_eq!(v2d(1, 0), Vec2d::new(2, 0).signum());
+        assert_eq!(v2d(1, -1), Vec2d::new(2, -3).signum());
+        assert_eq!(v2d(0, 1), Vec2d::new(0, 3).signum());
+        assert_eq!(v2d(0, 0), Vec2d::new(0, 0).signum());
+        assert_eq!(v2d(0, -1), Vec2d::new(0, -3).signum());
+        assert_eq!(v2d(-1, 1), Vec2d::new(-2, 3).signum());
+        assert_eq!(v2d(-1, 0), Vec2d::new(-2, 0).signum());
+        assert_eq!(v2d(-1, -1), Vec2d::new(-2, -3).signum());
+    }
+    #[test]
     fn test_norm_l1() {
         assert_eq!(5, v2d(2, 3).norm_l1());
         assert_eq!(5, v2d(-2, 3).norm_l1());

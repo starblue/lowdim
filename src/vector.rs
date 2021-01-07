@@ -34,6 +34,14 @@ where
         Self::with(|i| self[i].max(other[i]))
     }
 
+    /// Signum by component.
+    ///
+    /// Maps a vector to a unit step in the L∞ norm.
+    /// This is a step on a shortest path w.r.t. L∞ along the vector.
+    fn signum(&self) -> Self {
+        Self::with(|i| self[i].signum())
+    }
+
     /// The L1, taxicab or Manhatten norm.
     fn norm_l1(&self) -> S;
 
