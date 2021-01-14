@@ -47,6 +47,16 @@ where
         Point::from(self.v.max(other.v))
     }
 
+    // The distance to another point w.r.t. the L1 norm.
+    pub fn distance_l1(&self, other: Self) -> S {
+        (self - other).norm_l1()
+    }
+
+    // The distance to another point w.r.t. the L∞ norm.
+    pub fn distance_l_infty(&self, other: Self) -> S {
+        (self - other).norm_l_infty()
+    }
+
     /// Creates a vector containing the orthogonal neighbors of a point.
     pub fn neighbors_l1<'a>(&'a self) -> Vec<Self>
     where
