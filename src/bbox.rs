@@ -62,6 +62,22 @@ where
     pub fn max(&self) -> Point<S, V> {
         self.max
     }
+
+    /// The least upper bound of two bounding boxes w.r.t. inclusion.
+    ///
+    /// I.e., the smallest bounding box encompassing both inputs.
+    pub fn lub(&self, other: &BBox<S, V>) -> BBox<S, V> {
+        let min = self.min().min(other.min());
+        let max = self.max().max(other.max());
+        BBox { min, max }
+    }
+
+    /// Returns the smallest bounding box encompassing this box and a given point.
+    pub fn extend_to(&self, p: Point<S, V>) -> BBox<S, V> {
+        let min = self.min().min(p);
+        let max = self.max().max(p);
+        BBox { min, max }
+    }
 }
 
 impl<S> BBox2d<S>
