@@ -34,8 +34,8 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec2d;
-    /// let v = Vec2d::new(2, 3);
+    /// # use gamedim::v2d;
+    /// let v = v2d(2, 3);
     /// assert_eq!(2, v.x());
     /// ```
     pub fn x(&self) -> S {
@@ -45,8 +45,8 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec2d;
-    /// let v = Vec2d::new(2, 3);
+    /// # use gamedim::v2d;
+    /// let v = v2d(2, 3);
     /// assert_eq!(3, v.y());
     /// ```
     pub fn y(&self) -> S {
@@ -62,15 +62,14 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// use gamedim::Vec2d;
-    ///
-    /// let v = Vec2d::new(3, 2);
+    /// # use gamedim::v2d;
+    /// let v = v2d(3, 2);
     /// assert!(v.is_towards_pos_x());
-    /// let v = Vec2d::new(3, -2);
+    /// let v = v2d(3, -2);
     /// assert!(v.is_towards_pos_x());
-    /// let v = Vec2d::new(-3, -2);
+    /// let v = v2d(-3, -2);
     /// assert!(!v.is_towards_pos_x());
-    /// let v = Vec2d::new(3, 3);
+    /// let v = v2d(3, 3);
     /// assert!(!v.is_towards_pos_x());
     /// ```
     pub fn is_towards_pos_x(&self) -> bool {
@@ -85,8 +84,8 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec2d;
-    /// let v = Vec2d::new(-3, 2);
+    /// # use gamedim::v2d;
+    /// let v = v2d(-3, 2);
     /// assert!(v.is_towards_neg_x());
     /// ```
     pub fn is_towards_neg_x(&self) -> bool {
@@ -98,8 +97,8 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec2d;
-    /// let v = Vec2d::new(2, 3);
+    /// # use gamedim::v2d;
+    /// let v = v2d(2, 3);
     /// assert!(v.is_towards_pos_y());
     /// ```
     pub fn is_towards_pos_y(self) -> bool {
@@ -111,8 +110,8 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec2d;
-    /// let v = Vec2d::new(2, -3);
+    /// # use gamedim::v2d;
+    /// let v = v2d(2, -3);
     /// assert!(v.is_towards_neg_y());
     /// ```
     pub fn is_towards_neg_y(&self) -> bool {
@@ -123,23 +122,23 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec2d;
-    /// let v = Vec2d::new(2, 3);
-    /// assert_eq!(Vec2d::new(-3, 2), v.rotate_left());
+    /// # use gamedim::v2d;
+    /// let v = v2d(2, 3);
+    /// assert_eq!(v2d(-3, 2), v.rotate_left());
     /// ```
     pub fn rotate_left(&self) -> Self {
-        Vec2d::new(-self.y(), self.x())
+        v2d(-self.y(), self.x())
     }
     /// Returns a vector obtained by rotating this vector right by a right angle.
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec2d;
-    /// let v = Vec2d::new(2, 3);
-    /// assert_eq!(Vec2d::new(3, -2), v.rotate_right());
+    /// # use gamedim::v2d;
+    /// let v = v2d(2, 3);
+    /// assert_eq!(v2d(3, -2), v.rotate_right());
     /// ```
     pub fn rotate_right(&self) -> Self {
-        Vec2d::new(self.y(), -self.x())
+        v2d(self.y(), -self.x())
     }
 }
 
@@ -156,15 +155,27 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
         Vec2d([f(0), f(1)])
     }
 
+    fn unit_vecs() -> Vec<Self> {
+        (0..DIM)
+            .map(|i| Vec2d::with(|j| S::from(if i == j { 1 } else { 0 })))
+            .collect::<Vec<_>>()
+    }
+
     /// The L1, taxicab or Manhatten norm.
     fn norm_l1(&self) -> S {
         let abs_x = self.x().abs();
         let abs_y = self.y().abs();
         abs_x + abs_y
     }
-    /// Creates a vector of the 4 orthogonal vectors, i.e. those with L1 norm equal to 1.
+    /// Creates a vector of the vectors to orthogonal neighbors.
+    ///
+    /// These are the vectors with L1 norm equal to 1.
     fn unit_vecs_l1() -> Vec<Self> {
-        vec![v2d(1, 0), v2d(0, 1), v2d(-1, 0), v2d(0, -1)]
+        let uv = Self::unit_vecs();
+        uv.iter()
+            .copied()
+            .chain(uv.iter().map(|&v| -v))
+            .collect::<Vec<_>>()
     }
 
     /// The maximum, Chebychev or L∞ norm.
@@ -179,7 +190,7 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
         for y in -1..=1 {
             for x in -1..=1 {
                 if x != 0 || y != 0 {
-                    result.push(v2d(x, y));
+                    result.push(v2d(S::from(x), S::from(y)));
                 }
             }
         }
@@ -190,11 +201,8 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
 /// Creates a 2d-vector.
 ///
 /// This is a utility function for concisely representing vectors.
-pub fn v2d<S: Integer, T>(x: T, y: T) -> Vec2d<S>
-where
-    S: From<T>,
-{
-    Vec2d::new(S::from(x), S::from(y))
+pub fn v2d<S: Integer>(x: S, y: S) -> Vec2d<S> {
+    Vec2d::new(x, y)
 }
 
 impl<S: Integer> Index<usize> for Vec2d<S> {
@@ -390,7 +398,7 @@ mod tests {
 
     #[test]
     fn test_new_x_y() {
-        let v = Vec2d::new(3, 7);
+        let v = v2d(3, 7);
         assert_eq!(3, v.x());
         assert_eq!(7, v.y());
     }
@@ -413,15 +421,15 @@ mod tests {
 
     #[test]
     fn test_signum() {
-        assert_eq!(v2d(1, 1), Vec2d::new(2, 3).signum());
-        assert_eq!(v2d(1, 0), Vec2d::new(2, 0).signum());
-        assert_eq!(v2d(1, -1), Vec2d::new(2, -3).signum());
-        assert_eq!(v2d(0, 1), Vec2d::new(0, 3).signum());
-        assert_eq!(v2d(0, 0), Vec2d::new(0, 0).signum());
-        assert_eq!(v2d(0, -1), Vec2d::new(0, -3).signum());
-        assert_eq!(v2d(-1, 1), Vec2d::new(-2, 3).signum());
-        assert_eq!(v2d(-1, 0), Vec2d::new(-2, 0).signum());
-        assert_eq!(v2d(-1, -1), Vec2d::new(-2, -3).signum());
+        assert_eq!(v2d(1, 1), v2d(2, 3).signum());
+        assert_eq!(v2d(1, 0), v2d(2, 0).signum());
+        assert_eq!(v2d(1, -1), v2d(2, -3).signum());
+        assert_eq!(v2d(0, 1), v2d(0, 3).signum());
+        assert_eq!(v2d(0, 0), v2d(0, 0).signum());
+        assert_eq!(v2d(0, -1), v2d(0, -3).signum());
+        assert_eq!(v2d(-1, 1), v2d(-2, 3).signum());
+        assert_eq!(v2d(-1, 0), v2d(-2, 0).signum());
+        assert_eq!(v2d(-1, -1), v2d(-2, -3).signum());
     }
     #[test]
     fn test_norm_l1() {
@@ -440,39 +448,39 @@ mod tests {
 
     #[test]
     fn test_index() {
-        let v = Vec2d::new(3, 7);
+        let v = v2d(3, 7);
         assert_eq!(3, v[0]);
         assert_eq!(7, v[1]);
     }
 
     #[test]
     fn test_partial_ord_none() {
-        let u = Vec2d::new(2, 1);
-        let v = Vec2d::new(3, -7);
+        let u = v2d(2, 1);
+        let v = v2d(3, -7);
         assert_eq!(None, u.partial_cmp(&v));
     }
     #[test]
     fn test_partial_ord_less() {
-        let u = Vec2d::new(2, 1);
-        let v = Vec2d::new(3, 7);
+        let u = v2d(2, 1);
+        let v = v2d(3, 7);
         assert_eq!(Some(Ordering::Less), u.partial_cmp(&v));
     }
     #[test]
     fn test_partial_ord_equal() {
-        let v = Vec2d::new(3, 7);
+        let v = v2d(3, 7);
         assert_eq!(Some(Ordering::Equal), v.partial_cmp(&v));
     }
     #[test]
     fn test_partial_ord_greater() {
-        let u = Vec2d::new(2, 1);
-        let v = Vec2d::new(3, 7);
+        let u = v2d(2, 1);
+        let v = v2d(3, 7);
         assert_eq!(Some(Ordering::Greater), v.partial_cmp(&u));
     }
 
     #[test]
     fn test_add() {
-        let u = Vec2d::new(2, 1);
-        let v = Vec2d::new(3, 7);
+        let u = v2d(2, 1);
+        let v = v2d(3, 7);
         assert_eq!(v2d(5, 8), u + v);
         assert_eq!(v2d(5, 8), u + &v);
         assert_eq!(v2d(5, 8), &u + v);
@@ -481,8 +489,8 @@ mod tests {
 
     #[test]
     fn test_sub() {
-        let u = Vec2d::new(2, 1);
-        let v = Vec2d::new(3, 7);
+        let u = v2d(2, 1);
+        let v = v2d(3, 7);
         assert_eq!(v2d(-1, -6), u - v);
         assert_eq!(v2d(-1, -6), u - &v);
         assert_eq!(v2d(-1, -6), &u - v);
@@ -491,14 +499,14 @@ mod tests {
 
     #[test]
     fn test_neg() {
-        let u = Vec2d::new(2, 1);
+        let u = v2d(2, 1);
         assert_eq!(v2d(-2, -1), -u);
         assert_eq!(v2d(-2, -1), -&u);
     }
 
     #[test]
     fn test_mul_sv() {
-        let v = Vec2d::new(3, 7);
+        let v = v2d(3, 7);
         assert_eq!(v2d(6, 14), 2 * v);
         assert_eq!(v2d(6, 14), 2 * &v);
         assert_eq!(v2d(6, 14), &2 * v);
@@ -507,8 +515,8 @@ mod tests {
 
     #[test]
     fn test_mul_vv() {
-        let u = Vec2d::new(2, 1);
-        let v = Vec2d::new(3, 7);
+        let u = v2d(2, 1);
+        let v = v2d(3, 7);
         assert_eq!(13, u * v);
         assert_eq!(13, u * &v);
         assert_eq!(13, &u * v);
@@ -517,33 +525,33 @@ mod tests {
 
     #[test]
     fn test_add_assign() {
-        let mut u = Vec2d::new(2, 1);
-        u += Vec2d::new(3, 7);
+        let mut u = v2d(2, 1);
+        u += v2d(3, 7);
         assert_eq!(v2d(5, 8), u);
-        u += &Vec2d::new(3, 7);
+        u += &v2d(3, 7);
         assert_eq!(v2d(8, 15), u);
     }
 
     #[test]
     fn test_sub_assign() {
-        let mut u = Vec2d::new(2, 1);
-        u -= Vec2d::new(3, 7);
+        let mut u = v2d(2, 1);
+        u -= v2d(3, 7);
         assert_eq!(v2d(-1, -6), u);
-        u -= &Vec2d::new(3, 7);
+        u -= &v2d(3, 7);
         assert_eq!(v2d(-4, -13), u);
     }
 
     #[test]
     fn test_min() {
-        let u = Vec2d::new(2, 1);
-        let v = Vec2d::new(3, 7);
+        let u = v2d(2, 1);
+        let v = v2d(3, 7);
         assert_eq!(v2d(2, 1), u.min(v));
     }
 
     #[test]
     fn test_max() {
-        let u = Vec2d::new(2, 1);
-        let v = Vec2d::new(3, 7);
+        let u = v2d(2, 1);
+        let v = v2d(3, 7);
         assert_eq!(v2d(3, 7), u.max(v));
     }
 }

@@ -1,6 +1,7 @@
 use std::ops::Add;
 use std::ops::Mul;
 
+use crate::v4d;
 use crate::Integer;
 use crate::Vec4d;
 
@@ -42,11 +43,11 @@ impl<S: Integer> Matrix4d<S> {
     }
     /// Accesses a row vector
     pub fn row_vec(&self, i: usize) -> Vec4d<S> {
-        Vec4d::new(self.a[i][0], self.a[i][1], self.a[i][2], self.a[i][3])
+        v4d(self.a[i][0], self.a[i][1], self.a[i][2], self.a[i][3])
     }
     /// Accesses a column vector
     pub fn col_vec(&self, j: usize) -> Vec4d<S> {
-        Vec4d::new(self.a[0][j], self.a[1][j], self.a[2][j], self.a[3][j])
+        v4d(self.a[0][j], self.a[1][j], self.a[2][j], self.a[3][j])
     }
 }
 
@@ -61,7 +62,7 @@ where
         let y = self.row_vec(1) * other;
         let z = self.row_vec(2) * other;
         let w = self.row_vec(3) * other;
-        Vec4d::new(x, y, z, w)
+        v4d(x, y, z, w)
     }
 }
 
@@ -76,7 +77,7 @@ where
         let y = self.row_vec(1) * other;
         let z = self.row_vec(2) * other;
         let w = self.row_vec(3) * other;
-        Vec4d::new(x, y, z, w)
+        v4d(x, y, z, w)
     }
 }
 
@@ -91,7 +92,7 @@ where
         let y = self.row_vec(1) * other;
         let z = self.row_vec(2) * other;
         let w = self.row_vec(3) * other;
-        Vec4d::new(x, y, z, w)
+        v4d(x, y, z, w)
     }
 }
 
@@ -106,7 +107,7 @@ where
         let y = self.row_vec(1) * other;
         let z = self.row_vec(2) * other;
         let w = self.row_vec(3) * other;
-        Vec4d::new(x, y, z, w)
+        v4d(x, y, z, w)
     }
 }
 

@@ -2,6 +2,7 @@ use std::ops::Add;
 use std::ops::Mul;
 use std::ops::Sub;
 
+use crate::v2d;
 use crate::Integer;
 use crate::Vec2d;
 
@@ -51,11 +52,11 @@ impl<S: Integer> Matrix2d<S> {
     }
     /// Accesses a row vector
     pub fn row_vec(&self, i: usize) -> Vec2d<S> {
-        Vec2d::new(self.a[i][0], self.a[i][1])
+        v2d(self.a[i][0], self.a[i][1])
     }
     /// Accesses a column vector
     pub fn col_vec(&self, j: usize) -> Vec2d<S> {
-        Vec2d::new(self.a[0][j], self.a[1][j])
+        v2d(self.a[0][j], self.a[1][j])
     }
     /// The determinant of the matrix
     pub fn det(&self) -> S
@@ -89,7 +90,7 @@ where
     fn mul(self, other: Vec2d<S>) -> Vec2d<S> {
         let x = self.row_vec(0) * other;
         let y = self.row_vec(1) * other;
-        Vec2d::new(x, y)
+        v2d(x, y)
     }
 }
 
@@ -102,7 +103,7 @@ where
     fn mul(self, other: &'a Vec2d<S>) -> Vec2d<S> {
         let x = self.row_vec(0) * other;
         let y = self.row_vec(1) * other;
-        Vec2d::new(x, y)
+        v2d(x, y)
     }
 }
 
@@ -115,7 +116,7 @@ where
     fn mul(self, other: Vec2d<S>) -> Vec2d<S> {
         let x = self.row_vec(0) * other;
         let y = self.row_vec(1) * other;
-        Vec2d::new(x, y)
+        v2d(x, y)
     }
 }
 
@@ -128,7 +129,7 @@ where
     fn mul(self, other: &'a Vec2d<S>) -> Vec2d<S> {
         let x = self.row_vec(0) * other;
         let y = self.row_vec(1) * other;
-        Vec2d::new(x, y)
+        v2d(x, y)
     }
 }
 

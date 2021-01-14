@@ -34,8 +34,8 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec3d;
-    /// let v = Vec3d::new(2, 3, -1);
+    /// # use gamedim::v3d;
+    /// let v = v3d(2, 3, -1);
     /// assert_eq!(2, v.x());
     /// ```
     pub fn x(&self) -> S {
@@ -45,8 +45,8 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec3d;
-    /// let v = Vec3d::new(2, 3, -1);
+    /// # use gamedim::v3d;
+    /// let v = v3d(2, 3, -1);
     /// assert_eq!(3, v.y());
     /// ```
     pub fn y(&self) -> S {
@@ -56,8 +56,8 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec3d;
-    /// let v = Vec3d::new(2, 3, -1);
+    /// # use gamedim::v3d;
+    /// let v = v3d(2, 3, -1);
     /// assert_eq!(-1, v.z());
     /// ```
     pub fn z(&self) -> S {
@@ -73,15 +73,15 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// use gamedim::Vec3d;
+    /// use gamedim::v3d;
     ///
-    /// let v = Vec3d::new(3, 2, -1);
+    /// let v = v3d(3, 2, -1);
     /// assert!(v.is_towards_pos_x());
-    /// let v = Vec3d::new(3, -2, -1);
+    /// let v = v3d(3, -2, -1);
     /// assert!(v.is_towards_pos_x());
-    /// let v = Vec3d::new(-3, -2, -1);
+    /// let v = v3d(-3, -2, -1);
     /// assert!(!v.is_towards_pos_x());
-    /// let v = Vec3d::new(3, 2, -3);
+    /// let v = v3d(3, 2, -3);
     /// assert!(!v.is_towards_pos_x());
     /// ```
     pub fn is_towards_pos_x(&self) -> bool {
@@ -96,8 +96,8 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec3d;
-    /// let v = Vec3d::new(-3, 2, -1);
+    /// # use gamedim::v3d;
+    /// let v = v3d(-3, 2, -1);
     /// assert!(v.is_towards_neg_x());
     /// ```
     pub fn is_towards_neg_x(&self) -> bool {
@@ -109,8 +109,8 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec3d;
-    /// let v = Vec3d::new(2, 3, -1);
+    /// # use gamedim::v3d;
+    /// let v = v3d(2, 3, -1);
     /// assert!(v.is_towards_pos_y());
     /// ```
     pub fn is_towards_pos_y(self) -> bool {
@@ -122,8 +122,8 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec3d;
-    /// let v = Vec3d::new(2, -3, -1);
+    /// # use gamedim::v3d;
+    /// let v = v3d(2, -3, -1);
     /// assert!(v.is_towards_neg_y());
     /// ```
     pub fn is_towards_neg_y(&self) -> bool {
@@ -135,8 +135,8 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec3d;
-    /// let v = Vec3d::new(2, -3, 4);
+    /// # use gamedim::v3d;
+    /// let v = v3d(2, -3, 4);
     /// assert!(v.is_towards_pos_z());
     /// ```
     pub fn is_towards_pos_z(self) -> bool {
@@ -148,8 +148,8 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec3d;
-    /// let v = Vec3d::new(2, -3, -4);
+    /// # use gamedim::v3d;
+    /// let v = v3d(2, -3, -4);
     /// assert!(v.is_towards_neg_z());
     /// ```
     pub fn is_towards_neg_z(&self) -> bool {
@@ -170,6 +170,12 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
         Vec3d([f(0), f(1), f(2)])
     }
 
+    fn unit_vecs() -> Vec<Self> {
+        (0..DIM)
+            .map(|i| Vec3d::with(|j| S::from(if i == j { 1 } else { 0 })))
+            .collect::<Vec<_>>()
+    }
+
     /// The L1, taxicab or Manhatten norm.
     fn norm_l1(&self) -> S {
         let abs_x = self.x().abs();
@@ -177,16 +183,15 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
         let abs_z = self.z().abs();
         abs_x + abs_y + abs_z
     }
-    /// Creates a vector of the 6 orthogonal vectors, i.e. those with L1 norm equal to 1.
+    /// Creates a vector of the vectors to orthogonal neighbors.
+    ///
+    /// These are the vectors with L1 norm equal to 1.
     fn unit_vecs_l1() -> Vec<Self> {
-        vec![
-            v3d(1, 0, 0),
-            v3d(0, 1, 0),
-            v3d(0, 0, 1),
-            v3d(-1, 0, 0),
-            v3d(0, -1, 0),
-            v3d(0, 0, -1),
-        ]
+        let uv = Self::unit_vecs();
+        uv.iter()
+            .copied()
+            .chain(uv.iter().map(|&v| -v))
+            .collect::<Vec<_>>()
     }
 
     /// The maximum, Chebychev or L-infinity norm.
@@ -203,7 +208,7 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
             for y in -1..=1 {
                 for x in -1..=1 {
                     if x != 0 || y != 0 || z != 0 {
-                        result.push(v3d(x, y, z));
+                        result.push(v3d(S::from(x), S::from(y), S::from(z)));
                     }
                 }
             }
@@ -215,11 +220,8 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
 /// Creates a 3d-vector.
 ///
 /// This is a utility function for concisely representing vectors.
-pub fn v3d<S: Integer, T>(x: T, y: T, z: T) -> Vec3d<S>
-where
-    S: From<T>,
-{
-    Vec3d::new(S::from(x), S::from(y), S::from(z))
+pub fn v3d<S: Integer>(x: S, y: S, z: S) -> Vec3d<S> {
+    Vec3d::new(x, y, z)
 }
 
 impl<S: Integer> Index<usize> for Vec3d<S> {
@@ -415,7 +417,7 @@ mod tests {
 
     #[test]
     fn test_new_x_y() {
-        let v = Vec3d::new(3, 7, 1);
+        let v = v3d(3, 7, 1);
         assert_eq!(3, v.x());
         assert_eq!(7, v.y());
         assert_eq!(1, v.z());
@@ -451,7 +453,7 @@ mod tests {
 
     #[test]
     fn test_index() {
-        let v = Vec3d::new(3, 7, 1);
+        let v = v3d(3, 7, 1);
         assert_eq!(3, v[0]);
         assert_eq!(7, v[1]);
         assert_eq!(1, v[2]);
@@ -459,32 +461,32 @@ mod tests {
 
     #[test]
     fn test_partial_ord_none() {
-        let u = Vec3d::new(3, 1, -5);
-        let v = Vec3d::new(2, 1, 1);
+        let u = v3d(3, 1, -5);
+        let v = v3d(2, 1, 1);
         assert_eq!(None, u.partial_cmp(&v));
     }
     #[test]
     fn test_partial_ord_less() {
-        let u = Vec3d::new(2, 1, 1);
-        let v = Vec3d::new(3, 7, 5);
+        let u = v3d(2, 1, 1);
+        let v = v3d(3, 7, 5);
         assert_eq!(Some(Ordering::Less), u.partial_cmp(&v));
     }
     #[test]
     fn test_partial_ord_equal() {
-        let v = Vec3d::new(3, 7, 5);
+        let v = v3d(3, 7, 5);
         assert_eq!(Some(Ordering::Equal), v.partial_cmp(&v));
     }
     #[test]
     fn test_partial_ord_greater() {
-        let u = Vec3d::new(2, 1, 1);
-        let v = Vec3d::new(2, 7, 5);
+        let u = v3d(2, 1, 1);
+        let v = v3d(2, 7, 5);
         assert_eq!(Some(Ordering::Greater), v.partial_cmp(&u));
     }
 
     #[test]
     fn test_add() {
-        let u = Vec3d::new(2, 1, 5);
-        let v = Vec3d::new(3, 7, 1);
+        let u = v3d(2, 1, 5);
+        let v = v3d(3, 7, 1);
         assert_eq!(v3d(5, 8, 6), u + v);
         assert_eq!(v3d(5, 8, 6), u + &v);
         assert_eq!(v3d(5, 8, 6), &u + v);
@@ -493,8 +495,8 @@ mod tests {
 
     #[test]
     fn test_sub() {
-        let u = Vec3d::new(2, 1, 5);
-        let v = Vec3d::new(3, 7, 1);
+        let u = v3d(2, 1, 5);
+        let v = v3d(3, 7, 1);
         assert_eq!(v3d(-1, -6, 4), u - v);
         assert_eq!(v3d(-1, -6, 4), u - &v);
         assert_eq!(v3d(-1, -6, 4), &u - v);
@@ -503,14 +505,14 @@ mod tests {
 
     #[test]
     fn test_neg() {
-        let u = Vec3d::new(2, 1, -3);
+        let u = v3d(2, 1, -3);
         assert_eq!(v3d(-2, -1, 3), -u);
         assert_eq!(v3d(-2, -1, 3), -&u);
     }
 
     #[test]
     fn test_mul_sv() {
-        let v = Vec3d::new(3, 7, 1);
+        let v = v3d(3, 7, 1);
         assert_eq!(v3d(6, 14, 2), 2 * v);
         assert_eq!(v3d(6, 14, 2), 2 * &v);
         assert_eq!(v3d(6, 14, 2), &2 * v);
@@ -519,8 +521,8 @@ mod tests {
 
     #[test]
     fn test_mul_vv() {
-        let u = Vec3d::new(2, 1, 5);
-        let v = Vec3d::new(3, 7, 1);
+        let u = v3d(2, 1, 5);
+        let v = v3d(3, 7, 1);
         assert_eq!(18, u * v);
         assert_eq!(18, u * &v);
         assert_eq!(18, &u * v);
@@ -529,33 +531,33 @@ mod tests {
 
     #[test]
     fn test_add_assign() {
-        let mut u = Vec3d::new(2, 1, 5);
-        u += Vec3d::new(3, 7, 1);
+        let mut u = v3d(2, 1, 5);
+        u += v3d(3, 7, 1);
         assert_eq!(v3d(5, 8, 6), u);
-        u += &Vec3d::new(3, 7, 1);
+        u += &v3d(3, 7, 1);
         assert_eq!(v3d(8, 15, 7), u);
     }
 
     #[test]
     fn test_sub_assign() {
-        let mut u = Vec3d::new(2, 1, 5);
-        u -= Vec3d::new(3, 7, 1);
+        let mut u = v3d(2, 1, 5);
+        u -= v3d(3, 7, 1);
         assert_eq!(v3d(-1, -6, 4), u);
-        u -= &Vec3d::new(3, 7, 1);
+        u -= &v3d(3, 7, 1);
         assert_eq!(v3d(-4, -13, 3), u);
     }
 
     #[test]
     fn test_min() {
-        let u = Vec3d::new(2, 1, 5);
-        let v = Vec3d::new(3, 7, 1);
+        let u = v3d(2, 1, 5);
+        let v = v3d(3, 7, 1);
         assert_eq!(v3d(2, 1, 1), u.min(v));
     }
 
     #[test]
     fn test_max() {
-        let u = Vec3d::new(2, 1, 5);
-        let v = Vec3d::new(3, 7, 1);
+        let u = v3d(2, 1, 5);
+        let v = v3d(3, 7, 1);
         assert_eq!(v3d(3, 7, 5), u.max(v));
     }
 }

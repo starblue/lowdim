@@ -2,6 +2,7 @@ use std::ops::Add;
 use std::ops::Mul;
 use std::ops::Sub;
 
+use crate::v3d;
 use crate::Integer;
 use crate::Vec3d;
 
@@ -40,11 +41,11 @@ impl<S: Integer> Matrix3d<S> {
     }
     /// Accesses a row vector
     pub fn row_vec(&self, i: usize) -> Vec3d<S> {
-        Vec3d::new(self.a[i][0], self.a[i][1], self.a[i][2])
+        v3d(self.a[i][0], self.a[i][1], self.a[i][2])
     }
     /// Accesses a column vector
     pub fn col_vec(&self, j: usize) -> Vec3d<S> {
-        Vec3d::new(self.a[0][j], self.a[1][j], self.a[2][j])
+        v3d(self.a[0][j], self.a[1][j], self.a[2][j])
     }
     /// The determinant of the matrix
     pub fn det(&self) -> S
@@ -70,7 +71,7 @@ where
         let x = self.row_vec(0) * other;
         let y = self.row_vec(1) * other;
         let z = self.row_vec(2) * other;
-        Vec3d::new(x, y, z)
+        v3d(x, y, z)
     }
 }
 
@@ -84,7 +85,7 @@ where
         let x = self.row_vec(0) * other;
         let y = self.row_vec(1) * other;
         let z = self.row_vec(2) * other;
-        Vec3d::new(x, y, z)
+        v3d(x, y, z)
     }
 }
 
@@ -98,7 +99,7 @@ where
         let x = self.row_vec(0) * other;
         let y = self.row_vec(1) * other;
         let z = self.row_vec(2) * other;
-        Vec3d::new(x, y, z)
+        v3d(x, y, z)
     }
 }
 
@@ -112,7 +113,7 @@ where
         let x = self.row_vec(0) * other;
         let y = self.row_vec(1) * other;
         let z = self.row_vec(2) * other;
-        Vec3d::new(x, y, z)
+        v3d(x, y, z)
     }
 }
 

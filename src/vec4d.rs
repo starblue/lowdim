@@ -34,8 +34,8 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec4d;
-    /// let v = Vec4d::new(2, 3, -1, 4);
+    /// # use gamedim::v4d;
+    /// let v = v4d(2, 3, -1, 4);
     /// assert_eq!(2, v.x());
     /// ```
     pub fn x(&self) -> S {
@@ -45,8 +45,8 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec4d;
-    /// let v = Vec4d::new(2, 3, -1, 4);
+    /// # use gamedim::v4d;
+    /// let v = v4d(2, 3, -1, 4);
     /// assert_eq!(3, v.y());
     /// ```
     pub fn y(&self) -> S {
@@ -56,8 +56,8 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec4d;
-    /// let v = Vec4d::new(2, 3, -1, 4);
+    /// # use gamedim::v4d;
+    /// let v = v4d(2, 3, -1, 4);
     /// assert_eq!(-1, v.z());
     /// ```
     pub fn z(&self) -> S {
@@ -67,8 +67,8 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec4d;
-    /// let v = Vec4d::new(2, 3, -1, 4);
+    /// # use gamedim::v4d;
+    /// let v = v4d(2, 3, -1, 4);
     /// assert_eq!(4, v.w());
     /// ```
     pub fn w(&self) -> S {
@@ -84,15 +84,15 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// use gamedim::Vec4d;
+    /// use gamedim::v4d;
     ///
-    /// let v = Vec4d::new(6, 2, -1, 4);
+    /// let v = v4d(6, 2, -1, 4);
     /// assert!(v.is_towards_pos_x());
-    /// let v = Vec4d::new(6, -2, -1, 4);
+    /// let v = v4d(6, -2, -1, 4);
     /// assert!(v.is_towards_pos_x());
-    /// let v = Vec4d::new(-6, -2, -1, 4);
+    /// let v = v4d(-6, -2, -1, 4);
     /// assert!(!v.is_towards_pos_x());
-    /// let v = Vec4d::new(6, 2, -1, 6);
+    /// let v = v4d(6, 2, -1, 6);
     /// assert!(!v.is_towards_pos_x());
     /// ```
     pub fn is_towards_pos_x(&self) -> bool {
@@ -107,8 +107,8 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec4d;
-    /// let v = Vec4d::new(-6, 2, -1, 4);
+    /// # use gamedim::v4d;
+    /// let v = v4d(-6, 2, -1, 4);
     /// assert!(v.is_towards_neg_x());
     /// ```
     pub fn is_towards_neg_x(&self) -> bool {
@@ -120,8 +120,8 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec4d;
-    /// let v = Vec4d::new(2, 6, -1, 4);
+    /// # use gamedim::v4d;
+    /// let v = v4d(2, 6, -1, 4);
     /// assert!(v.is_towards_pos_y());
     /// ```
     pub fn is_towards_pos_y(self) -> bool {
@@ -133,8 +133,8 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec4d;
-    /// let v = Vec4d::new(2, -6, -1, 4);
+    /// # use gamedim::v4d;
+    /// let v = v4d(2, -6, -1, 4);
     /// assert!(v.is_towards_neg_y());
     /// ```
     pub fn is_towards_neg_y(&self) -> bool {
@@ -146,8 +146,8 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec4d;
-    /// let v = Vec4d::new(2, -3, 4, -1);
+    /// # use gamedim::v4d;
+    /// let v = v4d(2, -3, 4, -1);
     /// assert!(v.is_towards_pos_z());
     /// ```
     pub fn is_towards_pos_z(self) -> bool {
@@ -159,8 +159,8 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec4d;
-    /// let v = Vec4d::new(2, -3, -4, -1);
+    /// # use gamedim::v4d;
+    /// let v = v4d(2, -3, -4, -1);
     /// assert!(v.is_towards_neg_z());
     /// ```
     pub fn is_towards_neg_z(&self) -> bool {
@@ -172,8 +172,8 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec4d;
-    /// let v = Vec4d::new(2, -3, 4, 5);
+    /// # use gamedim::v4d;
+    /// let v = v4d(2, -3, 4, 5);
     /// assert!(v.is_towards_pos_w());
     /// ```
     pub fn is_towards_pos_w(self) -> bool {
@@ -185,8 +185,8 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Vec4d;
-    /// let v = Vec4d::new(2, -3, -4, -5);
+    /// # use gamedim::v4d;
+    /// let v = v4d(2, -3, -4, -5);
     /// assert!(v.is_towards_neg_w());
     /// ```
     pub fn is_towards_neg_w(&self) -> bool {
@@ -207,6 +207,12 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
         Vec4d([f(0), f(1), f(2), f(3)])
     }
 
+    fn unit_vecs() -> Vec<Self> {
+        (0..DIM)
+            .map(|i| Vec4d::with(|j| S::from(if i == j { 1 } else { 0 })))
+            .collect::<Vec<_>>()
+    }
+
     /// The L1, taxicab or Manhatten norm.
     fn norm_l1(&self) -> S {
         let abs_x = self.x().abs();
@@ -215,18 +221,15 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
         let abs_w = self.w().abs();
         abs_x + abs_y + abs_z + abs_w
     }
-    /// Creates a vector of the 6 orthogonal vectors, i.e. those with L1 norm equal to 1.
+    /// Creates a vector of the vectors to orthogonal neighbors.
+    ///
+    /// These are the vectors with L1 norm equal to 1.
     fn unit_vecs_l1() -> Vec<Self> {
-        vec![
-            v4d(1, 0, 0, 0),
-            v4d(0, 1, 0, 0),
-            v4d(0, 0, 1, 0),
-            v4d(0, 0, 0, 1),
-            v4d(-1, 0, 0, 0),
-            v4d(0, -1, 0, 0),
-            v4d(0, 0, -1, 0),
-            v4d(0, 0, 0, -1),
-        ]
+        let uv = Self::unit_vecs();
+        uv.iter()
+            .copied()
+            .chain(uv.iter().map(|&v| -v))
+            .collect::<Vec<_>>()
     }
 
     /// The maximum, Chebychev or L-infinity norm.
@@ -245,7 +248,7 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
                 for y in -1..=1 {
                     for x in -1..=1 {
                         if x != 0 || y != 0 || z != 0 || w != 0 {
-                            result.push(v4d(x, y, z, w));
+                            result.push(v4d(S::from(x), S::from(y), S::from(z), S::from(w)));
                         }
                     }
                 }
@@ -258,11 +261,8 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
 /// Creates a 4d-vector.
 ///
 /// This is a utility function for concisely representing vectors.
-pub fn v4d<S: Integer, T>(x: T, y: T, z: T, w: T) -> Vec4d<S>
-where
-    S: From<T>,
-{
-    Vec4d::new(S::from(x), S::from(y), S::from(z), S::from(w))
+pub fn v4d<S: Integer>(x: S, y: S, z: S, w: S) -> Vec4d<S> {
+    Vec4d::new(x, y, z, w)
 }
 
 impl<S: Integer> Index<usize> for Vec4d<S> {
@@ -462,7 +462,7 @@ mod tests {
 
     #[test]
     fn test_new_x_y() {
-        let v = Vec4d::new(3, 7, 1, -2);
+        let v = v4d(3, 7, 1, -2);
         assert_eq!(3, v.x());
         assert_eq!(7, v.y());
         assert_eq!(1, v.z());
@@ -490,7 +490,7 @@ mod tests {
 
     #[test]
     fn test_index() {
-        let v = Vec4d::new(3, 7, 1, -2);
+        let v = v4d(3, 7, 1, -2);
         assert_eq!(3, v[0]);
         assert_eq!(7, v[1]);
         assert_eq!(1, v[2]);
@@ -499,32 +499,32 @@ mod tests {
 
     #[test]
     fn test_partial_ord_none() {
-        let u = Vec4d::new(2, 1, 5, -4);
-        let v = Vec4d::new(2, 7, 1, 4);
+        let u = v4d(2, 1, 5, -4);
+        let v = v4d(2, 7, 1, 4);
         assert_eq!(None, u.partial_cmp(&v));
     }
     #[test]
     fn test_partial_ord_less() {
-        let u = Vec4d::new(2, 1, 1, -4);
-        let v = Vec4d::new(3, 1, 5, 4);
+        let u = v4d(2, 1, 1, -4);
+        let v = v4d(3, 1, 5, 4);
         assert_eq!(Some(Ordering::Less), u.partial_cmp(&v));
     }
     #[test]
     fn test_partial_ord_equal() {
-        let v = Vec4d::new(3, 7, 5, 4);
+        let v = v4d(3, 7, 5, 4);
         assert_eq!(Some(Ordering::Equal), v.partial_cmp(&v));
     }
     #[test]
     fn test_partial_ord_greater() {
-        let u = Vec4d::new(2, 1, 1, -4);
-        let v = Vec4d::new(3, 1, 5, 4);
+        let u = v4d(2, 1, 1, -4);
+        let v = v4d(3, 1, 5, 4);
         assert_eq!(Some(Ordering::Greater), v.partial_cmp(&u));
     }
 
     #[test]
     fn test_add() {
-        let u = Vec4d::new(2, 1, 5, -4);
-        let v = Vec4d::new(3, 7, 1, 4);
+        let u = v4d(2, 1, 5, -4);
+        let v = v4d(3, 7, 1, 4);
         assert_eq!(v4d(5, 8, 6, 0), u + v);
         assert_eq!(v4d(5, 8, 6, 0), u + &v);
         assert_eq!(v4d(5, 8, 6, 0), &u + v);
@@ -533,8 +533,8 @@ mod tests {
 
     #[test]
     fn test_sub() {
-        let u = Vec4d::new(2, 1, 5, -4);
-        let v = Vec4d::new(3, 7, 1, 4);
+        let u = v4d(2, 1, 5, -4);
+        let v = v4d(3, 7, 1, 4);
         assert_eq!(v4d(-1, -6, 4, -8), u - v);
         assert_eq!(v4d(-1, -6, 4, -8), u - &v);
         assert_eq!(v4d(-1, -6, 4, -8), &u - v);
@@ -543,14 +543,14 @@ mod tests {
 
     #[test]
     fn test_neg() {
-        let u = Vec4d::new(2, 1, -3, 7);
+        let u = v4d(2, 1, -3, 7);
         assert_eq!(v4d(-2, -1, 3, -7), -u);
         assert_eq!(v4d(-2, -1, 3, -7), -&u);
     }
 
     #[test]
     fn test_mul_sv() {
-        let v = Vec4d::new(3, 7, 1, 4);
+        let v = v4d(3, 7, 1, 4);
         assert_eq!(v4d(6, 14, 2, 8), 2 * v);
         assert_eq!(v4d(6, 14, 2, 8), 2 * &v);
         assert_eq!(v4d(6, 14, 2, 8), &2 * v);
@@ -559,8 +559,8 @@ mod tests {
 
     #[test]
     fn test_mul_vv() {
-        let u = Vec4d::new(2, 1, 5, -4);
-        let v = Vec4d::new(3, 7, 1, 4);
+        let u = v4d(2, 1, 5, -4);
+        let v = v4d(3, 7, 1, 4);
         assert_eq!(2, u * v);
         assert_eq!(2, u * &v);
         assert_eq!(2, &u * v);
@@ -569,33 +569,33 @@ mod tests {
 
     #[test]
     fn test_add_assign() {
-        let mut u = Vec4d::new(2, 1, 5, 4);
-        u += Vec4d::new(3, 7, 1, -4);
+        let mut u = v4d(2, 1, 5, 4);
+        u += v4d(3, 7, 1, -4);
         assert_eq!(v4d(5, 8, 6, 0), u);
-        u += &Vec4d::new(3, 7, 1, -4);
+        u += &v4d(3, 7, 1, -4);
         assert_eq!(v4d(8, 15, 7, -4), u);
     }
 
     #[test]
     fn test_sub_assign() {
-        let mut u = Vec4d::new(2, 1, 5, 4);
-        u -= Vec4d::new(3, 7, 1, -4);
+        let mut u = v4d(2, 1, 5, 4);
+        u -= v4d(3, 7, 1, -4);
         assert_eq!(v4d(-1, -6, 4, 8), u);
-        u -= &Vec4d::new(3, 7, 1, -4);
+        u -= &v4d(3, 7, 1, -4);
         assert_eq!(v4d(-4, -13, 3, 12), u);
     }
 
     #[test]
     fn test_min() {
-        let u = Vec4d::new(2, 1, 5, -4);
-        let v = Vec4d::new(3, 7, 1, 4);
+        let u = v4d(2, 1, 5, -4);
+        let v = v4d(3, 7, 1, 4);
         assert_eq!(v4d(2, 1, 1, -4), u.min(v));
     }
 
     #[test]
     fn test_max() {
-        let u = Vec4d::new(2, 1, 5, -4);
-        let v = Vec4d::new(3, 7, 1, 4);
+        let u = v4d(2, 1, 5, -4);
+        let v = v4d(3, 7, 1, 4);
         assert_eq!(v4d(3, 7, 5, 4), u.max(v));
     }
 }

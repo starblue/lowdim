@@ -57,8 +57,9 @@ where
     /// # Example
     /// ```
     /// # use std::convert::TryFrom;
+    /// # use gamedim::p4d;
     /// # use gamedim::Point4d;
-    /// assert_eq!(Point4d::new(0, 1, 2, 3), Point4d::with(|i| i64::try_from(i).unwrap()));
+    /// assert_eq!(p4d(0, 1, 2, 3), Point4d::with(|i| i64::try_from(i).unwrap()));
     /// ```
     pub fn with<F>(f: F) -> Point<S, V>
     where
@@ -115,8 +116,8 @@ impl<S: Integer> Point2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Point2d;
-    /// let p = Point2d::new(2, 3);
+    /// # use gamedim::p2d;
+    /// let p = p2d(2, 3);
     /// assert_eq!(2, p.x());
     /// ```
     pub fn x(&self) -> S {
@@ -126,8 +127,8 @@ impl<S: Integer> Point2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Point2d;
-    /// let p = Point2d::new(2, 3);
+    /// # use gamedim::p2d;
+    /// let p = p2d(2, 3);
     /// assert_eq!(3, p.y());
     /// ```
     pub fn y(&self) -> S {
@@ -144,8 +145,8 @@ impl<S: Integer> Point3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Point3d;
-    /// let p = Point3d::new(2, 3, -1);
+    /// # use gamedim::p3d;
+    /// let p = p3d(2, 3, -1);
     /// assert_eq!(2, p.x());
     /// ```
     pub fn x(&self) -> S {
@@ -155,8 +156,8 @@ impl<S: Integer> Point3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Point3d;
-    /// let p = Point3d::new(2, 3, -1);
+    /// # use gamedim::p3d;
+    /// let p = p3d(2, 3, -1);
     /// assert_eq!(3, p.y());
     /// ```
     pub fn y(&self) -> S {
@@ -166,8 +167,8 @@ impl<S: Integer> Point3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Point3d;
-    /// let p = Point3d::new(2, 3, -1);
+    /// # use gamedim::p3d;
+    /// let p = p3d(2, 3, -1);
     /// assert_eq!(-1, p.z());
     /// ```
     pub fn z(&self) -> S {
@@ -185,8 +186,8 @@ impl<S: Integer> Point4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Point4d;
-    /// let p = Point4d::new(2, 3, -1, 4);
+    /// # use gamedim::p4d;
+    /// let p = p4d(2, 3, -1, 4);
     /// assert_eq!(2, p.x());
     /// ```
     pub fn x(&self) -> S {
@@ -196,8 +197,8 @@ impl<S: Integer> Point4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Point4d;
-    /// let p = Point4d::new(2, 3, -1, 4);
+    /// # use gamedim::p4d;
+    /// let p = p4d(2, 3, -1, 4);
     /// assert_eq!(3, p.y());
     /// ```
     pub fn y(&self) -> S {
@@ -207,8 +208,8 @@ impl<S: Integer> Point4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Point4d;
-    /// let p = Point4d::new(2, 3, -1, 4);
+    /// # use gamedim::p4d;
+    /// let p = p4d(2, 3, -1, 4);
     /// assert_eq!(-1, p.z());
     /// ```
     pub fn z(&self) -> S {
@@ -218,8 +219,8 @@ impl<S: Integer> Point4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::Point4d;
-    /// let p = Point4d::new(2, 3, -1, 4);
+    /// # use gamedim::p4d;
+    /// let p = p4d(2, 3, -1, 4);
     /// assert_eq!(4, p.w());
     /// ```
     pub fn w(&self) -> S {
@@ -230,29 +231,20 @@ impl<S: Integer> Point4d<S> {
 /// Creates a 2d point.
 ///
 /// This is a utility function for concisely representing points.
-pub fn p2d<S: Integer, T>(x: T, y: T) -> Point2d<S>
-where
-    S: From<T>,
-{
-    Point2d::new(S::from(x), S::from(y))
+pub fn p2d<S: Integer>(x: S, y: S) -> Point2d<S> {
+    Point2d::new(x, y)
 }
 /// Creates a 3d point.
 ///
 /// This is a utility function for concisely representing points.
-pub fn p3d<S: Integer, T>(x: T, y: T, z: T) -> Point3d<S>
-where
-    S: From<T>,
-{
-    Point3d::new(S::from(x), S::from(y), S::from(z))
+pub fn p3d<S: Integer>(x: S, y: S, z: S) -> Point3d<S> {
+    Point3d::new(x, y, z)
 }
 /// Creates a 4d point.
 ///
 /// This is a utility function for concisely representing points.
-pub fn p4d<S: Integer, T>(x: T, y: T, z: T, w: T) -> Point4d<S>
-where
-    S: From<T>,
-{
-    Point4d::new(S::from(x), S::from(y), S::from(z), S::from(w))
+pub fn p4d<S: Integer>(x: S, y: S, z: S, w: S) -> Point4d<S> {
+    Point4d::new(x, y, z, w)
 }
 
 impl<S, V> From<V> for Point<S, V>
@@ -475,9 +467,6 @@ mod tests {
     use crate::Point2d;
     use crate::Point3d;
     use crate::Point4d;
-    use crate::Vec2d;
-    use crate::Vec3d;
-    use crate::Vec4d;
 
     #[test]
     fn test_from_2d() {
@@ -534,20 +523,20 @@ mod tests {
 
     #[test]
     fn test_index_2d() {
-        let v = Point2d::new(1, 2);
+        let v = p2d(1, 2);
         assert_eq!(1, v[0]);
         assert_eq!(2, v[1]);
     }
     #[test]
     fn test_index_3d() {
-        let v = Point3d::new(1, 2, 3);
+        let v = p3d(1, 2, 3);
         assert_eq!(1, v[0]);
         assert_eq!(2, v[1]);
         assert_eq!(3, v[2]);
     }
     #[test]
     fn test_index_4d() {
-        let v = Point4d::new(1, 2, 3, 4);
+        let v = p4d(1, 2, 3, 4);
         assert_eq!(1, v[0]);
         assert_eq!(2, v[1]);
         assert_eq!(3, v[2]);
@@ -556,32 +545,32 @@ mod tests {
 
     #[test]
     fn test_partial_ord_none() {
-        let u = Point2d::new(2, 1);
-        let v = Point2d::new(3, -7);
+        let u = p2d(2, 1);
+        let v = p2d(3, -7);
         assert_eq!(None, u.partial_cmp(&v));
     }
     #[test]
     fn test_partial_ord_less() {
-        let u = Point2d::new(2, 1);
-        let v = Point2d::new(3, 7);
+        let u = p2d(2, 1);
+        let v = p2d(3, 7);
         assert_eq!(Some(Ordering::Less), u.partial_cmp(&v));
     }
     #[test]
     fn test_partial_ord_equal() {
-        let v = Point2d::new(3, 7);
+        let v = p2d(3, 7);
         assert_eq!(Some(Ordering::Equal), v.partial_cmp(&v));
     }
     #[test]
     fn test_partial_ord_greater() {
-        let u = Point2d::new(2, 1);
-        let v = Point2d::new(3, 7);
+        let u = p2d(2, 1);
+        let v = p2d(3, 7);
         assert_eq!(Some(Ordering::Greater), v.partial_cmp(&u));
     }
 
     #[test]
     fn test_add_pv_2d() {
-        let p: Point2d<i64> = Point2d::new(2, 1);
-        let v = Vec2d::new(3, 7);
+        let p: Point2d<i64> = p2d(2, 1);
+        let v = v2d(3, 7);
         assert_eq!(p2d(5, 8), p + v);
         assert_eq!(p2d(5, 8), p + &v);
         assert_eq!(p2d(5, 8), &p + v);
@@ -590,8 +579,8 @@ mod tests {
 
     #[test]
     fn test_add_pv_3d() {
-        let p: Point3d<i64> = Point3d::new(2, 1, 6);
-        let v = Vec3d::new(3, 7, 1);
+        let p: Point3d<i64> = p3d(2, 1, 6);
+        let v = v3d(3, 7, 1);
         assert_eq!(p3d(5, 8, 7), p + v);
         assert_eq!(p3d(5, 8, 7), p + &v);
         assert_eq!(p3d(5, 8, 7), &p + v);
@@ -600,8 +589,8 @@ mod tests {
 
     #[test]
     fn test_add_pv_4d() {
-        let p: Point4d<i64> = Point4d::new(2, 1, 6, -2);
-        let v = Vec4d::new(3, 7, 1, 5);
+        let p: Point4d<i64> = p4d(2, 1, 6, -2);
+        let v = v4d(3, 7, 1, 5);
         assert_eq!(p4d(5, 8, 7, 3), p + v);
         assert_eq!(p4d(5, 8, 7, 3), p + &v);
         assert_eq!(p4d(5, 8, 7, 3), &p + v);
@@ -610,8 +599,8 @@ mod tests {
 
     #[test]
     fn test_sub_pv() {
-        let p = Point2d::new(2, 1);
-        let v = Vec2d::new(3, 7);
+        let p = p2d(2, 1);
+        let v = v2d(3, 7);
         assert_eq!(p2d(-1, -6), p - v);
         assert_eq!(p2d(-1, -6), p - &v);
         assert_eq!(p2d(-1, -6), &p - v);
@@ -620,8 +609,8 @@ mod tests {
 
     #[test]
     fn test_sub_pp() {
-        let p = Point2d::new(2, 1);
-        let q = Point2d::new(3, 7);
+        let p = p2d(2, 1);
+        let q = p2d(3, 7);
         assert_eq!(v2d(-1, -6), p - q);
         assert_eq!(v2d(-1, -6), p - &q);
         assert_eq!(v2d(-1, -6), &p - q);
@@ -630,61 +619,61 @@ mod tests {
 
     #[test]
     fn test_add_assign() {
-        let mut u = Point2d::new(2, 1);
-        u += Vec2d::new(3, 7);
+        let mut u = p2d(2, 1);
+        u += v2d(3, 7);
         assert_eq!(p2d(5, 8), u);
-        u += &Vec2d::new(3, 7);
+        u += &v2d(3, 7);
         assert_eq!(p2d(8, 15), u);
     }
 
     #[test]
     fn test_sub_assign() {
-        let mut u = Point2d::new(2, 1);
-        u -= Vec2d::new(3, 7);
+        let mut u = p2d(2, 1);
+        u -= v2d(3, 7);
         assert_eq!(p2d(-1, -6), u);
-        u -= &Vec2d::new(3, 7);
+        u -= &v2d(3, 7);
         assert_eq!(p2d(-4, -13), u);
     }
 
     #[test]
     fn test_min_2d() {
-        let u = Point2d::new(2, 7);
-        let v = Point2d::new(3, 1);
+        let u = p2d(2, 7);
+        let v = p2d(3, 1);
         assert_eq!(p2d(2, 1), u.min(v));
     }
 
     #[test]
     fn test_min_3d() {
-        let u = Point3d::new(2, 1, 5);
-        let v = Point3d::new(3, 7, 1);
+        let u = p3d(2, 1, 5);
+        let v = p3d(3, 7, 1);
         assert_eq!(p3d(2, 1, 1), u.min(v));
     }
 
     #[test]
     fn test_min_4d() {
-        let u = Point4d::new(2, 1, 5, -4);
-        let v = Point4d::new(3, 7, 1, 4);
+        let u = p4d(2, 1, 5, -4);
+        let v = p4d(3, 7, 1, 4);
         assert_eq!(p4d(2, 1, 1, -4), u.min(v));
     }
 
     #[test]
     fn test_max_2d() {
-        let u = Point2d::new(2, 7);
-        let v = Point2d::new(3, 1);
+        let u = p2d(2, 7);
+        let v = p2d(3, 1);
         assert_eq!(p2d(3, 7), u.max(v));
     }
 
     #[test]
     fn test_max_3d() {
-        let u = Point3d::new(2, 7, 5);
-        let v = Point3d::new(3, 1, 1);
+        let u = p3d(2, 7, 5);
+        let v = p3d(3, 1, 1);
         assert_eq!(p3d(3, 7, 5), u.max(v));
     }
 
     #[test]
     fn test_max_4d() {
-        let u = Point4d::new(2, 7, 5, -4);
-        let v = Point4d::new(3, 1, 1, 4);
+        let u = p4d(2, 7, 5, -4);
+        let v = p4d(3, 1, 1, 4);
         assert_eq!(p4d(3, 7, 5, 4), u.max(v));
     }
 }

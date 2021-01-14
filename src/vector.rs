@@ -36,9 +36,10 @@ where
     /// # Example
     /// ```
     /// # use std::convert::TryFrom;
+    /// # use gamedim::v4d;
     /// # use gamedim::Vec4d;
     /// # use gamedim::Vector;
-    /// assert_eq!(Vec4d::new(0, 1, 2, 3), Vec4d::with(|i| i64::try_from(i).unwrap()));
+    /// assert_eq!(v4d(0, 1, 2, 3), Vec4d::with(|i| i64::try_from(i).unwrap()));
     /// ```
     fn with<F>(f: F) -> Self
     where
@@ -64,9 +65,12 @@ where
     /// The L1, taxicab or Manhatten norm.
     fn norm_l1(&self) -> S;
 
+    /// Creates a vector of the unit vectors.
+    fn unit_vecs() -> Vec<Self>;
+
     /// Creates a vector of the vectors to orthogonal neighbours.
     ///
-    /// i.e.These are the vectors with L1 norm equal to 1.
+    /// These are the vectors with L1 norm equal to 1.
     fn unit_vecs_l1() -> Vec<Self>;
 
     /// The maximum, Chebychev or L∞ norm.
