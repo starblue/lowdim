@@ -63,6 +63,98 @@ impl<S: Integer> Vec3d<S> {
     pub fn z(&self) -> S {
         self.0[2]
     }
+
+    /// Returns `true` if the vector points towards positive x.
+    ///
+    /// That is, among the vectors pointing in both directions along the coordinate axes,
+    /// the one pointing towards positive x is closest to this vector.
+    /// Or to put it more concretely, the x coordinate of the vector is positive,
+    /// and its absolute value is greater than that of the other coordinates.
+    ///
+    /// # Examples
+    /// ```
+    /// use gamedim::Vec3d;
+    ///
+    /// let v = Vec3d::new(3, 2, -1);
+    /// assert!(v.is_towards_pos_x());
+    /// let v = Vec3d::new(3, -2, -1);
+    /// assert!(v.is_towards_pos_x());
+    /// let v = Vec3d::new(-3, -2, -1);
+    /// assert!(!v.is_towards_pos_x());
+    /// let v = Vec3d::new(3, 2, -3);
+    /// assert!(!v.is_towards_pos_x());
+    /// ```
+    pub fn is_towards_pos_x(&self) -> bool {
+        self.x() > self.y().abs() && self.x() > self.z().abs()
+    }
+    /// Returns `true` if the vector points towards negative x.
+    ///
+    /// That is, among the vectors pointing in both directions along the coordinate axes,
+    /// the one pointing towards negative x is closest to this vector.
+    /// Or to put it more concretely, the x coordinate of the vector is negative,
+    /// and its absolute value is greater than that of the other coordinates.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec3d;
+    /// let v = Vec3d::new(-3, 2, -1);
+    /// assert!(v.is_towards_neg_x());
+    /// ```
+    pub fn is_towards_neg_x(&self) -> bool {
+        -self.x() > self.y().abs() && -self.x() > self.z().abs()
+    }
+    /// Returns `true` if the vector points towards positive y.
+    ///
+    /// See [`Vec3d::is_towards_pos_x`] for more details.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec3d;
+    /// let v = Vec3d::new(2, 3, -1);
+    /// assert!(v.is_towards_pos_y());
+    /// ```
+    pub fn is_towards_pos_y(self) -> bool {
+        self.y() > self.x().abs() && self.y() > self.z().abs()
+    }
+    /// Returns `true` if the vector points towards negative y.
+    ///
+    /// See [`Vec3d::is_towards_neg_x`] for more details.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec3d;
+    /// let v = Vec3d::new(2, -3, -1);
+    /// assert!(v.is_towards_neg_y());
+    /// ```
+    pub fn is_towards_neg_y(&self) -> bool {
+        -self.y() > self.x().abs() && -self.y() > self.z().abs()
+    }
+    /// Returns `true` if the vector points towards positive z.
+    ///
+    /// See [`Vec3d::is_towards_pos_x`] for more details.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec3d;
+    /// let v = Vec3d::new(2, -3, 4);
+    /// assert!(v.is_towards_pos_z());
+    /// ```
+    pub fn is_towards_pos_z(self) -> bool {
+        self.z() > self.x().abs() && self.z() > self.y().abs()
+    }
+    /// Returns `true` if the vector points towards negative z.
+    ///
+    /// See [`Vec3d::is_towards_neg_x`] for more details.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec3d;
+    /// let v = Vec3d::new(2, -3, -4);
+    /// assert!(v.is_towards_neg_z());
+    /// ```
+    pub fn is_towards_neg_z(&self) -> bool {
+        -self.z() > self.x().abs() && -self.z() > self.y().abs()
+    }
 }
 
 impl<S: Integer> VectorOps<S, Vec3d<S>> for Vec3d<S> {}

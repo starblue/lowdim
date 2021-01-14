@@ -74,6 +74,124 @@ impl<S: Integer> Vec4d<S> {
     pub fn w(&self) -> S {
         self.0[3]
     }
+
+    /// Returns `true` if the vector points towards positive x.
+    ///
+    /// That is, among the vectors pointing in both directions along the coordinate axes,
+    /// the one pointing towards positive x is closest to this vector.
+    /// Or to put it more concretely, the x coordinate of the vector is positive,
+    /// and its absolute value is greater than that of the other coordinates.
+    ///
+    /// # Examples
+    /// ```
+    /// use gamedim::Vec4d;
+    ///
+    /// let v = Vec4d::new(6, 2, -1, 4);
+    /// assert!(v.is_towards_pos_x());
+    /// let v = Vec4d::new(6, -2, -1, 4);
+    /// assert!(v.is_towards_pos_x());
+    /// let v = Vec4d::new(-6, -2, -1, 4);
+    /// assert!(!v.is_towards_pos_x());
+    /// let v = Vec4d::new(6, 2, -1, 6);
+    /// assert!(!v.is_towards_pos_x());
+    /// ```
+    pub fn is_towards_pos_x(&self) -> bool {
+        self.x() > self.y().abs() && self.x() > self.z().abs() && self.x() > self.w().abs()
+    }
+    /// Returns `true` if the vector points towards negative x.
+    ///
+    /// That is, among the vectors pointing in both directions along the coordinate axes,
+    /// the one pointing towards negative x is closest to this vector.
+    /// Or to put it more concretely, the x coordinate of the vector is negative,
+    /// and its absolute value is greater than that of the other coordinates.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec4d;
+    /// let v = Vec4d::new(-6, 2, -1, 4);
+    /// assert!(v.is_towards_neg_x());
+    /// ```
+    pub fn is_towards_neg_x(&self) -> bool {
+        -self.x() > self.y().abs() && -self.x() > self.z().abs() && -self.x() > self.w().abs()
+    }
+    /// Returns `true` if the vector points towards positive y.
+    ///
+    /// See [`Vec4d::is_towards_pos_x`] for more details.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec4d;
+    /// let v = Vec4d::new(2, 6, -1, 4);
+    /// assert!(v.is_towards_pos_y());
+    /// ```
+    pub fn is_towards_pos_y(self) -> bool {
+        self.y() > self.x().abs() && self.y() > self.z().abs() && self.y() > self.w().abs()
+    }
+    /// Returns `true` if the vector points towards negative y.
+    ///
+    /// See [`Vec4d::is_towards_neg_x`] for more details.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec4d;
+    /// let v = Vec4d::new(2, -6, -1, 4);
+    /// assert!(v.is_towards_neg_y());
+    /// ```
+    pub fn is_towards_neg_y(&self) -> bool {
+        -self.y() > self.x().abs() && -self.y() > self.z().abs() && -self.y() > self.w().abs()
+    }
+    /// Returns `true` if the vector points towards positive z.
+    ///
+    /// See [`Vec4d::is_towards_pos_x`] for more details.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec4d;
+    /// let v = Vec4d::new(2, -3, 4, -1);
+    /// assert!(v.is_towards_pos_z());
+    /// ```
+    pub fn is_towards_pos_z(self) -> bool {
+        self.z() > self.x().abs() && self.z() > self.y().abs() && self.z() > self.w().abs()
+    }
+    /// Returns `true` if the vector points towards negative z.
+    ///
+    /// See [`Vec4d::is_towards_neg_x`] for more details.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec4d;
+    /// let v = Vec4d::new(2, -3, -4, -1);
+    /// assert!(v.is_towards_neg_z());
+    /// ```
+    pub fn is_towards_neg_z(&self) -> bool {
+        -self.z() > self.x().abs() && -self.z() > self.y().abs() && -self.z() > self.w().abs()
+    }
+    /// Returns `true` if the vector points towards positive w.
+    ///
+    /// See [`Vec4d::is_towards_pos_x`] for more details.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec4d;
+    /// let v = Vec4d::new(2, -3, 4, 5);
+    /// assert!(v.is_towards_pos_w());
+    /// ```
+    pub fn is_towards_pos_w(self) -> bool {
+        self.w() > self.x().abs() && self.w() > self.y().abs() && self.w() > self.z().abs()
+    }
+    /// Returns `true` if the vector points towards negative w.
+    ///
+    /// See [`Vec4d::is_towards_neg_x`] for more details.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec4d;
+    /// let v = Vec4d::new(2, -3, -4, -5);
+    /// assert!(v.is_towards_neg_w());
+    /// ```
+    pub fn is_towards_neg_w(&self) -> bool {
+        -self.w() > self.x().abs() && -self.w() > self.y().abs() && -self.w() > self.z().abs()
+    }
 }
 
 impl<S: Integer> VectorOps<S, Vec4d<S>> for Vec4d<S> {}

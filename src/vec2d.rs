@@ -53,6 +53,72 @@ impl<S: Integer> Vec2d<S> {
         self.0[1]
     }
 
+    /// Returns `true` if the vector points towards positive x.
+    ///
+    /// That is, among the vectors pointing in both directions along the coordinate axes,
+    /// the one pointing towards positive x is closest to this vector.
+    /// Or to put it more concretely, the x coordinate of the vector is positive,
+    /// and its absolute value is greater than that of the other coordinates.
+    ///
+    /// # Examples
+    /// ```
+    /// use gamedim::Vec2d;
+    ///
+    /// let v = Vec2d::new(3, 2);
+    /// assert!(v.is_towards_pos_x());
+    /// let v = Vec2d::new(3, -2);
+    /// assert!(v.is_towards_pos_x());
+    /// let v = Vec2d::new(-3, -2);
+    /// assert!(!v.is_towards_pos_x());
+    /// let v = Vec2d::new(3, 3);
+    /// assert!(!v.is_towards_pos_x());
+    /// ```
+    pub fn is_towards_pos_x(&self) -> bool {
+        self.x() > self.y().abs()
+    }
+    /// Returns `true` if the vector points towards negative x.
+    ///
+    /// That is, among the vectors pointing in both directions along the coordinate axes,
+    /// the one pointing towards negative x is closest to this vector.
+    /// Or to put it more concretely, the x coordinate of the vector is negative,
+    /// and its absolute value is greater than that of the other coordinates.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec2d;
+    /// let v = Vec2d::new(-3, 2);
+    /// assert!(v.is_towards_neg_x());
+    /// ```
+    pub fn is_towards_neg_x(&self) -> bool {
+        -self.x() > self.y().abs()
+    }
+    /// Returns `true` if the vector points towards positive y.
+    ///
+    /// See [`Vec2d::is_towards_pos_x`] for more details.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec2d;
+    /// let v = Vec2d::new(2, 3);
+    /// assert!(v.is_towards_pos_y());
+    /// ```
+    pub fn is_towards_pos_y(self) -> bool {
+        self.y() > self.x().abs()
+    }
+    /// Returns `true` if the vector points towards negative y.
+    ///
+    /// See [`Vec2d::is_towards_neg_x`] for more details.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec2d;
+    /// let v = Vec2d::new(2, -3);
+    /// assert!(v.is_towards_neg_y());
+    /// ```
+    pub fn is_towards_neg_y(&self) -> bool {
+        -self.y() > self.x().abs()
+    }
+
     /// Returns a vector obtained by rotating this vector left by a right angle.
     ///
     /// # Examples
