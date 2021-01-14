@@ -1,3 +1,7 @@
+//! 2-dimensional vectors.
+
+#![warn(missing_docs)]
+
 use core::cmp::Ordering;
 use core::ops::Add;
 use core::ops::AddAssign;
@@ -26,16 +30,48 @@ impl<S: Integer> Vec2d<S> {
         Vec2d([x, y])
     }
 
+    /// Returns the x coordinate of the vector.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec2d;
+    /// let v = Vec2d::new(2, 3);
+    /// assert_eq!(2, v.x());
+    /// ```
     pub fn x(&self) -> S {
         self.0[0]
     }
+    /// Returns the y coordinate of the vector.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec2d;
+    /// let v = Vec2d::new(2, 3);
+    /// assert_eq!(3, v.y());
+    /// ```
     pub fn y(&self) -> S {
         self.0[1]
     }
 
+    /// Returns a vector obtained by rotating this vector left by a right angle.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec2d;
+    /// let v = Vec2d::new(2, 3);
+    /// assert_eq!(Vec2d::new(-3, 2), v.rotate_left());
+    /// ```
     pub fn rotate_left(&self) -> Self {
         Vec2d::new(-self.y(), self.x())
     }
+    /// Returns a vector obtained by rotating this vector right by a right angle.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec2d;
+    /// let v = Vec2d::new(2, 3);
+    /// assert_eq!(Vec2d::new(3, -2), v.rotate_right());
+    /// ```
     pub fn rotate_right(&self) -> Self {
         Vec2d::new(self.y(), -self.x())
     }

@@ -1,3 +1,7 @@
+//! 4-dimensional vectors.
+
+#![warn(missing_docs)]
+
 use core::cmp::Ordering;
 use core::ops::Add;
 use core::ops::AddAssign;
@@ -26,15 +30,47 @@ impl<S: Integer> Vec4d<S> {
         Vec4d([x, y, z, w])
     }
 
+    /// Returns the x coordinate of the vector.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec4d;
+    /// let v = Vec4d::new(2, 3, -1, 4);
+    /// assert_eq!(2, v.x());
+    /// ```
     pub fn x(&self) -> S {
         self.0[0]
     }
+    /// Returns the y coordinate of the vector.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec4d;
+    /// let v = Vec4d::new(2, 3, -1, 4);
+    /// assert_eq!(3, v.y());
+    /// ```
     pub fn y(&self) -> S {
         self.0[1]
     }
+    /// Returns the z coordinate of the vector.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec4d;
+    /// let v = Vec4d::new(2, 3, -1, 4);
+    /// assert_eq!(-1, v.z());
+    /// ```
     pub fn z(&self) -> S {
         self.0[2]
     }
+    /// Returns the w coordinate of the vector.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Vec4d;
+    /// let v = Vec4d::new(2, 3, -1, 4);
+    /// assert_eq!(4, v.w());
+    /// ```
     pub fn w(&self) -> S {
         self.0[3]
     }

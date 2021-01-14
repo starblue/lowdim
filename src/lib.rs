@@ -1,3 +1,20 @@
+//! Affine geometry for discrete 2d to 4d game and puzzle worlds.
+//!
+//! Provides vectors, matrices, points and more to simplify
+//! programming for 2d to 4d games and puzzles.
+//! Features include:
+//! * Bounding boxes and iterators over the points inside them
+//! * Arrays indexed by points
+//! * Rotations and reflections
+//! * Taxicab (L1) and maximum (L∞) metrics
+//! * Orthogonal and king's move neighbourhoods
+//!
+//! This was originally motivated by
+//! [Advent of Code](https://adventofcode.com/).
+
+//#![warn(missing_docs)]
+
+/// Contains the `Integer` trait defining required properties of the underlying integer types.
 pub mod integer;
 pub use integer::Integer;
 

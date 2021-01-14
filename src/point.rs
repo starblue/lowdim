@@ -1,3 +1,17 @@
+//! Points in the affine space.
+//!
+//! Points represent absolute positions in the space.
+//! So in conmtrast to vectors it doesn't make sense to add two points,
+//! or to multiply a point by a scalar value.
+//!
+//! A vector can be added to a point, representing a move in the space.
+//! Or conversely, two points can be subtracted to get back the vector
+//! representing the move between them.
+//!
+//! This module implements 2d, 3d and 4d points.
+
+#![warn(missing_docs)]
+
 use core::cmp::Ordering;
 use core::marker::PhantomData;
 
@@ -24,8 +38,11 @@ pub struct Point<S: Integer, V: Vector<S>> {
     v: V,
 }
 
+/// A 2d point.
 pub type Point2d<S = i64> = Point<S, Vec2d<S>>;
+/// A 3d point.
 pub type Point3d<S = i64> = Point<S, Vec3d<S>>;
+/// A 4d point.
 pub type Point4d<S = i64> = Point<S, Vec4d<S>>;
 
 impl<S, V> Point<S, V>
@@ -33,6 +50,16 @@ where
     S: Integer,
     V: Vector<S>,
 {
+    /// Create a point from a function.
+    ///
+    /// The function must return a scalar value for each possible coordinate index.
+    ///
+    /// # Example
+    /// ```
+    /// # use std::convert::TryFrom;
+    /// # use gamedim::Point4d;
+    /// assert_eq!(Point4d::new(0, 1, 2, 3), Point4d::with(|i| i64::try_from(i).unwrap()));
+    /// ```
     pub fn with<F>(f: F) -> Point<S, V>
     where
         F: Fn(usize) -> S,
@@ -40,19 +67,21 @@ where
         Point::from(V::with(f))
     }
 
+    /// Returns the point constructed by taking the minimum with another point at each coordinate.
     pub fn min(&self, other: Self) -> Self {
         Point::from(self.v.min(other.v))
     }
+    /// Returns the point constructed by taking the maximum with another point at each coordinate.
     pub fn max(&self, other: Self) -> Self {
         Point::from(self.v.max(other.v))
     }
 
-    // The distance to another point w.r.t. the L1 norm.
+    /// The distance to another point w.r.t. the L1 norm.
     pub fn distance_l1(&self, other: Self) -> S {
         (self - other).norm_l1()
     }
 
-    // The distance to another point w.r.t. the L∞ norm.
+    /// The distance to another point w.r.t. the L∞ norm.
     pub fn distance_l_infty(&self, other: Self) -> S {
         (self - other).norm_l_infty()
     }
@@ -82,9 +111,25 @@ impl<S: Integer> Point2d<S> {
     pub fn new(x: S, y: S) -> Self {
         Point::from(v2d(x, y))
     }
+    /// Returns the x coordinate of the point.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Point2d;
+    /// let p = Point2d::new(2, 3);
+    /// assert_eq!(2, p.x());
+    /// ```
     pub fn x(&self) -> S {
         self.v.x()
     }
+    /// Returns the y coordinate of the point.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Point2d;
+    /// let p = Point2d::new(2, 3);
+    /// assert_eq!(3, p.y());
+    /// ```
     pub fn y(&self) -> S {
         self.v.y()
     }
@@ -95,12 +140,36 @@ impl<S: Integer> Point3d<S> {
     pub fn new(x: S, y: S, z: S) -> Self {
         Point::from(v3d(x, y, z))
     }
+    /// Returns the x coordinate of the point.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Point3d;
+    /// let p = Point3d::new(2, 3, -1);
+    /// assert_eq!(2, p.x());
+    /// ```
     pub fn x(&self) -> S {
         self.v.x()
     }
+    /// Returns the y coordinate of the point.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Point3d;
+    /// let p = Point3d::new(2, 3, -1);
+    /// assert_eq!(3, p.y());
+    /// ```
     pub fn y(&self) -> S {
         self.v.y()
     }
+    /// Returns the z coordinate of the point.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Point3d;
+    /// let p = Point3d::new(2, 3, -1);
+    /// assert_eq!(-1, p.z());
+    /// ```
     pub fn z(&self) -> S {
         self.v.z()
     }
@@ -111,21 +180,54 @@ impl<S: Integer> Point4d<S> {
     pub fn new(x: S, y: S, z: S, w: S) -> Self {
         Point::from(v4d(x, y, z, w))
     }
+
+    /// Returns the x coordinate of the point.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Point4d;
+    /// let p = Point4d::new(2, 3, -1, 4);
+    /// assert_eq!(2, p.x());
+    /// ```
     pub fn x(&self) -> S {
         self.v.x()
     }
+    /// Returns the y coordinate of the point.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Point4d;
+    /// let p = Point4d::new(2, 3, -1, 4);
+    /// assert_eq!(3, p.y());
+    /// ```
     pub fn y(&self) -> S {
         self.v.y()
     }
+    /// Returns the z coordinate of the point.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Point4d;
+    /// let p = Point4d::new(2, 3, -1, 4);
+    /// assert_eq!(-1, p.z());
+    /// ```
     pub fn z(&self) -> S {
         self.v.z()
     }
+    /// Returns the w coordinate of the point.
+    ///
+    /// # Examples
+    /// ```
+    /// # use gamedim::Point4d;
+    /// let p = Point4d::new(2, 3, -1, 4);
+    /// assert_eq!(4, p.w());
+    /// ```
     pub fn w(&self) -> S {
         self.v.w()
     }
 }
 
-/// Creates a point.
+/// Creates a 2d point.
 ///
 /// This is a utility function for concisely representing points.
 pub fn p2d<S: Integer, T>(x: T, y: T) -> Point2d<S>
@@ -134,12 +236,18 @@ where
 {
     Point2d::new(S::from(x), S::from(y))
 }
+/// Creates a 3d point.
+///
+/// This is a utility function for concisely representing points.
 pub fn p3d<S: Integer, T>(x: T, y: T, z: T) -> Point3d<S>
 where
     S: From<T>,
 {
     Point3d::new(S::from(x), S::from(y), S::from(z))
 }
+/// Creates a 4d point.
+///
+/// This is a utility function for concisely representing points.
 pub fn p4d<S: Integer, T>(x: T, y: T, z: T, w: T) -> Point4d<S>
 where
     S: From<T>,
