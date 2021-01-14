@@ -14,7 +14,6 @@
 
 //#![warn(missing_docs)]
 
-/// Contains the `Integer` trait defining required properties of the underlying integer types.
 pub mod integer;
 pub use integer::Integer;
 

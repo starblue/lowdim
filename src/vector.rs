@@ -1,7 +1,15 @@
+//! Traits for vectors.
+
+#![warn(missing_docs)]
+
 use core::ops;
 
 use crate::Integer;
 
+/// Required arithmetic operations for vectors.
+///
+/// Must be in a separate trait to allow `Self` to be a reference type
+/// and the output the base type.
 pub trait VectorOps<S, RHS = Self, Output = Self>
 where
     Self: Sized,
@@ -11,6 +19,7 @@ where
 {
 }
 
+/// Required traits and operations for vectors.
 pub trait Vector<S>
 where
     S: Integer,
@@ -20,7 +29,17 @@ where
     Self: VectorOps<S, Self>,
     Self: for<'a> VectorOps<S, &'a Self>,
 {
-    // Create a vector from a function which computes the coordinates.
+    /// Create a vector from a function which computes the coordinates.
+    ///
+    /// The function must return a scalar value for each possible coordinate index.
+    ///
+    /// # Example
+    /// ```
+    /// # use std::convert::TryFrom;
+    /// # use gamedim::Vec4d;
+    /// # use gamedim::Vector;
+    /// assert_eq!(Vec4d::new(0, 1, 2, 3), Vec4d::with(|i| i64::try_from(i).unwrap()));
+    /// ```
     fn with<F>(f: F) -> Self
     where
         F: Fn(usize) -> S;

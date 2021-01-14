@@ -1,5 +1,13 @@
+//! Contains traits defining required properties of the underlying integer types.
+
+#![warn(missing_docs)]
+
 use core::ops;
 
+/// Required arithmetic operations for integers.
+///
+/// Must be in a separate trait to allow `Self` to be a reference type
+/// and the output the base type.
 pub trait IntegerOps
 where
     Self: Sized,
@@ -10,6 +18,7 @@ where
 {
 }
 
+/// Required traits and operations for integers.
 pub trait Integer
 where
     Self: Copy,
@@ -17,7 +26,12 @@ where
     Self: Ord,
     Self: IntegerOps,
 {
+    /// The absolute value function.
     fn abs(self) -> Self;
+
+    /// The sign function.
+    ///
+    /// Returns `1` for positive numbers, `0` for zero and `-1` for negative numbers.
     fn signum(self) -> Self;
 }
 
