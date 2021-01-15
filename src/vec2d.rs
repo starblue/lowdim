@@ -11,6 +11,7 @@ use core::ops::Neg;
 use core::ops::Sub;
 use core::ops::SubAssign;
 
+use crate::lex_then;
 use crate::partial_then;
 use crate::Integer;
 use crate::Vector;
@@ -148,6 +149,8 @@ impl<'a, S: Integer> VectorOps<S, Vec2d<S>, Vec2d<S>> for &'a Vec2d<S> {}
 impl<'a, S: Integer> VectorOps<S, &'a Vec2d<S>, Vec2d<S>> for &'a Vec2d<S> {}
 
 impl<S: Integer> Vector<S> for Vec2d<S> {
+    const DIM: usize = 2;
+
     fn with<F>(f: F) -> Vec2d<S>
     where
         F: Fn(usize) -> S,
@@ -155,27 +158,11 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
         Vec2d([f(0), f(1)])
     }
 
-    fn unit_vecs() -> Vec<Self> {
-        (0..DIM)
-            .map(|i| Vec2d::with(|j| S::from(if i == j { 1 } else { 0 })))
-            .collect::<Vec<_>>()
-    }
-
     /// The L1, taxicab or Manhatten norm.
     fn norm_l1(&self) -> S {
         let abs_x = self.x().abs();
         let abs_y = self.y().abs();
         abs_x + abs_y
-    }
-    /// Creates a vector of the vectors to orthogonal neighbors.
-    ///
-    /// These are the vectors with L1 norm equal to 1.
-    fn unit_vecs_l1() -> Vec<Self> {
-        let uv = Self::unit_vecs();
-        uv.iter()
-            .copied()
-            .chain(uv.iter().map(|&v| -v))
-            .collect::<Vec<_>>()
     }
 
     /// The maximum, Chebychev or L∞ norm.
@@ -195,6 +182,12 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
             }
         }
         result
+    }
+
+    fn lex_cmp(&self, other: &Vec2d<S>) -> Ordering {
+        let x_ordering = self.x().cmp(&other.x());
+        let y_ordering = self.y().cmp(&other.y());
+        lex_then(x_ordering, y_ordering)
     }
 }
 
@@ -431,6 +424,40 @@ mod tests {
         assert_eq!(v2d(-1, 0), v2d(-2, 0).signum());
         assert_eq!(v2d(-1, -1), v2d(-2, -3).signum());
     }
+
+    #[test]
+    fn test_unit_vecs() {
+        let mut uv: Vec<Vec2d<i64>> = Vec2d::unit_vecs();
+        uv.sort_by(Vec2d::lex_cmp);
+        assert_eq!(vec![v2d(0, 1), v2d(1, 0)], uv);
+    }
+
+    #[test]
+    fn test_unit_vecs_l1() {
+        let mut uv: Vec<Vec2d<i64>> = Vec2d::unit_vecs_l1();
+        uv.sort_by(Vec2d::lex_cmp);
+        assert_eq!(vec![v2d(-1, 0), v2d(0, -1), v2d(0, 1), v2d(1, 0)], uv);
+    }
+
+    #[test]
+    fn test_unit_vecs_l_infty() {
+        let mut uv: Vec<Vec2d<i64>> = Vec2d::unit_vecs_l_infty();
+        uv.sort_by(Vec2d::lex_cmp);
+        assert_eq!(
+            vec![
+                v2d(-1, -1),
+                v2d(-1, 0),
+                v2d(-1, 1),
+                v2d(0, -1),
+                v2d(0, 1),
+                v2d(1, -1),
+                v2d(1, 0),
+                v2d(1, 1)
+            ],
+            uv
+        );
+    }
+
     #[test]
     fn test_norm_l1() {
         assert_eq!(5, v2d(2, 3).norm_l1());

@@ -2,6 +2,8 @@
 
 #![warn(missing_docs)]
 
+use core::cmp::Ordering;
+use core::iter::once;
 use core::ops;
 
 use crate::Integer;
@@ -29,6 +31,9 @@ where
     Self: VectorOps<S, Self>,
     Self: for<'a> VectorOps<S, &'a Self>,
 {
+    /// The dimension of the vectors in this type.
+    const DIM: usize;
+
     /// Create a vector from a function which computes the coordinates.
     ///
     /// The function must return a scalar value for each possible coordinate index.
@@ -66,16 +71,34 @@ where
     fn norm_l1(&self) -> S;
 
     /// Creates a vector of the unit vectors.
-    fn unit_vecs() -> Vec<Self>;
+    fn unit_vecs() -> Vec<Self> {
+        (0..Self::DIM)
+            .map(|i| Self::with(|j| S::from(if i == j { 1 } else { 0 })))
+            .collect::<Vec<_>>()
+    }
 
     /// Creates a vector of the vectors to orthogonal neighbours.
     ///
     /// These are the vectors with L1 norm equal to 1.
-    fn unit_vecs_l1() -> Vec<Self>;
+    fn unit_vecs_l1() -> Vec<Self> {
+        Self::unit_vecs()
+            .into_iter()
+            .flat_map(|uv| once(uv).chain(once(-uv)))
+            .collect::<Vec<_>>()
+    }
 
     /// The maximum, Chebychev or L∞ norm.
     fn norm_l_infty(&self) -> S;
 
-    /// Creates a vector of the 8 vectors with L∞ norm equal to 1.
+    /// Creates a vector of the vectors with L∞ norm equal to 1.
+    ///
+    /// These correspond to a single orthogonal or diagonal step.
     fn unit_vecs_l_infty() -> Vec<Self>;
+
+    /// Returns the lexicographic total ordering for this and another vector.
+    ///
+    /// That is, the first different coordinate decides the ordering.
+    /// This is useful as an arbitrary total ordering for sorting,
+    /// but is not intended to be otherwise meaningful.
+    fn lex_cmp(&self, other: &Self) -> Ordering;
 }

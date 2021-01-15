@@ -62,4 +62,5 @@ pub mod array;
 pub use crate::array::Array2d;
 
 mod util;
+use crate::util::lex_then;
 use crate::util::partial_then;

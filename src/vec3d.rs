@@ -11,6 +11,7 @@ use core::ops::Neg;
 use core::ops::Sub;
 use core::ops::SubAssign;
 
+use crate::lex_then;
 use crate::partial_then;
 use crate::Integer;
 use crate::Vector;
@@ -163,17 +164,13 @@ impl<'a, S: Integer> VectorOps<S, Vec3d<S>, Vec3d<S>> for &'a Vec3d<S> {}
 impl<'a, S: Integer> VectorOps<S, &'a Vec3d<S>, Vec3d<S>> for &'a Vec3d<S> {}
 
 impl<S: Integer> Vector<S> for Vec3d<S> {
+    const DIM: usize = 3;
+
     fn with<F>(f: F) -> Vec3d<S>
     where
         F: Fn(usize) -> S,
     {
         Vec3d([f(0), f(1), f(2)])
-    }
-
-    fn unit_vecs() -> Vec<Self> {
-        (0..DIM)
-            .map(|i| Vec3d::with(|j| S::from(if i == j { 1 } else { 0 })))
-            .collect::<Vec<_>>()
     }
 
     /// The L1, taxicab or Manhatten norm.
@@ -182,16 +179,6 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
         let abs_y = self.y().abs();
         let abs_z = self.z().abs();
         abs_x + abs_y + abs_z
-    }
-    /// Creates a vector of the vectors to orthogonal neighbors.
-    ///
-    /// These are the vectors with L1 norm equal to 1.
-    fn unit_vecs_l1() -> Vec<Self> {
-        let uv = Self::unit_vecs();
-        uv.iter()
-            .copied()
-            .chain(uv.iter().map(|&v| -v))
-            .collect::<Vec<_>>()
     }
 
     /// The maximum, Chebychev or L-infinity norm.
@@ -214,6 +201,13 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
             }
         }
         result
+    }
+
+    fn lex_cmp(&self, other: &Vec3d<S>) -> Ordering {
+        let x_ordering = self.x().cmp(&other.x());
+        let y_ordering = self.y().cmp(&other.y());
+        let z_ordering = self.z().cmp(&other.z());
+        lex_then(lex_then(x_ordering, y_ordering), z_ordering)
     }
 }
 
@@ -426,6 +420,67 @@ mod tests {
     #[test]
     fn test_with() {
         assert_eq!(v3d(2, 3, 4), Vec3d::with(|i| i64::try_from(i + 2).unwrap()));
+    }
+
+    #[test]
+    fn test_unit_vecs() {
+        let mut uv: Vec<Vec3d<i64>> = Vec3d::unit_vecs();
+        uv.sort_by(Vec3d::lex_cmp);
+        assert_eq!(vec![v3d(0, 0, 1), v3d(0, 1, 0), v3d(1, 0, 0)], uv);
+    }
+
+    #[test]
+    fn test_unit_vecs_l1() {
+        let mut uv: Vec<Vec3d<i64>> = Vec3d::unit_vecs_l1();
+        uv.sort_by(Vec3d::lex_cmp);
+        assert_eq!(
+            vec![
+                v3d(-1, 0, 0),
+                v3d(0, -1, 0),
+                v3d(0, 0, -1),
+                v3d(0, 0, 1),
+                v3d(0, 1, 0),
+                v3d(1, 0, 0),
+            ],
+            uv
+        );
+    }
+
+    #[test]
+    fn test_unit_vecs_l_infty() {
+        let mut uv: Vec<Vec3d<i64>> = Vec3d::unit_vecs_l_infty();
+        uv.sort_by(Vec3d::lex_cmp);
+        assert_eq!(
+            vec![
+                v3d(-1, -1, -1),
+                v3d(-1, -1, 0),
+                v3d(-1, -1, 1),
+                v3d(-1, 0, -1),
+                v3d(-1, 0, 0),
+                v3d(-1, 0, 1),
+                v3d(-1, 1, -1),
+                v3d(-1, 1, 0),
+                v3d(-1, 1, 1),
+                v3d(0, -1, -1),
+                v3d(0, -1, 0),
+                v3d(0, -1, 1),
+                v3d(0, 0, -1),
+                v3d(0, 0, 1),
+                v3d(0, 1, -1),
+                v3d(0, 1, 0),
+                v3d(0, 1, 1),
+                v3d(1, -1, -1),
+                v3d(1, -1, 0),
+                v3d(1, -1, 1),
+                v3d(1, 0, -1),
+                v3d(1, 0, 0),
+                v3d(1, 0, 1),
+                v3d(1, 1, -1),
+                v3d(1, 1, 0),
+                v3d(1, 1, 1),
+            ],
+            uv
+        );
     }
 
     #[test]

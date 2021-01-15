@@ -11,6 +11,7 @@ use core::ops::Neg;
 use core::ops::Sub;
 use core::ops::SubAssign;
 
+use crate::lex_then;
 use crate::partial_then;
 use crate::Integer;
 use crate::Vector;
@@ -200,17 +201,13 @@ impl<'a, S: Integer> VectorOps<S, Vec4d<S>, Vec4d<S>> for &'a Vec4d<S> {}
 impl<'a, S: Integer> VectorOps<S, &'a Vec4d<S>, Vec4d<S>> for &'a Vec4d<S> {}
 
 impl<S: Integer> Vector<S> for Vec4d<S> {
+    const DIM: usize = 4;
+
     fn with<F>(f: F) -> Vec4d<S>
     where
         F: Fn(usize) -> S,
     {
         Vec4d([f(0), f(1), f(2), f(3)])
-    }
-
-    fn unit_vecs() -> Vec<Self> {
-        (0..DIM)
-            .map(|i| Vec4d::with(|j| S::from(if i == j { 1 } else { 0 })))
-            .collect::<Vec<_>>()
     }
 
     /// The L1, taxicab or Manhatten norm.
@@ -221,16 +218,6 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
         let abs_w = self.w().abs();
         abs_x + abs_y + abs_z + abs_w
     }
-    /// Creates a vector of the vectors to orthogonal neighbors.
-    ///
-    /// These are the vectors with L1 norm equal to 1.
-    fn unit_vecs_l1() -> Vec<Self> {
-        let uv = Self::unit_vecs();
-        uv.iter()
-            .copied()
-            .chain(uv.iter().map(|&v| -v))
-            .collect::<Vec<_>>()
-    }
 
     /// The maximum, Chebychev or L-infinity norm.
     fn norm_l_infty(&self) -> S {
@@ -240,7 +227,7 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
         let abs_w = self.w().abs();
         abs_x.max(abs_y).max(abs_z).max(abs_w)
     }
-    /// Creates a vector of the 26 vectors with L∞ norm equal to 1.
+    /// Creates a vector of the 80 vectors with L∞ norm equal to 1.
     fn unit_vecs_l_infty() -> Vec<Self> {
         let mut result = Vec::new();
         for w in -1..=1 {
@@ -255,6 +242,17 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
             }
         }
         result
+    }
+
+    fn lex_cmp(&self, other: &Vec4d<S>) -> Ordering {
+        let x_ordering = self.x().cmp(&other.x());
+        let y_ordering = self.y().cmp(&other.y());
+        let z_ordering = self.z().cmp(&other.z());
+        let w_ordering = self.w().cmp(&other.w());
+        lex_then(
+            lex_then(lex_then(x_ordering, y_ordering), z_ordering),
+            w_ordering,
+        )
     }
 }
 
@@ -474,6 +472,131 @@ mod tests {
         assert_eq!(
             v4d(2, 3, 4, 5),
             Vec4d::with(|i| i64::try_from(i + 2).unwrap())
+        );
+    }
+
+    #[test]
+    fn test_unit_vecs() {
+        let mut uv: Vec<Vec4d<i64>> = Vec4d::unit_vecs();
+        uv.sort_by(Vec4d::lex_cmp);
+        assert_eq!(
+            vec![
+                v4d(0, 0, 0, 1),
+                v4d(0, 0, 1, 0),
+                v4d(0, 1, 0, 0),
+                v4d(1, 0, 0, 0)
+            ],
+            uv
+        );
+    }
+
+    #[test]
+    fn test_unit_vecs_l1() {
+        let mut uv: Vec<Vec4d<i64>> = Vec4d::unit_vecs_l1();
+        uv.sort_by(Vec4d::lex_cmp);
+        assert_eq!(
+            vec![
+                v4d(-1, 0, 0, 0),
+                v4d(0, -1, 0, 0),
+                v4d(0, 0, -1, 0),
+                v4d(0, 0, 0, -1),
+                v4d(0, 0, 0, 1),
+                v4d(0, 0, 1, 0),
+                v4d(0, 1, 0, 0),
+                v4d(1, 0, 0, 0),
+            ],
+            uv
+        );
+    }
+
+    #[test]
+    fn test_unit_vecs_l_infty() {
+        let mut uv: Vec<Vec4d<i64>> = Vec4d::unit_vecs_l_infty();
+        uv.sort_by(Vec4d::lex_cmp);
+        assert_eq!(
+            vec![
+                v4d(-1, -1, -1, -1),
+                v4d(-1, -1, -1, 0),
+                v4d(-1, -1, -1, 1),
+                v4d(-1, -1, 0, -1),
+                v4d(-1, -1, 0, 0),
+                v4d(-1, -1, 0, 1),
+                v4d(-1, -1, 1, -1),
+                v4d(-1, -1, 1, 0),
+                v4d(-1, -1, 1, 1),
+                v4d(-1, 0, -1, -1),
+                v4d(-1, 0, -1, 0),
+                v4d(-1, 0, -1, 1),
+                v4d(-1, 0, 0, -1),
+                v4d(-1, 0, 0, 0),
+                v4d(-1, 0, 0, 1),
+                v4d(-1, 0, 1, -1),
+                v4d(-1, 0, 1, 0),
+                v4d(-1, 0, 1, 1),
+                v4d(-1, 1, -1, -1),
+                v4d(-1, 1, -1, 0),
+                v4d(-1, 1, -1, 1),
+                v4d(-1, 1, 0, -1),
+                v4d(-1, 1, 0, 0),
+                v4d(-1, 1, 0, 1),
+                v4d(-1, 1, 1, -1),
+                v4d(-1, 1, 1, 0),
+                v4d(-1, 1, 1, 1),
+                v4d(0, -1, -1, -1),
+                v4d(0, -1, -1, 0),
+                v4d(0, -1, -1, 1),
+                v4d(0, -1, 0, -1),
+                v4d(0, -1, 0, 0),
+                v4d(0, -1, 0, 1),
+                v4d(0, -1, 1, -1),
+                v4d(0, -1, 1, 0),
+                v4d(0, -1, 1, 1),
+                v4d(0, 0, -1, -1),
+                v4d(0, 0, -1, 0),
+                v4d(0, 0, -1, 1),
+                v4d(0, 0, 0, -1),
+                v4d(0, 0, 0, 1),
+                v4d(0, 0, 1, -1),
+                v4d(0, 0, 1, 0),
+                v4d(0, 0, 1, 1),
+                v4d(0, 1, -1, -1),
+                v4d(0, 1, -1, 0),
+                v4d(0, 1, -1, 1),
+                v4d(0, 1, 0, -1),
+                v4d(0, 1, 0, 0),
+                v4d(0, 1, 0, 1),
+                v4d(0, 1, 1, -1),
+                v4d(0, 1, 1, 0),
+                v4d(0, 1, 1, 1),
+                v4d(1, -1, -1, -1),
+                v4d(1, -1, -1, 0),
+                v4d(1, -1, -1, 1),
+                v4d(1, -1, 0, -1),
+                v4d(1, -1, 0, 0),
+                v4d(1, -1, 0, 1),
+                v4d(1, -1, 1, -1),
+                v4d(1, -1, 1, 0),
+                v4d(1, -1, 1, 1),
+                v4d(1, 0, -1, -1),
+                v4d(1, 0, -1, 0),
+                v4d(1, 0, -1, 1),
+                v4d(1, 0, 0, -1),
+                v4d(1, 0, 0, 0),
+                v4d(1, 0, 0, 1),
+                v4d(1, 0, 1, -1),
+                v4d(1, 0, 1, 0),
+                v4d(1, 0, 1, 1),
+                v4d(1, 1, -1, -1),
+                v4d(1, 1, -1, 0),
+                v4d(1, 1, -1, 1),
+                v4d(1, 1, 0, -1),
+                v4d(1, 1, 0, 0),
+                v4d(1, 1, 0, 1),
+                v4d(1, 1, 1, -1),
+                v4d(1, 1, 1, 0),
+                v4d(1, 1, 1, 1),
+            ],
+            uv
         );
     }
 
