@@ -21,7 +21,7 @@ pub struct Matrix3d<S: Integer> {
 impl<S: Integer> Matrix3d<S> {
     /// Creates a new 3d matrix from a function.
     ///
-    /// See [Matrix2d::with](crate::Matrix2d::with) for an example.
+    /// See [`Matrix2d::with`](crate::Matrix2d::with) for an example.
     pub fn with<F>(f: F) -> Matrix3d<S>
     where
         F: Fn(usize, usize) -> S,

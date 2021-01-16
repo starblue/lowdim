@@ -20,7 +20,7 @@ pub struct Matrix4d<S: Integer> {
 impl<S: Integer> Matrix4d<S> {
     /// Creates a new 4d matrix from a function.
     ///
-    /// See [Matrix2d::with](crate::Matrix2d::with) for an example.
+    /// See [`Matrix2d::with`](crate::Matrix2d::with) for an example.
     pub fn with<F>(f: F) -> Matrix4d<S>
     where
         F: Fn(usize, usize) -> S,
