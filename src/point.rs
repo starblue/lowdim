@@ -69,20 +69,52 @@ where
     }
 
     /// Returns the point constructed by taking the minimum with another point at each coordinate.
+    ///
+    /// # Example
+    /// ```
+    /// # use gamedim::p4d;
+    /// let p0 = p4d(1, -2, 7, -4);
+    /// let p1 = p4d(2, -3, 7, 4);
+    /// assert_eq!(p4d(1, -3, 7, -4), p0.min(p1));
+    /// ```
     pub fn min(&self, other: Self) -> Self {
         Point::from(self.v.min(other.v))
     }
     /// Returns the point constructed by taking the maximum with another point at each coordinate.
+    ///
+    /// # Example
+    /// ```
+    /// # use gamedim::p4d;
+    /// let p0 = p4d(1, -2, 7, -4);
+    /// let p1 = p4d(2, -3, 7, 4);
+    /// assert_eq!(p4d(2, -2, 7, 4), p0.max(p1));
+    /// ```
     pub fn max(&self, other: Self) -> Self {
         Point::from(self.v.max(other.v))
     }
 
-    /// The distance to another point w.r.t. the L1 norm.
+    /// Returns the distance to another point w.r.t. the L1 norm.
+    ///
+    /// # Example
+    /// ```
+    /// # use gamedim::p4d;
+    /// let p0 = p4d(1, -2, 7, -4);
+    /// let p1 = p4d(2, -3, 7, 4);
+    /// assert_eq!(10, p0.distance_l1(p1));
+    /// ```
     pub fn distance_l1(&self, other: Self) -> S {
         (self - other).norm_l1()
     }
 
-    /// The distance to another point w.r.t. the L∞ norm.
+    /// Returns the distance to another point w.r.t. the L∞ norm.
+    ///
+    /// # Example
+    /// ```
+    /// # use gamedim::p4d;
+    /// let p0 = p4d(1, -2, 7, -4);
+    /// let p1 = p4d(2, -3, 7, 4);
+    /// assert_eq!(8, p0.distance_l_infty(p1));
+    /// ```
     pub fn distance_l_infty(&self, other: Self) -> S {
         (self - other).norm_l_infty()
     }
@@ -104,6 +136,15 @@ where
             .into_iter()
             .map(|v| self + v)
             .collect()
+    }
+
+    /// Returns the lexicographic total ordering for this and another point.
+    ///
+    /// That is, the first different coordinate decides the ordering.
+    /// This is useful as an arbitrary total ordering for sorting,
+    /// but is not intended to be otherwise meaningful.
+    pub fn lex_cmp(&self, other: &Self) -> Ordering {
+        self.v.lex_cmp(&other.v)
     }
 }
 
@@ -675,5 +716,33 @@ mod tests {
         let u = p4d(2, 7, 5, -4);
         let v = p4d(3, 1, 1, 4);
         assert_eq!(p4d(3, 7, 5, 4), u.max(v));
+    }
+
+    #[test]
+    fn test_neighbors_l1() {
+        let p = p2d(2, -3);
+        let mut ns: Vec<Point2d<i64>> = p.neighbors_l1();
+        ns.sort_by(Point2d::lex_cmp);
+        assert_eq!(vec![p2d(1, -3), p2d(2, -4), p2d(2, -2), p2d(3, -3)], ns);
+    }
+
+    #[test]
+    fn test_unit_vecs_l_infty() {
+        let p = p2d(2, -3);
+        let mut ns: Vec<Point2d<i64>> = p.neighbors_l_infty();
+        ns.sort_by(Point2d::lex_cmp);
+        assert_eq!(
+            vec![
+                p2d(1, -4),
+                p2d(1, -3),
+                p2d(1, -2),
+                p2d(2, -4),
+                p2d(2, -2),
+                p2d(3, -4),
+                p2d(3, -3),
+                p2d(3, -2)
+            ],
+            ns
+        );
     }
 }
