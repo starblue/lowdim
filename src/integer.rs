@@ -2,6 +2,7 @@
 
 #![warn(missing_docs)]
 
+use core::fmt::Display;
 use core::ops;
 
 /// Required arithmetic operations for integers.
@@ -22,6 +23,7 @@ where
 pub trait Integer
 where
     Self: Copy,
+    Self: Display,
     Self: From<i32>,
     Self: Ord,
     Self: IntegerOps,

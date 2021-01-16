@@ -3,6 +3,7 @@
 #![warn(missing_docs)]
 
 use core::cmp::Ordering;
+use core::fmt;
 use core::ops::Add;
 use core::ops::AddAssign;
 use core::ops::Index;
@@ -20,7 +21,7 @@ use crate::VectorOps;
 const DIM: usize = 4;
 
 /// A four-dimensional discrete vector.
-#[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Default, Eq, PartialEq, Hash)]
 pub struct Vec4d<S = i64>([S; DIM])
 where
     S: Integer;
@@ -261,6 +262,18 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
 /// This is a utility function for concisely representing vectors.
 pub fn v4d<S: Integer>(x: S, y: S, z: S, w: S) -> Vec4d<S> {
     Vec4d::new(x, y, z, w)
+}
+
+impl<S: Integer> fmt::Debug for Vec4d<S> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "(")?;
+        let mut sep = "";
+        for i in 0..Self::DIM {
+            write!(f, "{}{}", sep, self[i])?;
+            sep = ", ";
+        }
+        write!(f, ")")
+    }
 }
 
 impl<S: Integer> Index<usize> for Vec4d<S> {
@@ -609,6 +622,11 @@ mod tests {
     fn test_norm_l_infty() {
         assert_eq!(8, v4d(2, 3, 5, 8).norm_l_infty());
         assert_eq!(8, v4d(-2, -3, -5, -8).norm_l_infty());
+    }
+
+    #[test]
+    fn test_debug() {
+        assert_eq!("(2, -3, 5, -8)", format!("{:?}", v4d(2, -3, 5, -8)));
     }
 
     #[test]

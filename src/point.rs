@@ -13,6 +13,7 @@
 #![warn(missing_docs)]
 
 use core::cmp::Ordering;
+use core::fmt;
 use core::marker::PhantomData;
 
 use core::ops::Add;
@@ -32,7 +33,7 @@ use crate::Vector;
 use crate::VectorOps;
 
 /// A point in a discrete space.
-#[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Default, Eq, PartialEq, Hash)]
 pub struct Point<S: Integer, V: Vector<S>> {
     s: PhantomData<S>,
     v: V,
@@ -50,6 +51,9 @@ where
     S: Integer,
     V: Vector<S>,
 {
+    /// The dimension of the points in this type.
+    const DIM: usize = V::DIM;
+
     /// Create a point from a function.
     ///
     /// The function must return a scalar value for each possible coordinate index.
@@ -286,6 +290,22 @@ pub fn p3d<S: Integer>(x: S, y: S, z: S) -> Point3d<S> {
 /// This is a utility function for concisely representing points.
 pub fn p4d<S: Integer>(x: S, y: S, z: S, w: S) -> Point4d<S> {
     Point4d::new(x, y, z, w)
+}
+
+impl<S, V> fmt::Debug for Point<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "P(")?;
+        let mut sep = "";
+        for i in 0..Self::DIM {
+            write!(f, "{}{}", sep, self[i])?;
+            sep = ", ";
+        }
+        write!(f, ")")
+    }
 }
 
 impl<S, V> From<V> for Point<S, V>
@@ -560,6 +580,11 @@ mod tests {
     #[test]
     fn test_with() {
         assert_eq!(p2d(2, 3), Point2d::with(|i| i64::try_from(i + 2).unwrap()));
+    }
+
+    #[test]
+    fn test_debug() {
+        assert_eq!("P(2, -3)", format!("{:?}", p2d(2, -3)));
     }
 
     #[test]

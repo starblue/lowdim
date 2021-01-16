@@ -3,6 +3,7 @@
 #![warn(missing_docs)]
 
 use core::cmp::Ordering;
+use core::fmt;
 use core::ops::Add;
 use core::ops::AddAssign;
 use core::ops::Index;
@@ -20,7 +21,7 @@ use crate::VectorOps;
 const DIM: usize = 3;
 
 /// A three-dimensional discrete vector.
-#[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Default, Eq, PartialEq, Hash)]
 pub struct Vec3d<S = i64>([S; DIM])
 where
     S: Integer;
@@ -216,6 +217,18 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
 /// This is a utility function for concisely representing vectors.
 pub fn v3d<S: Integer>(x: S, y: S, z: S) -> Vec3d<S> {
     Vec3d::new(x, y, z)
+}
+
+impl<S: Integer> fmt::Debug for Vec3d<S> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "(")?;
+        let mut sep = "";
+        for i in 0..Self::DIM {
+            write!(f, "{}{}", sep, self[i])?;
+            sep = ", ";
+        }
+        write!(f, ")")
+    }
 }
 
 impl<S: Integer> Index<usize> for Vec3d<S> {
@@ -504,6 +517,11 @@ mod tests {
         assert_eq!(5, v3d(-2, 3, -5).norm_l_infty());
         assert_eq!(5, v3d(2, -3, -5).norm_l_infty());
         assert_eq!(5, v3d(-2, -3, -5).norm_l_infty());
+    }
+
+    #[test]
+    fn test_debug() {
+        assert_eq!("(2, -3, 5)", format!("{:?}", v3d(2, -3, 5)));
     }
 
     #[test]
