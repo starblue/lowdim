@@ -52,7 +52,7 @@ where
     V: Vector<S>,
 {
     /// The dimension of the points in this type.
-    const DIM: usize = V::DIM;
+    pub const DIM: usize = V::DIM;
 
     /// Create a point from a function.
     ///
