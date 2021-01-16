@@ -1,3 +1,7 @@
+//! 3-dimensional matrices.
+
+#![warn(missing_docs)]
+
 use std::ops::Add;
 use std::ops::Mul;
 use std::ops::Sub;
@@ -16,6 +20,8 @@ pub struct Matrix3d<S: Integer> {
 
 impl<S: Integer> Matrix3d<S> {
     /// Creates a new 3d matrix from a function.
+    ///
+    /// See [Matrix2d::with](crate::Matrix2d::with) for an example.
     pub fn with<F>(f: F) -> Matrix3d<S>
     where
         F: Fn(usize, usize) -> S,
@@ -39,15 +45,19 @@ impl<S: Integer> Matrix3d<S> {
     {
         Matrix3d::with(|i, j| if i == j { 1.into() } else { 0.into() })
     }
-    /// Accesses a row vector
+    /// Returns a row vector of a matrix.
     pub fn row_vec(&self, i: usize) -> Vec3d<S> {
         v3d(self.a[i][0], self.a[i][1], self.a[i][2])
     }
-    /// Accesses a column vector
+    /// Returns a column vector of a matrix.
     pub fn col_vec(&self, j: usize) -> Vec3d<S> {
         v3d(self.a[0][j], self.a[1][j], self.a[2][j])
     }
-    /// The determinant of the matrix
+    /// Returns the diagonal vector of a matrix.
+    pub fn diag_vec(&self) -> Vec3d<S> {
+        v3d(self.a[0][0], self.a[1][1], self.a[2][2])
+    }
+    /// Returns the determinant of a matrix.
     pub fn det(&self) -> S
     where
         S: Copy + Sub<Output = S> + Mul<Output = S>,
@@ -158,5 +168,102 @@ where
 
     fn mul(self, other: &'a Matrix3d<S>) -> Matrix3d<S> {
         Matrix3d::with(|i, j| self.row_vec(i) * other.col_vec(j))
+    }
+}
+#[cfg(test)]
+mod tests {
+    use core::convert::TryFrom;
+
+    use crate::v3d;
+    use crate::Matrix3d;
+
+    #[test]
+    fn test_zero() {
+        let m = Matrix3d::zero();
+        assert_eq!(v3d(0, 0, 0), m.row_vec(0));
+        assert_eq!(v3d(0, 0, 0), m.row_vec(1));
+        assert_eq!(v3d(0, 0, 0), m.row_vec(2));
+    }
+
+    #[test]
+    fn test_unit() {
+        let m = Matrix3d::unit();
+        assert_eq!(v3d(1, 0, 0), m.row_vec(0));
+        assert_eq!(v3d(0, 1, 0), m.row_vec(1));
+        assert_eq!(v3d(0, 0, 1), m.row_vec(2));
+    }
+
+    #[test]
+    fn test_row_vec() {
+        let m = Matrix3d::with(|i, j| i64::try_from(3 * i + j).unwrap());
+        assert_eq!(v3d(0, 1, 2), m.row_vec(0));
+        assert_eq!(v3d(3, 4, 5), m.row_vec(1));
+        assert_eq!(v3d(6, 7, 8), m.row_vec(2));
+    }
+
+    #[test]
+    fn test_col_vec() {
+        let m = Matrix3d::with(|i, j| i64::try_from(3 * i + j).unwrap());
+        assert_eq!(v3d(0, 3, 6), m.col_vec(0));
+        assert_eq!(v3d(1, 4, 7), m.col_vec(1));
+        assert_eq!(v3d(2, 5, 8), m.col_vec(2));
+    }
+
+    #[test]
+    fn test_diag_vec() {
+        let m = Matrix3d::with(|i, j| i64::try_from(3 * i + j).unwrap());
+        assert_eq!(v3d(0, 4, 8), m.diag_vec());
+    }
+
+    #[test]
+    fn test_det() {
+        // Test a diagonal matrix and all its row permutations,
+        // in order to cover all terms of the determinant formula.
+
+        // The determinant of a diagonal matrix is the product of its diagonal elements
+        // (all other elements are zero in a diagonal matrix).
+        let m = Matrix3d::with(|i, j| i64::try_from(if i == j { i + 2 } else { 0 }).unwrap());
+        assert_eq!(24, m.det());
+
+        // Rotations of the rows don't change the determinant.
+        let m =
+            Matrix3d::with(|i, j| i64::try_from(if (i + 1) % 3 == j { i + 2 } else { 0 }).unwrap());
+        assert_eq!(24, m.det());
+        let m =
+            Matrix3d::with(|i, j| i64::try_from(if (i + 2) % 3 == j { i + 2 } else { 0 }).unwrap());
+        assert_eq!(24, m.det());
+
+        // Transpositions of the rows change the sign.
+        // Swap rows 1 and 2, keep row 0 fixed
+        let m =
+            Matrix3d::with(|i, j| i64::try_from(if (3 - i) % 3 == j { i + 2 } else { 0 }).unwrap());
+        assert_eq!(-24, m.det());
+        // Swap rows 0 and 2, keep row 1 fixed
+        let m =
+            Matrix3d::with(|i, j| i64::try_from(if (2 - i) % 3 == j { i + 2 } else { 0 }).unwrap());
+        assert_eq!(-24, m.det());
+        // Swap rows 0 and 1, keep row 2 fixed
+        let m =
+            Matrix3d::with(|i, j| i64::try_from(if (4 - i) % 3 == j { i + 2 } else { 0 }).unwrap());
+        assert_eq!(-24, m.det());
+    }
+
+    #[test]
+    fn test_mul_mv() {
+        let m = Matrix3d::with(|i, j| i64::try_from(if i == j { i + 2 } else { 0 }).unwrap());
+        let v = v3d(2, 3, 4);
+        assert_eq!(v3d(4, 9, 16), m * v);
+        assert_eq!(v3d(4, 9, 16), m * &v);
+        assert_eq!(v3d(4, 9, 16), &m * v);
+        assert_eq!(v3d(4, 9, 16), &m * &v);
+    }
+
+    #[test]
+    fn test_mul_mm() {
+        let m = Matrix3d::with(|i, j| i64::try_from(if i == j { i + 2 } else { 0 }).unwrap());
+        assert_eq!(v3d(4, 9, 16), (m * m).diag_vec());
+        assert_eq!(v3d(4, 9, 16), (m * &m).diag_vec());
+        assert_eq!(v3d(4, 9, 16), (&m * m).diag_vec());
+        assert_eq!(v3d(4, 9, 16), (&m * &m).diag_vec());
     }
 }

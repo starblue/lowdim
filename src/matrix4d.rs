@@ -1,3 +1,7 @@
+//! 4-dimensional matrices.
+
+#![warn(missing_docs)]
+
 use std::ops::Add;
 use std::ops::Mul;
 
@@ -15,6 +19,8 @@ pub struct Matrix4d<S: Integer> {
 
 impl<S: Integer> Matrix4d<S> {
     /// Creates a new 4d matrix from a function.
+    ///
+    /// See [Matrix2d::with](crate::Matrix2d::with) for an example.
     pub fn with<F>(f: F) -> Matrix4d<S>
     where
         F: Fn(usize, usize) -> S,
@@ -41,13 +47,17 @@ impl<S: Integer> Matrix4d<S> {
     {
         Matrix4d::with(|i, j| if i == j { 1.into() } else { 0.into() })
     }
-    /// Accesses a row vector
+    /// Returns a row vector of a matrix.
     pub fn row_vec(&self, i: usize) -> Vec4d<S> {
         v4d(self.a[i][0], self.a[i][1], self.a[i][2], self.a[i][3])
     }
-    /// Accesses a column vector
+    /// Returns a column vector of a matrix.
     pub fn col_vec(&self, j: usize) -> Vec4d<S> {
         v4d(self.a[0][j], self.a[1][j], self.a[2][j], self.a[3][j])
+    }
+    /// Returns the diagonal vector of a matrix.
+    pub fn diag_vec(&self) -> Vec4d<S> {
+        v4d(self.a[0][0], self.a[1][1], self.a[2][2], self.a[3][3])
     }
 }
 
@@ -152,5 +162,73 @@ where
 
     fn mul(self, other: &'a Matrix4d<S>) -> Matrix4d<S> {
         Matrix4d::with(|i, j| self.row_vec(i) * other.col_vec(j))
+    }
+}
+#[cfg(test)]
+mod tests {
+    use core::convert::TryFrom;
+
+    use crate::v4d;
+    use crate::Matrix4d;
+
+    #[test]
+    fn test_zero() {
+        let m = Matrix4d::zero();
+        assert_eq!(v4d(0, 0, 0, 0), m.row_vec(0));
+        assert_eq!(v4d(0, 0, 0, 0), m.row_vec(1));
+        assert_eq!(v4d(0, 0, 0, 0), m.row_vec(2));
+        assert_eq!(v4d(0, 0, 0, 0), m.row_vec(3));
+    }
+
+    #[test]
+    fn test_unit() {
+        let m = Matrix4d::unit();
+        assert_eq!(v4d(1, 0, 0, 0), m.row_vec(0));
+        assert_eq!(v4d(0, 1, 0, 0), m.row_vec(1));
+        assert_eq!(v4d(0, 0, 1, 0), m.row_vec(2));
+        assert_eq!(v4d(0, 0, 0, 1), m.row_vec(3));
+    }
+
+    #[test]
+    fn test_row_vec() {
+        let m = Matrix4d::with(|i, j| i64::try_from(4 * i + j).unwrap());
+        assert_eq!(v4d(0, 1, 2, 3), m.row_vec(0));
+        assert_eq!(v4d(4, 5, 6, 7), m.row_vec(1));
+        assert_eq!(v4d(8, 9, 10, 11), m.row_vec(2));
+        assert_eq!(v4d(12, 13, 14, 15), m.row_vec(3));
+    }
+
+    #[test]
+    fn test_col_vec() {
+        let m = Matrix4d::with(|i, j| i64::try_from(4 * i + j).unwrap());
+        assert_eq!(v4d(0, 4, 8, 12), m.col_vec(0));
+        assert_eq!(v4d(1, 5, 9, 13), m.col_vec(1));
+        assert_eq!(v4d(2, 6, 10, 14), m.col_vec(2));
+        assert_eq!(v4d(3, 7, 11, 15), m.col_vec(3));
+    }
+
+    #[test]
+    fn test_diag_vec() {
+        let m = Matrix4d::with(|i, j| i64::try_from(4 * i + j).unwrap());
+        assert_eq!(v4d(0, 5, 10, 15), m.diag_vec());
+    }
+
+    #[test]
+    fn test_mul_mv() {
+        let m = Matrix4d::with(|i, j| i64::try_from(if i == j { i + 2 } else { 0 }).unwrap());
+        let v = v4d(2, 3, 4, 5);
+        assert_eq!(v4d(4, 9, 16, 25), m * v);
+        assert_eq!(v4d(4, 9, 16, 25), m * &v);
+        assert_eq!(v4d(4, 9, 16, 25), &m * v);
+        assert_eq!(v4d(4, 9, 16, 25), &m * &v);
+    }
+
+    #[test]
+    fn test_mul_mm() {
+        let m = Matrix4d::with(|i, j| i64::try_from(if i == j { i + 2 } else { 0 }).unwrap());
+        assert_eq!(v4d(4, 9, 16, 25), (m * m).diag_vec());
+        assert_eq!(v4d(4, 9, 16, 25), (m * &m).diag_vec());
+        assert_eq!(v4d(4, 9, 16, 25), (&m * m).diag_vec());
+        assert_eq!(v4d(4, 9, 16, 25), (&m * &m).diag_vec());
     }
 }
