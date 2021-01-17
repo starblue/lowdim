@@ -1,3 +1,5 @@
+//! n-dimensional arrays.
+
 use core::ops;
 
 use std::convert::TryFrom;
@@ -62,6 +64,7 @@ impl<S: Integer, T> Array2d<S, T> {
         })
     }
 
+    /// Returns the bounds of the array.
     pub fn bounds(&self) -> BBox2d<S> {
         self.bounds.clone()
     }
@@ -95,7 +98,7 @@ mod tests {
 
     #[test]
     fn test_index() {
-        let r = bb2d(-2, 3, -1, 2);
+        let r = bb2d(-2..3, -1..2);
         let mut a = Array2d::new_with(r, |p| if p == p2d(0, 0) { '*' } else { '.' });
         assert_eq!(a[p2d(0, 0)], '*');
         a[p2d(1, 1)] = '+';

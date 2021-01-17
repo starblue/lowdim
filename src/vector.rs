@@ -1,7 +1,5 @@
 //! Traits for vectors.
 
-#![warn(missing_docs)]
-
 use core::cmp::Ordering;
 use core::iter::once;
 use core::ops;

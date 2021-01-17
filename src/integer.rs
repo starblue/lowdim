@@ -1,7 +1,5 @@
 //! Contains traits defining required properties of the underlying integer types.
 
-#![warn(missing_docs)]
-
 use core::fmt::Display;
 use core::ops;
 

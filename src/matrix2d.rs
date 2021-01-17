@@ -1,7 +1,5 @@
 //! 2-dimensional matrices.
 
-#![warn(missing_docs)]
-
 use std::ops::Add;
 use std::ops::Mul;
 use std::ops::Sub;

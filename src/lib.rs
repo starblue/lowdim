@@ -12,7 +12,7 @@
 //! This was originally motivated by
 //! [Advent of Code](https://adventofcode.com/).
 
-//#![warn(missing_docs)]
+#![warn(missing_docs)]
 
 pub mod integer;
 pub use integer::Integer;

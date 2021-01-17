@@ -1,7 +1,5 @@
 //! 3-dimensional vectors.
 
-#![warn(missing_docs)]
-
 use core::cmp::Ordering;
 use core::fmt;
 use core::ops::Add;

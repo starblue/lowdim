@@ -10,8 +10,6 @@
 //!
 //! This module implements 2d, 3d and 4d points.
 
-#![warn(missing_docs)]
-
 use core::cmp::Ordering;
 use core::fmt;
 use core::marker::PhantomData;
