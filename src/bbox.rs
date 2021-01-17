@@ -5,7 +5,9 @@ use core::convert::TryFrom;
 use core::fmt::Debug;
 use core::ops::Range;
 
+#[cfg(feature = "random")]
 use rand::distributions::uniform::SampleUniform;
+#[cfg(feature = "random")]
 use rand::Rng;
 
 use crate::p2d;
@@ -163,14 +165,6 @@ where
     {
         usize::try_from(self.max.x() - self.min.x() + S::from(1)).unwrap_or(0)
     }
-    /// Returns the width of the rectangle.
-    #[deprecated]
-    pub fn width(&self) -> usize
-    where
-        usize: TryFrom<S>,
-    {
-        self.x_len()
-    }
 
     /// Returns the height of the bounding box.
     pub fn y_len(&self) -> usize
@@ -178,14 +172,6 @@ where
         usize: TryFrom<S>,
     {
         usize::try_from(self.max.y() - self.min.y() + S::from(1)).unwrap_or(0)
-    }
-    /// Returns the height of the rectangle.
-    #[deprecated]
-    pub fn height(&self) -> usize
-    where
-        usize: TryFrom<S>,
-    {
-        self.y_len()
     }
 
     /// Returns the area of the bounding box.
@@ -241,7 +227,7 @@ where
     /// Returns a random point inside the bounding box.
     ///
     /// Uses a uniform distribution.
-    /// TODO make dependency on rand configurable
+    #[cfg(feature = "random")]
     pub fn random_point<R>(&self, rng: &mut R) -> Point2d<S>
     where
         R: Rng,
@@ -406,18 +392,6 @@ mod tests {
     fn test_y_len() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(3, bb.y_len());
-    }
-    #[test]
-    #[allow(deprecated)]
-    fn test_width() {
-        let r = bb2d(-2..3, -1..2);
-        assert_eq!(r.width(), 5);
-    }
-    #[test]
-    #[allow(deprecated)]
-    fn test_height() {
-        let r = bb2d(-2..3, -1..2);
-        assert_eq!(r.height(), 3);
     }
     #[test]
     fn test_area() {
