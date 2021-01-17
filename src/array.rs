@@ -1,4 +1,4 @@
-//! n-dimensional arrays.
+//! n-dimensional arrays indexed by points in a bounding box.
 
 use core::ops;
 
@@ -9,7 +9,7 @@ use crate::BBox2d;
 use crate::Integer;
 use crate::Point2d;
 
-/// A two-dimensional array.
+/// A two-dimensional array indexed by points in a bounding box.
 ///
 /// The starting index and size is given by a rectangle,
 /// i.e. x- and y-index don't need to start at zero.

@@ -11,6 +11,22 @@
 //!
 //! This was originally motivated by
 //! [Advent of Code](https://adventofcode.com/).
+//!
+//! ## Crate Status
+//!
+//! Experimental
+//!
+//! ### Limitations
+//! - Bounding boxes and arrays are only implemented for the 2d case.
+//! - Rotations are only implemented for the 2d case, reflections not at all.
+//!
+//! ## Crate Feature Flags
+//!
+//! - `random`
+//!   - Off by default.
+//!   - Adds a dependency to the `rand` crate.
+//!   - Adds the method `BBox2d::random_point` to generate random points
+//!     in a bounding box.
 
 #![warn(missing_docs)]
 

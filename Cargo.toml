@@ -8,6 +8,8 @@ edition = "2018"
 
 [features]
 default = []
+
+# Enable the generation of random points in a bounding box.
 random = ["rand"]
 
 [dependencies]
