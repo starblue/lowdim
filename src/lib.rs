@@ -74,6 +74,9 @@ pub use crate::bbox::BBox2d;
 pub use crate::bbox::BBox3d;
 pub use crate::bbox::BBox4d;
 
+pub mod sym2d;
+pub use crate::sym2d::Sym2d;
+
 pub mod array;
 pub use crate::array::Array2d;
 
