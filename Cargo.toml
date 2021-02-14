@@ -2,7 +2,7 @@
 name = "gamedim"
 version = "0.2.0"
 authors = ["Juergen Stuber <juergen@jstuber.net>"]
-description = "Library for two- or three-dimensional coordinates and arrays."
+description = "Library for two- to four-dimensional integer geometry."
 license = "MIT OR Apache-2.0"
 edition = "2018"
 
