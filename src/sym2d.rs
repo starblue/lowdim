@@ -3,6 +3,7 @@
 use core::fmt;
 use core::ops::Mul;
 
+use crate::matrix::Matrix;
 use crate::Integer;
 use crate::Matrix2d;
 
@@ -48,6 +49,13 @@ impl Sym2d {
             Sym2d::Rotation(2),
             Sym2d::Rotation(3),
         ]
+    }
+    /// Returns the inverse of an element.
+    pub fn inv(&self) -> Sym2d {
+        match self {
+            Sym2d::Rotation(i) => Sym2d::Rotation((4 - i) % 4),
+            Sym2d::Reflection(i) => Sym2d::Reflection(*i),
+        }
     }
     /// Returns true if this a rotation.
     pub fn is_rotation(&self) -> bool {
@@ -139,6 +147,15 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn test_inv() {
+        for s in Sym2d::elements() {
+            assert_eq!(Sym2d::Rotation(0), s * s.inv());
+            assert_eq!(Sym2d::Rotation(0), s.inv() * s);
+        }
+    }
+
     #[test]
     fn test_rotations() {
         let es = Sym2d::rotations();
