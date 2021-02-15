@@ -6,6 +6,8 @@ use std::ops::Sub;
 
 use crate::v3d;
 use crate::Integer;
+use crate::Matrix;
+use crate::MatrixOps;
 use crate::Vec3d;
 
 const DIM: usize = 3;
@@ -17,32 +19,6 @@ pub struct Matrix3d<S: Integer> {
 }
 
 impl<S: Integer> Matrix3d<S> {
-    /// Creates a new 3d matrix from a function.
-    ///
-    /// See [`Matrix2d::with`](crate::Matrix2d::with) for an example.
-    pub fn with<F>(f: F) -> Matrix3d<S>
-    where
-        F: Fn(usize, usize) -> S,
-    {
-        let r0 = [f(0, 0), f(0, 1), f(0, 2)];
-        let r1 = [f(1, 0), f(1, 1), f(1, 2)];
-        let r2 = [f(2, 0), f(2, 1), f(2, 2)];
-        Matrix3d { a: [r0, r1, r2] }
-    }
-    /// Creates a zero matrix.
-    pub fn zero() -> Matrix3d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix3d::with(|_i, _j| 0.into())
-    }
-    /// Creates a unit matrix.
-    pub fn unit() -> Matrix3d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix3d::with(|i, j| if i == j { 1.into() } else { 0.into() })
-    }
     /// Returns a row vector of a matrix.
     pub fn row_vec(&self, i: usize) -> Vec3d<S> {
         v3d(self.a[i][0], self.a[i][1], self.a[i][2])
@@ -66,6 +42,30 @@ impl<S: Integer> Matrix3d<S> {
             - self.a[0][2] * self.a[1][1] * self.a[2][0]
             - self.a[0][1] * self.a[1][0] * self.a[2][2]
             - self.a[0][0] * self.a[1][2] * self.a[2][1]
+    }
+}
+
+impl<S: Integer> MatrixOps<S, Matrix3d<S>> for Matrix3d<S> {}
+impl<'a, S: Integer> MatrixOps<S, &'a Matrix3d<S>> for Matrix3d<S> {}
+impl<'a, S: Integer> MatrixOps<S, Matrix3d<S>, Matrix3d<S>> for &'a Matrix3d<S> {}
+impl<'a, S: Integer> MatrixOps<S, &'a Matrix3d<S>, Matrix3d<S>> for &'a Matrix3d<S> {}
+
+impl<S: Integer> MatrixOps<S, Vec3d<S>, Vec3d<S>> for Matrix3d<S> {}
+impl<'a, S: Integer> MatrixOps<S, &'a Vec3d<S>, Vec3d<S>> for Matrix3d<S> {}
+impl<'a, S: Integer> MatrixOps<S, Vec3d<S>, Vec3d<S>> for &'a Matrix3d<S> {}
+impl<'a, S: Integer> MatrixOps<S, &'a Vec3d<S>, Vec3d<S>> for &'a Matrix3d<S> {}
+
+impl<S: Integer> Matrix<S> for Matrix3d<S> {
+    type V = Vec3d<S>;
+
+    fn with<F>(f: F) -> Matrix3d<S>
+    where
+        F: Fn(usize, usize) -> S,
+    {
+        let r0 = [f(0, 0), f(0, 1), f(0, 2)];
+        let r1 = [f(1, 0), f(1, 1), f(1, 2)];
+        let r2 = [f(2, 0), f(2, 1), f(2, 2)];
+        Matrix3d { a: [r0, r1, r2] }
     }
 }
 
@@ -173,6 +173,7 @@ mod tests {
     use core::convert::TryFrom;
 
     use crate::v3d;
+    use crate::Matrix;
     use crate::Matrix3d;
 
     #[test]

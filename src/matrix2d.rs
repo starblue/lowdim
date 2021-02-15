@@ -6,6 +6,8 @@ use std::ops::Sub;
 
 use crate::v2d;
 use crate::Integer;
+use crate::Matrix;
+use crate::MatrixOps;
 use crate::Vec2d;
 
 const DIM: usize = 2;
@@ -40,20 +42,6 @@ impl<S: Integer> Matrix2d<S> {
         let r0 = [f(0, 0), f(0, 1)];
         let r1 = [f(1, 0), f(1, 1)];
         Matrix2d { a: [r0, r1] }
-    }
-    /// Creates a zero matrix.
-    pub fn zero() -> Matrix2d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix2d::with(|_i, _j| 0.into())
-    }
-    /// Creates a unit matrix.
-    pub fn unit() -> Matrix2d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix2d::with(|i, j| if i == j { 1.into() } else { 0.into() })
     }
     /// Returns a row vector of a matrix.
     pub fn row_vec(&self, i: usize) -> Vec2d<S> {
@@ -122,6 +110,27 @@ impl<S: Integer> Matrix2d<S> {
         S: From<i32>,
     {
         Matrix2d::new(S::from(0), S::from(-1), S::from(-1), S::from(0))
+    }
+}
+
+impl<S: Integer> MatrixOps<S, Matrix2d<S>> for Matrix2d<S> {}
+impl<'a, S: Integer> MatrixOps<S, &'a Matrix2d<S>> for Matrix2d<S> {}
+impl<'a, S: Integer> MatrixOps<S, Matrix2d<S>, Matrix2d<S>> for &'a Matrix2d<S> {}
+impl<'a, S: Integer> MatrixOps<S, &'a Matrix2d<S>, Matrix2d<S>> for &'a Matrix2d<S> {}
+
+impl<S: Integer> MatrixOps<S, Vec2d<S>, Vec2d<S>> for Matrix2d<S> {}
+impl<'a, S: Integer> MatrixOps<S, &'a Vec2d<S>, Vec2d<S>> for Matrix2d<S> {}
+impl<'a, S: Integer> MatrixOps<S, Vec2d<S>, Vec2d<S>> for &'a Matrix2d<S> {}
+impl<'a, S: Integer> MatrixOps<S, &'a Vec2d<S>, Vec2d<S>> for &'a Matrix2d<S> {}
+
+impl<S: Integer> Matrix<S> for Matrix2d<S> {
+    type V = Vec2d<S>;
+
+    fn with<F>(f: F) -> Self
+    where
+        F: Fn(usize, usize) -> S,
+    {
+        Self::new(f(0, 0), f(0, 1), f(1, 0), f(1, 1))
     }
 }
 
@@ -226,6 +235,7 @@ mod tests {
     use core::convert::TryFrom;
 
     use crate::v2d;
+    use crate::Matrix;
     use crate::Matrix2d;
 
     #[test]

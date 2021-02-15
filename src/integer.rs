@@ -26,6 +26,16 @@ where
     Self: Ord,
     Self: IntegerOps,
 {
+    /// Returns zero.
+    fn zero() -> Self {
+        Self::from(0)
+    }
+
+    /// Returns one.
+    fn one() -> Self {
+        Self::from(1)
+    }
+
     /// The absolute value function.
     fn abs(self) -> Self;
 

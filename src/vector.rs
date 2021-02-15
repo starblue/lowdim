@@ -48,6 +48,11 @@ where
     where
         F: Fn(usize) -> S;
 
+    /// Creates the zero vector.
+    fn zero() -> Self {
+        Self::with(|_| S::zero())
+    }
+
     /// Apply min by component
     fn min(&self, other: Self) -> Self {
         Self::with(|i| self[i].min(other[i]))

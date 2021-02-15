@@ -5,6 +5,8 @@ use std::ops::Mul;
 
 use crate::v4d;
 use crate::Integer;
+use crate::Matrix;
+use crate::MatrixOps;
 use crate::Vec4d;
 
 const DIM: usize = 4;
@@ -16,35 +18,6 @@ pub struct Matrix4d<S: Integer> {
 }
 
 impl<S: Integer> Matrix4d<S> {
-    /// Creates a new 4d matrix from a function.
-    ///
-    /// See [`Matrix2d::with`](crate::Matrix2d::with) for an example.
-    pub fn with<F>(f: F) -> Matrix4d<S>
-    where
-        F: Fn(usize, usize) -> S,
-    {
-        let r0 = [f(0, 0), f(0, 1), f(0, 2), f(0, 3)];
-        let r1 = [f(1, 0), f(1, 1), f(1, 2), f(1, 3)];
-        let r2 = [f(2, 0), f(2, 1), f(2, 2), f(2, 3)];
-        let r3 = [f(3, 0), f(3, 1), f(3, 2), f(3, 3)];
-        Matrix4d {
-            a: [r0, r1, r2, r3],
-        }
-    }
-    /// Creates a zero matrix.
-    pub fn zero() -> Matrix4d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix4d::with(|_i, _j| 0.into())
-    }
-    /// Creates a unit matrix.
-    pub fn unit() -> Matrix4d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix4d::with(|i, j| if i == j { 1.into() } else { 0.into() })
-    }
     /// Returns a row vector of a matrix.
     pub fn row_vec(&self, i: usize) -> Vec4d<S> {
         v4d(self.a[i][0], self.a[i][1], self.a[i][2], self.a[i][3])
@@ -56,6 +29,33 @@ impl<S: Integer> Matrix4d<S> {
     /// Returns the diagonal vector of a matrix.
     pub fn diag_vec(&self) -> Vec4d<S> {
         v4d(self.a[0][0], self.a[1][1], self.a[2][2], self.a[3][3])
+    }
+}
+
+impl<S: Integer> MatrixOps<S, Matrix4d<S>> for Matrix4d<S> {}
+impl<'a, S: Integer> MatrixOps<S, &'a Matrix4d<S>> for Matrix4d<S> {}
+impl<'a, S: Integer> MatrixOps<S, Matrix4d<S>, Matrix4d<S>> for &'a Matrix4d<S> {}
+impl<'a, S: Integer> MatrixOps<S, &'a Matrix4d<S>, Matrix4d<S>> for &'a Matrix4d<S> {}
+
+impl<S: Integer> MatrixOps<S, Vec4d<S>, Vec4d<S>> for Matrix4d<S> {}
+impl<'a, S: Integer> MatrixOps<S, &'a Vec4d<S>, Vec4d<S>> for Matrix4d<S> {}
+impl<'a, S: Integer> MatrixOps<S, Vec4d<S>, Vec4d<S>> for &'a Matrix4d<S> {}
+impl<'a, S: Integer> MatrixOps<S, &'a Vec4d<S>, Vec4d<S>> for &'a Matrix4d<S> {}
+
+impl<S: Integer> Matrix<S> for Matrix4d<S> {
+    type V = Vec4d<S>;
+
+    fn with<F>(f: F) -> Matrix4d<S>
+    where
+        F: Fn(usize, usize) -> S,
+    {
+        let r0 = [f(0, 0), f(0, 1), f(0, 2), f(0, 3)];
+        let r1 = [f(1, 0), f(1, 1), f(1, 2), f(1, 3)];
+        let r2 = [f(2, 0), f(2, 1), f(2, 2), f(2, 3)];
+        let r3 = [f(3, 0), f(3, 1), f(3, 2), f(3, 3)];
+        Matrix4d {
+            a: [r0, r1, r2, r3],
+        }
     }
 }
 
@@ -167,6 +167,7 @@ mod tests {
     use core::convert::TryFrom;
 
     use crate::v4d;
+    use crate::Matrix;
     use crate::Matrix4d;
 
     #[test]

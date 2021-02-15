@@ -58,6 +58,12 @@ pub use crate::vec4d::v4d;
 #[doc(inline)]
 pub use crate::vec4d::Vec4d;
 
+pub mod matrix;
+#[doc(inline)]
+pub use matrix::Matrix;
+#[doc(inline)]
+pub use matrix::MatrixOps;
+
 pub mod matrix2d;
 #[doc(inline)]
 pub use crate::matrix2d::Matrix2d;
