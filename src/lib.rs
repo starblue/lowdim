@@ -108,6 +108,16 @@ pub mod sym2d;
 #[doc(inline)]
 pub use crate::sym2d::Sym2d;
 
+pub mod affine_transformation;
+#[doc(inline)]
+pub use crate::affine_transformation::AffineTransformation;
+#[doc(inline)]
+pub use crate::affine_transformation::AffineTransformation2d;
+#[doc(inline)]
+pub use crate::affine_transformation::AffineTransformation3d;
+#[doc(inline)]
+pub use crate::affine_transformation::AffineTransformation4d;
+
 pub mod array;
 #[doc(inline)]
 pub use crate::array::Array2d;

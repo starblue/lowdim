@@ -70,6 +70,11 @@ where
         Point::from(V::with(f))
     }
 
+    /// Returns a vector of the point coordinates.
+    pub fn to_vec(&self) -> V {
+        self.v
+    }
+
     /// Returns the point constructed by taking the minimum with another point at each coordinate.
     ///
     /// # Example
