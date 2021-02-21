@@ -19,23 +19,26 @@ use crate::Matrix2d;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Sym2d {
     /// Rotates by the given number of right angles to the left.
-    Rotation(u8),
+    R(u8),
     /// Reflects by an axis through the origin so that
     /// the point (1, 0) is rotated by the given number of right angles to the left.
-    Reflection(u8),
+    ///
+    /// The axis of reflection then forms an angle of 45 degrees times the given number
+    /// with the x axis.
+    S(u8),
 }
 impl Sym2d {
     /// Returns a vector containing the elements of the symmetry group.
     pub fn elements() -> Vec<Sym2d> {
         vec![
-            Sym2d::Rotation(0),
-            Sym2d::Rotation(1),
-            Sym2d::Rotation(2),
-            Sym2d::Rotation(3),
-            Sym2d::Reflection(0),
-            Sym2d::Reflection(1),
-            Sym2d::Reflection(2),
-            Sym2d::Reflection(3),
+            Sym2d::R(0),
+            Sym2d::R(1),
+            Sym2d::R(2),
+            Sym2d::R(3),
+            Sym2d::S(0),
+            Sym2d::S(1),
+            Sym2d::S(2),
+            Sym2d::S(3),
         ]
     }
     /// Returns a vector containing the rotations of the symmetry group.
@@ -43,32 +46,27 @@ impl Sym2d {
     /// The rotations are closed under multiplication.
     /// That is, they form a subgroup.
     pub fn rotations() -> Vec<Sym2d> {
-        vec![
-            Sym2d::Rotation(0),
-            Sym2d::Rotation(1),
-            Sym2d::Rotation(2),
-            Sym2d::Rotation(3),
-        ]
+        vec![Sym2d::R(0), Sym2d::R(1), Sym2d::R(2), Sym2d::R(3)]
     }
     /// Returns the inverse of an element.
     pub fn inv(&self) -> Sym2d {
         match self {
-            Sym2d::Rotation(i) => Sym2d::Rotation((4 - i) % 4),
-            Sym2d::Reflection(i) => Sym2d::Reflection(*i),
+            Sym2d::R(i) => Sym2d::R((4 - i) % 4),
+            Sym2d::S(i) => Sym2d::S(*i),
         }
     }
     /// Returns true if this a rotation.
     pub fn is_rotation(&self) -> bool {
         match self {
-            Sym2d::Rotation(_) => true,
-            Sym2d::Reflection(_) => false,
+            Sym2d::R(_) => true,
+            Sym2d::S(_) => false,
         }
     }
     /// Returns true if this a reflection.
     pub fn is_reflection(&self) -> bool {
         match self {
-            Sym2d::Rotation(_) => false,
-            Sym2d::Reflection(_) => true,
+            Sym2d::R(_) => false,
+            Sym2d::S(_) => true,
         }
     }
 }
@@ -76,8 +74,8 @@ impl Sym2d {
 impl fmt::Display for Sym2d {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Sym2d::Rotation(i) => write!(f, "r{}", i),
-            Sym2d::Reflection(i) => write!(f, "s{}", i),
+            Sym2d::R(i) => write!(f, "r{}", i),
+            Sym2d::S(i) => write!(f, "s{}", i),
         }
     }
 }
@@ -85,14 +83,14 @@ impl fmt::Display for Sym2d {
 impl<S: Integer> From<Sym2d> for Matrix2d<S> {
     fn from(s: Sym2d) -> Self {
         match s {
-            Sym2d::Rotation(0) => Matrix2d::unit(),
-            Sym2d::Rotation(1) => Matrix2d::rotate_left_90(),
-            Sym2d::Rotation(2) => Matrix2d::rotate_180(),
-            Sym2d::Rotation(3) => Matrix2d::rotate_right_90(),
-            Sym2d::Reflection(0) => Matrix2d::reflect_x_axis(),
-            Sym2d::Reflection(1) => Matrix2d::reflect_diagonal(),
-            Sym2d::Reflection(2) => Matrix2d::reflect_y_axis(),
-            Sym2d::Reflection(3) => Matrix2d::reflect_anti_diagonal(),
+            Sym2d::R(0) => Matrix2d::unit(),
+            Sym2d::R(1) => Matrix2d::rotate_left_90(),
+            Sym2d::R(2) => Matrix2d::rotate_180(),
+            Sym2d::R(3) => Matrix2d::rotate_right_90(),
+            Sym2d::S(0) => Matrix2d::reflect_x_axis(),
+            Sym2d::S(1) => Matrix2d::reflect_diagonal(),
+            Sym2d::S(2) => Matrix2d::reflect_y_axis(),
+            Sym2d::S(3) => Matrix2d::reflect_anti_diagonal(),
             _ => panic!("unexpected 2d symmetry"),
         }
     }
@@ -102,10 +100,10 @@ impl Mul for Sym2d {
     type Output = Sym2d;
     fn mul(self, other: Sym2d) -> Sym2d {
         match (self, other) {
-            (Sym2d::Rotation(r0), Sym2d::Rotation(r1)) => Sym2d::Rotation((r0 + r1) % 4),
-            (Sym2d::Rotation(r0), Sym2d::Reflection(r1)) => Sym2d::Reflection((r0 + r1) % 4),
-            (Sym2d::Reflection(r0), Sym2d::Rotation(r1)) => Sym2d::Reflection((r0 + 4 - r1) % 4),
-            (Sym2d::Reflection(r0), Sym2d::Reflection(r1)) => Sym2d::Rotation((r0 + 4 - r1) % 4),
+            (Sym2d::R(r0), Sym2d::R(r1)) => Sym2d::R((r0 + r1) % 4),
+            (Sym2d::R(r0), Sym2d::S(r1)) => Sym2d::S((r0 + r1) % 4),
+            (Sym2d::S(r0), Sym2d::R(r1)) => Sym2d::S((r0 + 4 - r1) % 4),
+            (Sym2d::S(r0), Sym2d::S(r1)) => Sym2d::R((r0 + 4 - r1) % 4),
         }
     }
 }
@@ -151,34 +149,34 @@ mod tests {
     #[test]
     fn test_inv() {
         for s in Sym2d::elements() {
-            assert_eq!(Sym2d::Rotation(0), s * s.inv());
-            assert_eq!(Sym2d::Rotation(0), s.inv() * s);
+            assert_eq!(Sym2d::R(0), s * s.inv());
+            assert_eq!(Sym2d::R(0), s.inv() * s);
         }
     }
 
     #[test]
     fn test_rotations() {
         let es = Sym2d::rotations();
-        assert_eq!(Sym2d::Rotation(0), es[0]);
-        assert_eq!(Sym2d::Rotation(1), es[1]);
-        assert_eq!(Sym2d::Rotation(2), es[2]);
-        assert_eq!(Sym2d::Rotation(3), es[3]);
+        assert_eq!(Sym2d::R(0), es[0]);
+        assert_eq!(Sym2d::R(1), es[1]);
+        assert_eq!(Sym2d::R(2), es[2]);
+        assert_eq!(Sym2d::R(3), es[3]);
     }
 
     #[test]
     fn test_is_rotation() {
-        assert!(Sym2d::Rotation(1).is_rotation());
-        assert!(!Sym2d::Reflection(1).is_rotation());
+        assert!(Sym2d::R(1).is_rotation());
+        assert!(!Sym2d::S(1).is_rotation());
     }
     #[test]
     fn test_is_reflection() {
-        assert!(!Sym2d::Rotation(1).is_reflection());
-        assert!(Sym2d::Reflection(1).is_reflection());
+        assert!(!Sym2d::R(1).is_reflection());
+        assert!(Sym2d::S(1).is_reflection());
     }
 
     #[test]
     fn test_display() {
-        assert_eq!("r0", format!("{}", Sym2d::Rotation(0)));
-        assert_eq!("s0", format!("{}", Sym2d::Reflection(0)));
+        assert_eq!("r0", format!("{}", Sym2d::R(0)));
+        assert_eq!("s0", format!("{}", Sym2d::S(0)));
     }
 }
