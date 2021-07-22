@@ -102,6 +102,9 @@ where
 
     /// Returns the distance to another point w.r.t. the L1 norm.
     ///
+    /// This is the number of orthogonal steps needed
+    /// to move from one point to the other.
+    ///
     /// # Example
     /// ```
     /// # use gamedim::p4d;
@@ -114,6 +117,9 @@ where
     }
 
     /// Returns the distance to another point w.r.t. the L∞ norm.
+    ///
+    /// This is the number of orthogonal or diagonal steps needed
+    /// to move from one point to the other.
     ///
     /// # Example
     /// ```
