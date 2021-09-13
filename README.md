@@ -1,6 +1,6 @@
 # lowdim
 
-[![Test Status](https://github.com/starblue/lowdim/workflows/Test/badge.svg?event=push)](https://github.com/starblue/lowdim/actions)
+[![Test Status](https://github.com/starblue/lowdim/workflows/tests/badge.svg?event=push)](https://github.com/starblue/lowdim/actions)
 [![Crate](https://img.shields.io/crates/v/lowdim.svg)](https://crates.io/crates/lowdim)
 [![API](https://docs.rs/lowdim/badge.svg)](https://docs.rs/lowdim)
 
