@@ -1,16 +1,17 @@
 # `hex-file`
 
-> A library for two- or three-dimensional coordinates and arrays.
+> A library for two-, three- or four-dimensional coordinates and arrays.
 
 ## Applications
 
-This is intended for discrete geometry, both operations with discrete coordinates
-and arrays accessed by these.  Operations include iterating over neighbours.
+This is intended for discrete geometry,
+both for operations with discrete coordinates and arrays accessed by these.
+Operations include iterating over neighbours.
 This is useful for example in
 
 - cellular automata
 - game boards
-- various maps of Santa's base at the north pole (Advent of Code).
+- Santa's base at the north pole [(Advent of Code)](https://adventofcode.com/).
 
 ## License
 

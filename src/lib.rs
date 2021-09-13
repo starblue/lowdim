@@ -1,7 +1,7 @@
-//! Affine geometry for discrete 2d to 4d game and puzzle worlds.
+//! Affine geometry for discrete 2d, 3d and 4d worlds.
 //!
 //! Provides vectors, matrices, points and more to simplify
-//! programming for 2d to 4d games and puzzles.
+//! programming for 2d to 4d worlds.
 //! Features include:
 //! * Bounding boxes and iterators over the points inside them
 //! * Arrays indexed by points
@@ -10,7 +10,9 @@
 //! * Orthogonal and king's move neighbourhoods
 //!
 //! This was originally motivated by
-//! [Advent of Code](https://adventofcode.com/).
+//! [Advent of Code](https://adventofcode.com/)
+//! (yes, Santa's elves use the 4th dimension, for example for
+//! [time travel](https://adventofcode.com/2018/day/25)).
 //!
 //! ## Crate Status
 //!
