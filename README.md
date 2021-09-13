@@ -1,8 +1,9 @@
 # lowdim
 
-[![Test Status](https://github.com/starblue/lowdim/workflows/tests/badge.svg?event=push)](https://github.com/starblue/lowdim/actions)
+[<img alt="github" src="https://img.shields.io/badge/github-starblue/lowdim?style=for-the-badge&labelColor=555555&logo=github" height="20">](https://github.com/starblue/lowdim)
 [![Crate](https://img.shields.io/crates/v/lowdim.svg)](https://crates.io/crates/lowdim)
-[![API](https://docs.rs/lowdim/badge.svg)](https://docs.rs/lowdim)
+[![Docs](https://docs.rs/lowdim/badge.svg)](https://docs.rs/lowdim)
+[![Test Status](https://github.com/starblue/lowdim/workflows/tests/badge.svg?event=push)](https://github.com/starblue/lowdim/actions)
 
 > A library for two-, three- or four-dimensional coordinates and arrays.
 
