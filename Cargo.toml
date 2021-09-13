@@ -3,6 +3,10 @@ name = "lowdim"
 version = "0.2.0"
 authors = ["Juergen Stuber <juergen@jstuber.net>"]
 description = "Library for two- to four-dimensional integer geometry."
+homepage = "https://github.com/starblue/lowdim"
+repository = "https://github.com/starblue/lowdim"
+keywords = ["mathematics", "math", "geometry", "2d", "3d", "4d", "vector", "matrix", "array"]
+categories = ["mathematics"]
 license = "MIT OR Apache-2.0"
 edition = "2018"
 
