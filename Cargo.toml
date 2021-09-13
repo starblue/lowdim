@@ -1,5 +1,5 @@
 [package]
-name = "gamedim"
+name = "lowdim"
 version = "0.2.0"
 authors = ["Juergen Stuber <juergen@jstuber.net>"]
 description = "Library for two- to four-dimensional integer geometry."

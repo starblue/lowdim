@@ -34,7 +34,7 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v4d;
+    /// # use lowdim::v4d;
     /// let v = v4d(2, 3, -1, 4);
     /// assert_eq!(2, v.x());
     /// ```
@@ -45,7 +45,7 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v4d;
+    /// # use lowdim::v4d;
     /// let v = v4d(2, 3, -1, 4);
     /// assert_eq!(3, v.y());
     /// ```
@@ -56,7 +56,7 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v4d;
+    /// # use lowdim::v4d;
     /// let v = v4d(2, 3, -1, 4);
     /// assert_eq!(-1, v.z());
     /// ```
@@ -67,7 +67,7 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v4d;
+    /// # use lowdim::v4d;
     /// let v = v4d(2, 3, -1, 4);
     /// assert_eq!(4, v.w());
     /// ```
@@ -84,7 +84,7 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// use gamedim::v4d;
+    /// use lowdim::v4d;
     ///
     /// let v = v4d(6, 2, -1, 4);
     /// assert!(v.is_towards_pos_x());
@@ -107,7 +107,7 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v4d;
+    /// # use lowdim::v4d;
     /// let v = v4d(-6, 2, -1, 4);
     /// assert!(v.is_towards_neg_x());
     /// ```
@@ -120,7 +120,7 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v4d;
+    /// # use lowdim::v4d;
     /// let v = v4d(2, 6, -1, 4);
     /// assert!(v.is_towards_pos_y());
     /// ```
@@ -133,7 +133,7 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v4d;
+    /// # use lowdim::v4d;
     /// let v = v4d(2, -6, -1, 4);
     /// assert!(v.is_towards_neg_y());
     /// ```
@@ -146,7 +146,7 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v4d;
+    /// # use lowdim::v4d;
     /// let v = v4d(2, -3, 4, -1);
     /// assert!(v.is_towards_pos_z());
     /// ```
@@ -159,7 +159,7 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v4d;
+    /// # use lowdim::v4d;
     /// let v = v4d(2, -3, -4, -1);
     /// assert!(v.is_towards_neg_z());
     /// ```
@@ -172,7 +172,7 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v4d;
+    /// # use lowdim::v4d;
     /// let v = v4d(2, -3, 4, 5);
     /// assert!(v.is_towards_pos_w());
     /// ```
@@ -185,7 +185,7 @@ impl<S: Integer> Vec4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v4d;
+    /// # use lowdim::v4d;
     /// let v = v4d(2, -3, -4, -5);
     /// assert!(v.is_towards_neg_w());
     /// ```

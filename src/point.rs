@@ -59,8 +59,8 @@ where
     /// # Example
     /// ```
     /// # use std::convert::TryFrom;
-    /// # use gamedim::p4d;
-    /// # use gamedim::Point4d;
+    /// # use lowdim::p4d;
+    /// # use lowdim::Point4d;
     /// assert_eq!(p4d(0, 1, 2, 3), Point4d::with(|i| i64::try_from(i).unwrap()));
     /// ```
     pub fn with<F>(f: F) -> Point<S, V>
@@ -79,7 +79,7 @@ where
     ///
     /// # Example
     /// ```
-    /// # use gamedim::p4d;
+    /// # use lowdim::p4d;
     /// let p0 = p4d(1, -2, 7, -4);
     /// let p1 = p4d(2, -3, 7, 4);
     /// assert_eq!(p4d(1, -3, 7, -4), p0.min(p1));
@@ -91,7 +91,7 @@ where
     ///
     /// # Example
     /// ```
-    /// # use gamedim::p4d;
+    /// # use lowdim::p4d;
     /// let p0 = p4d(1, -2, 7, -4);
     /// let p1 = p4d(2, -3, 7, 4);
     /// assert_eq!(p4d(2, -2, 7, 4), p0.max(p1));
@@ -107,7 +107,7 @@ where
     ///
     /// # Example
     /// ```
-    /// # use gamedim::p4d;
+    /// # use lowdim::p4d;
     /// let p0 = p4d(1, -2, 7, -4);
     /// let p1 = p4d(2, -3, 7, 4);
     /// assert_eq!(10, p0.distance_l1(p1));
@@ -123,7 +123,7 @@ where
     ///
     /// # Example
     /// ```
-    /// # use gamedim::p4d;
+    /// # use lowdim::p4d;
     /// let p0 = p4d(1, -2, 7, -4);
     /// let p1 = p4d(2, -3, 7, 4);
     /// assert_eq!(8, p0.distance_l_infty(p1));
@@ -170,7 +170,7 @@ impl<S: Integer> Point2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::p2d;
+    /// # use lowdim::p2d;
     /// let p = p2d(2, 3);
     /// assert_eq!(2, p.x());
     /// ```
@@ -181,7 +181,7 @@ impl<S: Integer> Point2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::p2d;
+    /// # use lowdim::p2d;
     /// let p = p2d(2, 3);
     /// assert_eq!(3, p.y());
     /// ```
@@ -199,7 +199,7 @@ impl<S: Integer> Point3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::p3d;
+    /// # use lowdim::p3d;
     /// let p = p3d(2, 3, -1);
     /// assert_eq!(2, p.x());
     /// ```
@@ -210,7 +210,7 @@ impl<S: Integer> Point3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::p3d;
+    /// # use lowdim::p3d;
     /// let p = p3d(2, 3, -1);
     /// assert_eq!(3, p.y());
     /// ```
@@ -221,7 +221,7 @@ impl<S: Integer> Point3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::p3d;
+    /// # use lowdim::p3d;
     /// let p = p3d(2, 3, -1);
     /// assert_eq!(-1, p.z());
     /// ```
@@ -240,7 +240,7 @@ impl<S: Integer> Point4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::p4d;
+    /// # use lowdim::p4d;
     /// let p = p4d(2, 3, -1, 4);
     /// assert_eq!(2, p.x());
     /// ```
@@ -251,7 +251,7 @@ impl<S: Integer> Point4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::p4d;
+    /// # use lowdim::p4d;
     /// let p = p4d(2, 3, -1, 4);
     /// assert_eq!(3, p.y());
     /// ```
@@ -262,7 +262,7 @@ impl<S: Integer> Point4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::p4d;
+    /// # use lowdim::p4d;
     /// let p = p4d(2, 3, -1, 4);
     /// assert_eq!(-1, p.z());
     /// ```
@@ -273,7 +273,7 @@ impl<S: Integer> Point4d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::p4d;
+    /// # use lowdim::p4d;
     /// let p = p4d(2, 3, -1, 4);
     /// assert_eq!(4, p.w());
     /// ```

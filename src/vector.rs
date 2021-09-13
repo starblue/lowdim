@@ -39,9 +39,9 @@ where
     /// # Example
     /// ```
     /// # use std::convert::TryFrom;
-    /// # use gamedim::v4d;
-    /// # use gamedim::Vec4d;
-    /// # use gamedim::Vector;
+    /// # use lowdim::v4d;
+    /// # use lowdim::Vec4d;
+    /// # use lowdim::Vector;
     /// assert_eq!(v4d(0, 1, 2, 3), Vec4d::with(|i| i64::try_from(i).unwrap()));
     /// ```
     fn with<F>(f: F) -> Self

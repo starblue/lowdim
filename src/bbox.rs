@@ -55,9 +55,9 @@ where
     ///
     /// # Example
     /// ```
-    /// # use gamedim::p2d;
-    /// # use gamedim::bb2d;
-    /// # use gamedim::BBox2d;
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
     /// let p = p2d(2, 3);
     /// assert_eq!(bb2d(2..3, 3..4), BBox2d::from_point(p));
     /// ```
@@ -68,9 +68,9 @@ where
     ///
     /// # Example
     /// ```
-    /// # use gamedim::p2d;
-    /// # use gamedim::bb2d;
-    /// # use gamedim::BBox2d;
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
     /// let p0 = p2d(2, 3);
     /// let p1 = p2d(-1, 4);
     /// assert_eq!(bb2d(-1..3, 3..5), BBox2d::from_points(p0, p1));
@@ -95,9 +95,9 @@ where
     ///
     /// # Example
     /// ```
-    /// # use gamedim::p2d;
-    /// # use gamedim::bb2d;
-    /// # use gamedim::BBox2d;
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
     /// let bb0 = bb2d(-2..3, -1..2);
     /// let bb1 = bb2d(-5..4, 2..5);
     /// assert_eq!(bb2d(-5..4, -1..5), bb0.lub(&bb1));
@@ -112,9 +112,9 @@ where
     ///
     /// # Example
     /// ```
-    /// # use gamedim::p2d;
-    /// # use gamedim::bb2d;
-    /// # use gamedim::BBox2d;
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
     /// let bb = bb2d(-2..3, -1..2);
     /// let p = p2d(3, 4);
     /// assert_eq!(bb2d(-2..4, -1..5), bb.extend_to(p));

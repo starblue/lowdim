@@ -34,7 +34,7 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v3d;
+    /// # use lowdim::v3d;
     /// let v = v3d(2, 3, -1);
     /// assert_eq!(2, v.x());
     /// ```
@@ -45,7 +45,7 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v3d;
+    /// # use lowdim::v3d;
     /// let v = v3d(2, 3, -1);
     /// assert_eq!(3, v.y());
     /// ```
@@ -56,7 +56,7 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v3d;
+    /// # use lowdim::v3d;
     /// let v = v3d(2, 3, -1);
     /// assert_eq!(-1, v.z());
     /// ```
@@ -73,7 +73,7 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// use gamedim::v3d;
+    /// use lowdim::v3d;
     ///
     /// let v = v3d(3, 2, -1);
     /// assert!(v.is_towards_pos_x());
@@ -96,7 +96,7 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v3d;
+    /// # use lowdim::v3d;
     /// let v = v3d(-3, 2, -1);
     /// assert!(v.is_towards_neg_x());
     /// ```
@@ -109,7 +109,7 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v3d;
+    /// # use lowdim::v3d;
     /// let v = v3d(2, 3, -1);
     /// assert!(v.is_towards_pos_y());
     /// ```
@@ -122,7 +122,7 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v3d;
+    /// # use lowdim::v3d;
     /// let v = v3d(2, -3, -1);
     /// assert!(v.is_towards_neg_y());
     /// ```
@@ -135,7 +135,7 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v3d;
+    /// # use lowdim::v3d;
     /// let v = v3d(2, -3, 4);
     /// assert!(v.is_towards_pos_z());
     /// ```
@@ -148,7 +148,7 @@ impl<S: Integer> Vec3d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v3d;
+    /// # use lowdim::v3d;
     /// let v = v3d(2, -3, -4);
     /// assert!(v.is_towards_neg_z());
     /// ```

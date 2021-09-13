@@ -37,7 +37,7 @@ where
     ///
     /// ```
     /// # use core::convert::TryFrom;
-    /// # use gamedim::Matrix2d;
+    /// # use lowdim::Matrix2d;
     /// let m = Matrix2d::with(|i, j| i64::try_from(3 * i + j).unwrap());
     /// assert_eq!(Matrix2d::new(0, 1, 3, 4), m);
     /// ```

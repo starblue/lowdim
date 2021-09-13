@@ -34,7 +34,7 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v2d;
+    /// # use lowdim::v2d;
     /// let v = v2d(2, 3);
     /// assert_eq!(2, v.x());
     /// ```
@@ -45,7 +45,7 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v2d;
+    /// # use lowdim::v2d;
     /// let v = v2d(2, 3);
     /// assert_eq!(3, v.y());
     /// ```
@@ -62,7 +62,7 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v2d;
+    /// # use lowdim::v2d;
     /// let v = v2d(3, 2);
     /// assert!(v.is_towards_pos_x());
     /// let v = v2d(3, -2);
@@ -84,7 +84,7 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v2d;
+    /// # use lowdim::v2d;
     /// let v = v2d(-3, 2);
     /// assert!(v.is_towards_neg_x());
     /// ```
@@ -97,7 +97,7 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v2d;
+    /// # use lowdim::v2d;
     /// let v = v2d(2, 3);
     /// assert!(v.is_towards_pos_y());
     /// ```
@@ -110,7 +110,7 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v2d;
+    /// # use lowdim::v2d;
     /// let v = v2d(2, -3);
     /// assert!(v.is_towards_neg_y());
     /// ```
@@ -122,7 +122,7 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v2d;
+    /// # use lowdim::v2d;
     /// let v = v2d(2, 3);
     /// assert_eq!(v2d(-3, 2), v.rotate_left());
     /// ```
@@ -133,7 +133,7 @@ impl<S: Integer> Vec2d<S> {
     ///
     /// # Examples
     /// ```
-    /// # use gamedim::v2d;
+    /// # use lowdim::v2d;
     /// let v = v2d(2, 3);
     /// assert_eq!(v2d(3, -2), v.rotate_right());
     /// ```
