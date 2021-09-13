@@ -1,4 +1,4 @@
-# `hex-file`
+# `lowdim`
 
 > A library for two-, three- or four-dimensional coordinates and arrays.
 
