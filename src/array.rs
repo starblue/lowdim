@@ -14,17 +14,22 @@ use crate::Point2d;
 /// The starting index and size is given by a rectangle,
 /// i.e. x- and y-index don't need to start at zero.
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]
-pub struct Array2d<S: Integer, T> {
+pub struct Array2d<S: Integer, T>
+where
+    usize: TryFrom<S>,
+{
     bounds: BBox2d<S>,
     data: Vec<T>,
 }
 
-impl<S: Integer, T> Array2d<S, T> {
+impl<S: Integer, T> Array2d<S, T>
+where
+    usize: TryFrom<S>,
+{
     /// Creates a new array with the given bounds
     /// that is filled with copies of a given element.
     pub fn new(bounds: BBox2d<S>, d: T) -> Array2d<S, T>
     where
-        usize: TryFrom<S>,
         T: Clone,
     {
         let data = repeat(d).take(bounds.area() as usize).collect::<Vec<_>>();
@@ -36,7 +41,6 @@ impl<S: Integer, T> Array2d<S, T> {
     pub fn new_with<F>(bounds: BBox2d<S>, f: F) -> Array2d<S, T>
     where
         F: Fn(Point2d<S>) -> T,
-        usize: TryFrom<S>,
     {
         let data = bounds.iter().map(f).collect::<Vec<_>>();
         Array2d { bounds, data }
@@ -48,7 +52,6 @@ impl<S: Integer, T> Array2d<S, T> {
     where
         T: Copy,
         S: TryFrom<usize>,
-        usize: TryFrom<S>,
     {
         let y_len = S::try_from(v.len()).unwrap_or(0.into());
         let x_len = if y_len == 0.into() {
