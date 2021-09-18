@@ -66,7 +66,7 @@ impl<S: Integer, T> Array2d<S, T> {
 
     /// Returns the bounds of the array.
     pub fn bounds(&self) -> BBox2d<S> {
-        self.bounds.clone()
+        self.bounds
     }
 }
 
