@@ -71,6 +71,26 @@ where
     pub fn bounds(&self) -> BBox2d<S> {
         self.bounds
     }
+
+    /// Returns a reference to the element at the index
+    /// or None if the index is out of bounds.
+    pub fn get(&self, index: Point2d<S>) -> Option<&T> {
+        if self.bounds().contains(index) {
+            Some(&self.data[self.bounds.seq_index(index)])
+        } else {
+            None
+        }
+    }
+
+    /// Returns a reference to the element at the index
+    /// or None if the index is out of bounds.
+    pub fn get_mut(&mut self, index: Point2d<S>) -> Option<&mut T> {
+        if self.bounds().contains(index) {
+            Some(&mut self.data[self.bounds.seq_index(index)])
+        } else {
+            None
+        }
+    }
 }
 
 impl<S: Integer, T> ops::Index<Point2d<S>> for Array2d<S, T>
@@ -110,6 +130,24 @@ mod tests {
     }
 
     #[test]
+    fn test_get() {
+        let r = bb2d(-2..3, -1..2);
+        let a = Array2d::new_with(r, |p| if p == p2d(0, 0) { '*' } else { '.' });
+        assert_eq!(a.get(p2d(0, 0)), Some(&'*'));
+        assert_eq!(a.get(p2d(1, 1)), Some(&'.'));
+        assert_eq!(a.get(p2d(3, 2)), None);
+    }
+
+    #[test]
+    fn test_get_mut() {
+        let r = bb2d(-2..3, -1..2);
+        let mut a = Array2d::new(r, '.');
+        *a.get_mut(p2d(0, 0)).unwrap() = '*';
+        assert_eq!(a[p2d(0, 0)], '*');
+        assert_eq!(a.get(p2d(1, 1)), Some(&'.'));
+        assert_eq!(a.get_mut(p2d(3, 2)), None);
+    }
+
     #[test]
     fn test_index() {
         let r = bb2d(-2..3, -1..2);
