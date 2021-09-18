@@ -17,4 +17,4 @@ default = []
 random = ["rand"]
 
 [dependencies]
-rand = { version = "0.8.3", optional = true }
+rand = { version = "0.8.4", optional = true }
