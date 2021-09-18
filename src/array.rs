@@ -97,11 +97,33 @@ mod tests {
     use crate::Array2d;
 
     #[test]
+    fn test_from_vec() {
+        let v = vec![vec!['0', '1'], vec!['2', '3']];
+        let a = Array2d::from_vec(v);
+        assert_eq!(a[p2d(0, 0)], '0');
+        assert_eq!(a[p2d(1, 0)], '1');
+        assert_eq!(a[p2d(0, 1)], '2');
+        assert_eq!(a[p2d(1, 1)], '3');
+    }
+
+    #[test]
+    #[test]
     fn test_index() {
         let r = bb2d(-2..3, -1..2);
-        let mut a = Array2d::new_with(r, |p| if p == p2d(0, 0) { '*' } else { '.' });
+        let a = Array2d::new_with(r, |p| if p == p2d(0, 0) { '*' } else { '.' });
         assert_eq!(a[p2d(0, 0)], '*');
-        a[p2d(1, 1)] = '+';
-        assert_eq!(a[p2d(1, 1)], '+');
+        assert_eq!(a[p2d(1, 1)], '.');
+    }
+
+    #[test]
+    fn test_index_mut() {
+        let r = bb2d(-2..3, -1..2);
+        let mut a = Array2d::new(r, '.');
+        a[p2d(0, 0)] = '*';
+        assert_eq!(a[p2d(0, 0)], '*');
+        assert_eq!(a[p2d(-2, -1)], '.');
+        assert_eq!(a[p2d(-2, 1)], '.');
+        assert_eq!(a[p2d(2, -1)], '.');
+        assert_eq!(a[p2d(2, 1)], '.');
     }
 }
