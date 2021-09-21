@@ -91,6 +91,41 @@ where
             None
         }
     }
+
+    /// Returns an iterator over the elements of the array.
+    pub fn iter(&self) -> impl Iterator<Item = &T>
+    where
+        usize: TryFrom<S>,
+    {
+        Array2dIter {
+            array: self,
+            iter: self.bounds.iter(),
+        }
+    }
+}
+
+struct Array2dIter<'a, S: Integer, T, Iter>
+where
+    usize: TryFrom<S>,
+    Iter: Iterator<Item = Point2d<S>>,
+{
+    array: &'a Array2d<S, T>,
+    iter: Iter,
+}
+impl<'a, S: Integer, T, Iter> Iterator for Array2dIter<'a, S, T, Iter>
+where
+    usize: TryFrom<S>,
+    Iter: Iterator<Item = Point2d<S>>,
+{
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some(p) = self.iter.next() {
+            Some(&self.array[p])
+        } else {
+            None
+        }
+    }
 }
 
 impl<S: Integer, T> ops::Index<Point2d<S>> for Array2d<S, T>
@@ -166,5 +201,13 @@ mod tests {
         assert_eq!(a[p2d(-2, 1)], '.');
         assert_eq!(a[p2d(2, -1)], '.');
         assert_eq!(a[p2d(2, 1)], '.');
+    }
+
+    #[test]
+    fn test_iter() {
+        let r = bb2d(0..2, 0..2);
+        let a = Array2d::new_with(r, |p| p.x() + p.y());
+        let v = a.iter().cloned().collect::<Vec<_>>();
+        assert_eq!(v, vec![0, 1, 1, 2]);
     }
 }
