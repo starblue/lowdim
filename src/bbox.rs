@@ -133,27 +133,63 @@ where
     /// Constructs a bounding box from bounds.
     ///
     /// As always, lower bounds are inclusive, upper bounds exclusive.
-    pub fn from_bounds(x0: S, x1: S, y0: S, y1: S) -> BBox2d<S> {
-        assert!(x0 <= x1 && y0 <= y1);
-        let min = p2d(x0, y0);
-        let max = p2d(x1 - S::from(1), y1 - S::from(1));
+    pub fn from_bounds(x_start: S, x_end: S, y_start: S, y_end: S) -> BBox2d<S> {
+        assert!(x_start <= x_end && y_start <= y_end);
+        let min = p2d(x_start, y_start);
+        let max = p2d(x_end - S::from(1), y_end - S::from(1));
         BBox { min, max }
     }
 
     /// Returns the lower bound in the x-coordinate (inclusive).
+    pub fn x_start(&self) -> S {
+        self.min.x()
+    }
+    /// Returns the upper bound in the x-coordinate (exclusive).
+    pub fn x_end(&self) -> S {
+        self.max.x() + S::from(1)
+    }
+    /// Returns the lower bound in the x-coordinate (inclusive).
+    pub fn x_min(&self) -> S {
+        self.min.x()
+    }
+    /// Returns the upper bound in the x-coordinate (inclusive).
+    pub fn x_max(&self) -> S {
+        self.max.x()
+    }
+    /// Returns the lower bound in the x-coordinate (inclusive).
+    #[deprecated = "Use `x_start` or `x_min` instead."]
     pub fn x0(&self) -> S {
         self.min.x()
     }
     /// Returns the upper bound in the x-coordinate (exclusive).
+    #[deprecated = "Use `x_end` instead, or consider using `x_max`."]
     pub fn x1(&self) -> S {
         self.max.x() + S::from(1)
     }
 
     /// Returns the lower bound in the y-coordinate (inclusive).
+    pub fn y_start(&self) -> S {
+        self.min.y()
+    }
+    /// Returns the upper bound in the y-coordinate (exclusive).
+    pub fn y_end(&self) -> S {
+        self.max.y() + S::from(1)
+    }
+    /// Returns the lower bound in the y-coordinate (inclusive).
+    pub fn y_min(&self) -> S {
+        self.min.y()
+    }
+    /// Returns the upper bound in the y-coordinate (inclusive).
+    pub fn y_max(&self) -> S {
+        self.max.y()
+    }
+    /// Returns the lower bound in the y-coordinate (inclusive).
+    #[deprecated = "Use `y_start` or `y_min` instead."]
     pub fn y0(&self) -> S {
         self.min.y()
     }
     /// Returns the upper bound in the y-coordinate (exclusive).
+    #[deprecated = "Use `y_end` instead, or consider using `y_max`."]
     pub fn y1(&self) -> S {
         self.max.y() + S::from(1)
     }
@@ -184,16 +220,16 @@ where
 
     /// Returns true if the point is inside the bounding box.
     pub fn contains(&self, p: Point2d<S>) -> bool {
-        self.x0() <= p.x() && p.x() < self.x1() && self.y0() <= p.y() && p.y() < self.y1()
+        self.x_range().contains(&p.x()) && self.y_range().contains(&p.y())
     }
 
     /// The range of the x coordinate
     pub fn x_range(&self) -> Range<S> {
-        self.x0()..self.x1()
+        self.x_start()..self.x_end()
     }
     /// The range of the y coordinate
     pub fn y_range(&self) -> Range<S> {
-        self.y0()..self.y1()
+        self.y_start()..self.y_end()
     }
 
     /// Returns an iterator over the points in the bounding box.
@@ -218,8 +254,8 @@ where
         usize: TryFrom<S>,
     {
         assert!(self.contains(p));
-        let dx = usize::try_from(p.x() - self.x0()).unwrap_or(0);
-        let dy = usize::try_from(p.y() - self.y0()).unwrap_or(0);
+        let dx = usize::try_from(p.x() - self.x_start()).unwrap_or(0);
+        let dy = usize::try_from(p.y() - self.y_start()).unwrap_or(0);
         let w = self.x_len();
         dx + dy * w
     }
@@ -241,9 +277,15 @@ where
 
 /// Creates a 2d bounding box from ranges of x and y coordinates.
 pub fn bb2d<S: Integer>(x_range: Range<S>, y_range: Range<S>) -> BBox2d<S> {
-    let Range { start: x0, end: x1 } = x_range;
-    let Range { start: y0, end: y1 } = y_range;
-    BBox2d::from_bounds(x0, x1, y0, y1)
+    let Range {
+        start: x_start,
+        end: x_end,
+    } = x_range;
+    let Range {
+        start: y_start,
+        end: y_end,
+    } = y_range;
+    BBox2d::from_bounds(x_start, x_end, y_start, y_end)
 }
 
 impl<'a, S: Integer> IntoIterator for &'a BBox2d<S>
@@ -276,12 +318,12 @@ where
                 // Move to next point
                 let new_x = p.x() + S::from(1);
                 self.next_point = {
-                    if new_x < self.bbox.x1() {
+                    if new_x < self.bbox.x_end() {
                         Some(p2d(new_x, p.y()))
                     } else {
                         let new_y = p.y() + S::from(1);
-                        if new_y < self.bbox.y1() {
-                            Some(p2d(self.bbox.x0(), new_y))
+                        if new_y < self.bbox.y_end() {
+                            Some(p2d(self.bbox.x_start(), new_y))
                         } else {
                             None
                         }
@@ -364,25 +406,71 @@ mod tests {
     }
 
     #[test]
+    fn test_x_start() {
+        let bb = bb2d(-2..3, -1..2);
+        assert_eq!(-2, bb.x_start());
+    }
+    #[test]
+    fn test_x_end() {
+        let bb = bb2d(-2..3, -1..2);
+        assert_eq!(3, bb.x_end());
+    }
+    #[test]
+    fn test_x_min() {
+        let bb = bb2d(-2..3, -1..2);
+        assert_eq!(-2, bb.x_min());
+    }
+    #[test]
+    fn test_x_max() {
+        let bb = bb2d(-2..3, -1..2);
+        assert_eq!(2, bb.x_max());
+    }
+    #[test]
+    #[allow(deprecated)]
     fn test_x0() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(-2, bb.x0());
     }
     #[test]
+    #[allow(deprecated)]
     fn test_x1() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(3, bb.x1());
     }
+
     #[test]
+    fn test_y_start() {
+        let bb = bb2d(-2..3, -1..2);
+        assert_eq!(-1, bb.y_start());
+    }
+    #[test]
+    fn test_y_end() {
+        let bb = bb2d(-2..3, -1..2);
+        assert_eq!(2, bb.y_end());
+    }
+    #[test]
+    fn test_y_min() {
+        let bb = bb2d(-2..3, -1..2);
+        assert_eq!(-1, bb.y_min());
+    }
+    #[test]
+    fn test_y_max() {
+        let bb = bb2d(-2..3, -1..2);
+        assert_eq!(1, bb.y_max());
+    }
+    #[test]
+    #[allow(deprecated)]
     fn test_y0() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(-1, bb.y0());
     }
     #[test]
+    #[allow(deprecated)]
     fn test_y1() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(2, bb.y1());
     }
+
     #[test]
     fn test_x_len() {
         let bb = bb2d(-2..3, -1..2);
