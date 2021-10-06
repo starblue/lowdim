@@ -38,12 +38,22 @@ where
 
     /// Creates a new array with the given bounds
     /// that is filled using a function which takes a location as input.
-    pub fn new_with<F>(bounds: BBox2d<S>, f: F) -> Array2d<S, T>
+    pub fn with<F>(bounds: BBox2d<S>, f: F) -> Array2d<S, T>
     where
         F: Fn(Point2d<S>) -> T,
     {
         let data = bounds.iter().map(f).collect::<Vec<_>>();
         Array2d { bounds, data }
+    }
+
+    /// Creates a new array with the given bounds
+    /// that is filled using a function which takes a location as input.
+    #[deprecated = "Use `with` instead."]
+    pub fn new_with<F>(bounds: BBox2d<S>, f: F) -> Array2d<S, T>
+    where
+        F: Fn(Point2d<S>) -> T,
+    {
+        Self::with(bounds, f)
     }
 
     /// Creates a new array with the given bounds
@@ -60,7 +70,7 @@ where
             S::try_from(v[0].len()).unwrap_or(0.into())
         };
         let bounds = BBox2d::from_bounds(0.into(), x_len, 0.into(), y_len);
-        Array2d::new_with(bounds, |p| {
+        Array2d::with(bounds, |p| {
             let x = usize::try_from(p.x()).unwrap_or(0_usize);
             let y = usize::try_from(p.y()).unwrap_or(0_usize);
             v[y][x]
@@ -167,7 +177,7 @@ mod tests {
     #[test]
     fn test_get() {
         let r = bb2d(-2..3, -1..2);
-        let a = Array2d::new_with(r, |p| if p == p2d(0, 0) { '*' } else { '.' });
+        let a = Array2d::with(r, |p| if p == p2d(0, 0) { '*' } else { '.' });
         assert_eq!(a.get(p2d(0, 0)), Some(&'*'));
         assert_eq!(a.get(p2d(1, 1)), Some(&'.'));
         assert_eq!(a.get(p2d(3, 2)), None);
@@ -186,7 +196,7 @@ mod tests {
     #[test]
     fn test_index() {
         let r = bb2d(-2..3, -1..2);
-        let a = Array2d::new_with(r, |p| if p == p2d(0, 0) { '*' } else { '.' });
+        let a = Array2d::with(r, |p| if p == p2d(0, 0) { '*' } else { '.' });
         assert_eq!(a[p2d(0, 0)], '*');
         assert_eq!(a[p2d(1, 1)], '.');
     }
@@ -206,7 +216,7 @@ mod tests {
     #[test]
     fn test_iter() {
         let r = bb2d(0..2, 0..2);
-        let a = Array2d::new_with(r, |p| p.x() + p.y());
+        let a = Array2d::with(r, |p| p.x() + p.y());
         let v = a.iter().cloned().collect::<Vec<_>>();
         assert_eq!(v, vec![0, 1, 1, 2]);
     }
