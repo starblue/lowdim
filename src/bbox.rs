@@ -219,7 +219,7 @@ where
     }
 
     /// Returns true if the point is inside the bounding box.
-    pub fn contains(&self, p: Point2d<S>) -> bool {
+    pub fn contains(&self, p: &Point2d<S>) -> bool {
         self.x_range().contains(&p.x()) && self.y_range().contains(&p.y())
     }
 
@@ -241,7 +241,7 @@ where
     {
         let next_point = Some(self.min);
         Iter {
-            bbox: &self,
+            bbox: self,
             next_point,
         }
     }
@@ -253,7 +253,7 @@ where
     where
         usize: TryFrom<S>,
     {
-        assert!(self.contains(p));
+        assert!(self.contains(&p));
         let dx = usize::try_from(p.x() - self.x_start()).unwrap_or(0);
         let dy = usize::try_from(p.y() - self.y_start()).unwrap_or(0);
         let w = self.x_len();
@@ -490,15 +490,15 @@ mod tests {
     #[test]
     fn test_contains() {
         let bb = bb2d(-2..3, -1..2);
-        assert_eq!(bb.contains(p2d(0, 0)), true);
-        assert_eq!(bb.contains(p2d(-2, 0)), true);
-        assert_eq!(bb.contains(p2d(-3, 0)), false);
-        assert_eq!(bb.contains(p2d(2, 0)), true);
-        assert_eq!(bb.contains(p2d(3, 0)), false);
-        assert_eq!(bb.contains(p2d(0, -1)), true);
-        assert_eq!(bb.contains(p2d(0, -2)), false);
-        assert_eq!(bb.contains(p2d(0, 1)), true);
-        assert_eq!(bb.contains(p2d(0, 2)), false);
+        assert_eq!(bb.contains(&p2d(0, 0)), true);
+        assert_eq!(bb.contains(&p2d(-2, 0)), true);
+        assert_eq!(bb.contains(&p2d(-3, 0)), false);
+        assert_eq!(bb.contains(&p2d(2, 0)), true);
+        assert_eq!(bb.contains(&p2d(3, 0)), false);
+        assert_eq!(bb.contains(&p2d(0, -1)), true);
+        assert_eq!(bb.contains(&p2d(0, -2)), false);
+        assert_eq!(bb.contains(&p2d(0, 1)), true);
+        assert_eq!(bb.contains(&p2d(0, 2)), false);
     }
 
     #[test]

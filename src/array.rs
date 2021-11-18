@@ -85,7 +85,7 @@ where
     /// Returns a reference to the element at the index
     /// or None if the index is out of bounds.
     pub fn get(&self, index: Point2d<S>) -> Option<&T> {
-        if self.bounds().contains(index) {
+        if self.bounds().contains(&index) {
             Some(&self.data[self.bounds.seq_index(index)])
         } else {
             None
@@ -95,7 +95,7 @@ where
     /// Returns a reference to the element at the index
     /// or None if the index is out of bounds.
     pub fn get_mut(&mut self, index: Point2d<S>) -> Option<&mut T> {
-        if self.bounds().contains(index) {
+        if self.bounds().contains(&index) {
             Some(&mut self.data[self.bounds.seq_index(index)])
         } else {
             None
