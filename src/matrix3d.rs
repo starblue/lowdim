@@ -12,7 +12,7 @@ use crate::Vec3d;
 
 const DIM: usize = 3;
 
-/// A two-dimensional discrete matrix.
+/// A three-dimensional discrete matrix.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
 pub struct Matrix3d<S: Integer> {
     a: [[S; DIM]; DIM],

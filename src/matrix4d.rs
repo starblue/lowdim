@@ -11,7 +11,7 @@ use crate::Vec4d;
 
 const DIM: usize = 4;
 
-/// A two-dimensional discrete matrix.
+/// A four-dimensional discrete matrix.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
 pub struct Matrix4d<S: Integer> {
     a: [[S; DIM]; DIM],
