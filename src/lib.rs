@@ -22,6 +22,10 @@
 //! - Bounding boxes and arrays are only implemented for the 2d case.
 //! - Rotations are only implemented for the 2d case, reflections not at all.
 //!
+//! ### To do
+//! - Use macros for repetetive definitions of operations
+//! - Extend to all primitive signed integer types
+//!
 //! ## Crate Feature Flags
 //!
 //! - `random`
