@@ -55,6 +55,11 @@ where
         Self::with(|_| S::zero())
     }
 
+    /// Returns `true` if a vector is the zero vector.
+    fn is_zero(&self) -> bool {
+        self == &Self::zero()
+    }
+
     /// Apply min by component
     fn min(&self, other: Self) -> Self {
         Self::with(|i| self[i].min(other[i]))

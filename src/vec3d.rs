@@ -704,4 +704,25 @@ mod tests {
         let v = v3d(3, 7, 1);
         assert_eq!(v3d(3, 7, 5), u.max(v));
     }
+
+    #[test]
+    fn test_is_zero_true() {
+        let v = v3d(0, 0, 0);
+        assert!(v.is_zero());
+    }
+    #[test]
+    fn test_is_zero_false_x() {
+        let v = v3d(1, 0, 0);
+        assert!(!v.is_zero());
+    }
+    #[test]
+    fn test_is_zero_false_y() {
+        let v = v3d(0, 1, 0);
+        assert!(!v.is_zero());
+    }
+    #[test]
+    fn test_is_zero_false_z() {
+        let v = v3d(0, 0, 1);
+        assert!(!v.is_zero());
+    }
 }

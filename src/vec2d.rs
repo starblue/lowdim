@@ -670,4 +670,20 @@ mod tests {
         let v = v2d(3, 7);
         assert_eq!(v2d(3, 7), u.max(v));
     }
+
+    #[test]
+    fn test_is_zero_true() {
+        let v = v2d(0, 0);
+        assert!(v.is_zero());
+    }
+    #[test]
+    fn test_is_zero_false_x() {
+        let v = v2d(1, 0);
+        assert!(!v.is_zero());
+    }
+    #[test]
+    fn test_is_zero_false_y() {
+        let v = v2d(0, 1);
+        assert!(!v.is_zero());
+    }
 }

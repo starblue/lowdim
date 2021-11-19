@@ -811,4 +811,30 @@ mod tests {
         let v = v4d(3, 7, 1, 4);
         assert_eq!(v4d(3, 7, 5, 4), u.max(v));
     }
+
+    #[test]
+    fn test_is_zero_true() {
+        let v = v4d(0, 0, 0, 0);
+        assert!(v.is_zero());
+    }
+    #[test]
+    fn test_is_zero_false_x() {
+        let v = v4d(1, 0, 0, 0);
+        assert!(!v.is_zero());
+    }
+    #[test]
+    fn test_is_zero_false_y() {
+        let v = v4d(0, 1, 0, 0);
+        assert!(!v.is_zero());
+    }
+    #[test]
+    fn test_is_zero_false_z() {
+        let v = v4d(0, 0, 1, 0);
+        assert!(!v.is_zero());
+    }
+    #[test]
+    fn test_is_zero_false_w() {
+        let v = v4d(0, 0, 0, 1);
+        assert!(!v.is_zero());
+    }
 }
