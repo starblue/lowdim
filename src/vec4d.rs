@@ -373,6 +373,36 @@ impl<'a, S: Integer> Neg for &'a Vec4d<S> {
         Vec4d::with(|i| -self[i])
     }
 }
+
+impl Mul<Vec4d<i32>> for i32 {
+    type Output = Vec4d<i32>;
+
+    fn mul(self, other: Vec4d<i32>) -> Vec4d<i32> {
+        Vec4d::with(|i| self * other[i])
+    }
+}
+impl<'a> Mul<&'a Vec4d<i32>> for i32 {
+    type Output = Vec4d<i32>;
+
+    fn mul(self, other: &'a Vec4d<i32>) -> Vec4d<i32> {
+        Vec4d::with(|i| self * other[i])
+    }
+}
+impl<'a> Mul<Vec4d<i32>> for &'a i32 {
+    type Output = Vec4d<i32>;
+
+    fn mul(self, other: Vec4d<i32>) -> Vec4d<i32> {
+        Vec4d::with(|i| self * other[i])
+    }
+}
+impl<'a> Mul<&'a Vec4d<i32>> for &'a i32 {
+    type Output = Vec4d<i32>;
+
+    fn mul(self, other: &'a Vec4d<i32>) -> Vec4d<i32> {
+        Vec4d::with(|i| self * other[i])
+    }
+}
+
 impl Mul<Vec4d<i64>> for i64 {
     type Output = Vec4d<i64>;
 
@@ -380,7 +410,6 @@ impl Mul<Vec4d<i64>> for i64 {
         Vec4d::with(|i| self * other[i])
     }
 }
-
 impl<'a> Mul<&'a Vec4d<i64>> for i64 {
     type Output = Vec4d<i64>;
 
@@ -388,7 +417,6 @@ impl<'a> Mul<&'a Vec4d<i64>> for i64 {
         Vec4d::with(|i| self * other[i])
     }
 }
-
 impl<'a> Mul<Vec4d<i64>> for &'a i64 {
     type Output = Vec4d<i64>;
 
@@ -396,7 +424,6 @@ impl<'a> Mul<Vec4d<i64>> for &'a i64 {
         Vec4d::with(|i| self * other[i])
     }
 }
-
 impl<'a> Mul<&'a Vec4d<i64>> for &'a i64 {
     type Output = Vec4d<i64>;
 
@@ -718,8 +745,16 @@ mod tests {
     }
 
     #[test]
-    fn test_mul_sv() {
-        let v = v4d(3, 7, 1, 4);
+    fn test_mul_sv_32() {
+        let v: Vec4d<i32> = v4d(3, 7, 1, 4);
+        assert_eq!(v4d(6, 14, 2, 8), 2 * v);
+        assert_eq!(v4d(6, 14, 2, 8), 2 * &v);
+        assert_eq!(v4d(6, 14, 2, 8), &2 * v);
+        assert_eq!(v4d(6, 14, 2, 8), &2 * &v);
+    }
+    #[test]
+    fn test_mul_sv_64() {
+        let v: Vec4d<i64> = v4d(3, 7, 1, 4);
         assert_eq!(v4d(6, 14, 2, 8), 2 * v);
         assert_eq!(v4d(6, 14, 2, 8), 2 * &v);
         assert_eq!(v4d(6, 14, 2, 8), &2 * v);

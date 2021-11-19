@@ -28,6 +28,8 @@ where
     Self: PartialOrd,
     Self: VectorOps<S, Self>,
     Self: for<'a> VectorOps<S, &'a Self>,
+    Self: ops::Div<S, Output = Self>,
+    Self: for<'a> ops::Div<&'a S, Output = Self>,
 {
     /// The dimension of the vectors in this type.
     const DIM: usize;

@@ -324,6 +324,35 @@ impl<'a, S: Integer> Neg for &'a Vec3d<S> {
     }
 }
 
+impl Mul<Vec3d<i32>> for i32 {
+    type Output = Vec3d<i32>;
+
+    fn mul(self, other: Vec3d<i32>) -> Vec3d<i32> {
+        Vec3d::with(|i| self * other[i])
+    }
+}
+impl<'a> Mul<&'a Vec3d<i32>> for i32 {
+    type Output = Vec3d<i32>;
+
+    fn mul(self, other: &'a Vec3d<i32>) -> Vec3d<i32> {
+        Vec3d::with(|i| self * other[i])
+    }
+}
+impl<'a> Mul<Vec3d<i32>> for &'a i32 {
+    type Output = Vec3d<i32>;
+
+    fn mul(self, other: Vec3d<i32>) -> Vec3d<i32> {
+        Vec3d::with(|i| self * other[i])
+    }
+}
+impl<'a> Mul<&'a Vec3d<i32>> for &'a i32 {
+    type Output = Vec3d<i32>;
+
+    fn mul(self, other: &'a Vec3d<i32>) -> Vec3d<i32> {
+        Vec3d::with(|i| self * other[i])
+    }
+}
+
 impl Mul<Vec3d<i64>> for i64 {
     type Output = Vec3d<i64>;
 
@@ -331,7 +360,6 @@ impl Mul<Vec3d<i64>> for i64 {
         Vec3d::with(|i| self * other[i])
     }
 }
-
 impl<'a> Mul<&'a Vec3d<i64>> for i64 {
     type Output = Vec3d<i64>;
 
@@ -339,7 +367,6 @@ impl<'a> Mul<&'a Vec3d<i64>> for i64 {
         Vec3d::with(|i| self * other[i])
     }
 }
-
 impl<'a> Mul<Vec3d<i64>> for &'a i64 {
     type Output = Vec3d<i64>;
 
@@ -347,7 +374,6 @@ impl<'a> Mul<Vec3d<i64>> for &'a i64 {
         Vec3d::with(|i| self * other[i])
     }
 }
-
 impl<'a> Mul<&'a Vec3d<i64>> for &'a i64 {
     type Output = Vec3d<i64>;
 
@@ -612,8 +638,16 @@ mod tests {
     }
 
     #[test]
-    fn test_mul_sv() {
-        let v = v3d(3, 7, 1);
+    fn test_mul_sv_32() {
+        let v: Vec3d<i32> = v3d(3, 7, 1);
+        assert_eq!(v3d(6, 14, 2), 2 * v);
+        assert_eq!(v3d(6, 14, 2), 2 * &v);
+        assert_eq!(v3d(6, 14, 2), &2 * v);
+        assert_eq!(v3d(6, 14, 2), &2 * &v);
+    }
+    #[test]
+    fn test_mul_sv_64() {
+        let v: Vec3d<i64> = v3d(3, 7, 1);
         assert_eq!(v3d(6, 14, 2), 2 * v);
         assert_eq!(v3d(6, 14, 2), 2 * &v);
         assert_eq!(v3d(6, 14, 2), &2 * v);
