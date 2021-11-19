@@ -89,6 +89,16 @@ where
         self.max
     }
 
+    /// The center point in the bounding box.
+    ///
+    /// This is only the true center of the bounding box
+    /// if the bounding box has odd dimensions.
+    /// Otherwise the coordinates of the center are rounded
+    /// according to the rules for integer division, i.e. towards zero.
+    pub fn center(&self) -> Point<S, V> {
+        Point::<S, V>::from((self.min.to_vec() + self.max.to_vec()) / S::from(2))
+    }
+
     /// The least upper bound of two bounding boxes w.r.t. inclusion.
     ///
     /// That is, the smallest bounding box encompassing the points in the two boxes.
@@ -510,6 +520,12 @@ mod tests {
     fn test_y_range() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(-1..2, bb.y_range());
+    }
+
+    #[test]
+    fn test_center() {
+        let bb = bb2d(-2..3, -1..2);
+        assert_eq!(p2d(0, 0), bb.center());
     }
 
     #[test]
