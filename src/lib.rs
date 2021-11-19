@@ -19,12 +19,8 @@
 //! Experimental
 //!
 //! ### Limitations
-//! - Bounding boxes and arrays are only implemented for the 2d case.
-//! - Rotations are only implemented for the 2d case, reflections not at all.
-//!
-//! ### To do
-//! - Use macros for repetetive definitions of operations
-//! - Extend to all primitive signed integer types
+//! - Bounding box iterators and arrays are only implemented for the 2d case.
+//! - Rotations and reflections are only implemented for the 2d case.
 //!
 //! ## Crate Feature Flags
 //!

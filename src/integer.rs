@@ -46,25 +46,25 @@ where
     fn signum(self) -> Self;
 }
 
-impl IntegerOps for i32 {}
-impl IntegerOps for i64 {}
+#[doc(hidden)]
+macro_rules! impl_integer {
+    ($t:ty) => {
+        impl IntegerOps for $t {}
 
-impl Integer for i32 {
-    fn abs(self) -> Self {
-        i32::abs(self)
-    }
-    fn signum(self) -> Self {
-        i32::signum(self)
-    }
+        impl Integer for $t {
+            fn abs(self) -> Self {
+                <$t>::abs(self)
+            }
+            fn signum(self) -> Self {
+                <$t>::signum(self)
+            }
+        }
+    };
 }
-impl Integer for i64 {
-    fn abs(self) -> Self {
-        i64::abs(self)
-    }
-    fn signum(self) -> Self {
-        i64::signum(self)
-    }
-}
+
+impl_integer!(i32);
+impl_integer!(i64);
+impl_integer!(i128);
 
 #[cfg(test)]
 mod tests {
@@ -83,6 +83,12 @@ mod tests {
     }
 
     #[test]
+    fn test_abs_i128() {
+        assert_eq!(5, Integer::abs(5_i128));
+        assert_eq!(5, Integer::abs(-5_i128));
+    }
+
+    #[test]
     fn test_signum_i32() {
         assert_eq!(1, Integer::signum(5_i32));
         assert_eq!(0, Integer::signum(0_i32));
@@ -94,5 +100,12 @@ mod tests {
         assert_eq!(1, Integer::signum(5_i64));
         assert_eq!(0, Integer::signum(0_i64));
         assert_eq!(-1, Integer::signum(-5_i64));
+    }
+
+    #[test]
+    fn test_signum_i128() {
+        assert_eq!(1, Integer::signum(5_i128));
+        assert_eq!(0, Integer::signum(0_i128));
+        assert_eq!(-1, Integer::signum(-5_i128));
     }
 }

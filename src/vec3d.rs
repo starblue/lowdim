@@ -13,6 +13,7 @@ use core::ops::SubAssign;
 
 use crate::lex_then;
 use crate::partial_then;
+use crate::scalar_mul;
 use crate::Integer;
 use crate::Vector;
 use crate::VectorOps;
@@ -324,63 +325,9 @@ impl<'a, S: Integer> Neg for &'a Vec3d<S> {
     }
 }
 
-impl Mul<Vec3d<i32>> for i32 {
-    type Output = Vec3d<i32>;
-
-    fn mul(self, other: Vec3d<i32>) -> Vec3d<i32> {
-        Vec3d::with(|i| self * other[i])
-    }
-}
-impl<'a> Mul<&'a Vec3d<i32>> for i32 {
-    type Output = Vec3d<i32>;
-
-    fn mul(self, other: &'a Vec3d<i32>) -> Vec3d<i32> {
-        Vec3d::with(|i| self * other[i])
-    }
-}
-impl<'a> Mul<Vec3d<i32>> for &'a i32 {
-    type Output = Vec3d<i32>;
-
-    fn mul(self, other: Vec3d<i32>) -> Vec3d<i32> {
-        Vec3d::with(|i| self * other[i])
-    }
-}
-impl<'a> Mul<&'a Vec3d<i32>> for &'a i32 {
-    type Output = Vec3d<i32>;
-
-    fn mul(self, other: &'a Vec3d<i32>) -> Vec3d<i32> {
-        Vec3d::with(|i| self * other[i])
-    }
-}
-
-impl Mul<Vec3d<i64>> for i64 {
-    type Output = Vec3d<i64>;
-
-    fn mul(self, other: Vec3d<i64>) -> Vec3d<i64> {
-        Vec3d::with(|i| self * other[i])
-    }
-}
-impl<'a> Mul<&'a Vec3d<i64>> for i64 {
-    type Output = Vec3d<i64>;
-
-    fn mul(self, other: &'a Vec3d<i64>) -> Vec3d<i64> {
-        Vec3d::with(|i| self * other[i])
-    }
-}
-impl<'a> Mul<Vec3d<i64>> for &'a i64 {
-    type Output = Vec3d<i64>;
-
-    fn mul(self, other: Vec3d<i64>) -> Vec3d<i64> {
-        Vec3d::with(|i| self * other[i])
-    }
-}
-impl<'a> Mul<&'a Vec3d<i64>> for &'a i64 {
-    type Output = Vec3d<i64>;
-
-    fn mul(self, other: &'a Vec3d<i64>) -> Vec3d<i64> {
-        Vec3d::with(|i| self * other[i])
-    }
-}
+scalar_mul!(i32, Vec3d<i32>);
+scalar_mul!(i64, Vec3d<i64>);
+scalar_mul!(i128, Vec3d<i128>);
 
 impl<S: Integer> Mul<Vec3d<S>> for Vec3d<S> {
     type Output = S;

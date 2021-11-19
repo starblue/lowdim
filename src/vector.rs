@@ -112,3 +112,38 @@ where
     /// but is not intended to be otherwise meaningful.
     fn lex_cmp(&self, other: &Self) -> Ordering;
 }
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! scalar_mul {
+    ($s:ty, $v:ty) => {
+        impl std::ops::Mul<$v> for $s {
+            type Output = $v;
+
+            fn mul(self, other: $v) -> $v {
+                <$v>::with(|i| self * other[i])
+            }
+        }
+        impl<'a> std::ops::Mul<&'a $v> for $s {
+            type Output = $v;
+
+            fn mul(self, other: &'a $v) -> $v {
+                <$v>::with(|i| self * other[i])
+            }
+        }
+        impl<'a> std::ops::Mul<$v> for &'a $s {
+            type Output = $v;
+
+            fn mul(self, other: $v) -> $v {
+                <$v>::with(|i| self * other[i])
+            }
+        }
+        impl<'a> std::ops::Mul<&'a $v> for &'a $s {
+            type Output = $v;
+
+            fn mul(self, other: &'a $v) -> $v {
+                <$v>::with(|i| self * other[i])
+            }
+        }
+    };
+}
