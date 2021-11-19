@@ -4,6 +4,7 @@ use core::cmp::Ordering;
 use core::fmt;
 use core::ops::Add;
 use core::ops::AddAssign;
+use core::ops::Div;
 use core::ops::Index;
 use core::ops::Mul;
 use core::ops::Neg;
@@ -387,6 +388,35 @@ impl<'a, S: Integer> Mul<&'a Vec3d<S>> for &'a Vec3d<S> {
     }
 }
 
+impl<S: Integer> Div<S> for Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn div(self, other: S) -> Vec3d<S> {
+        Vec3d::with(|i| self[i] / other)
+    }
+}
+impl<'a, S: Integer> Div<&'a S> for Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn div(self, other: &'a S) -> Vec3d<S> {
+        Vec3d::with(|i| self[i] / other)
+    }
+}
+impl<'a, S: Integer> Div<S> for &'a Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn div(self, other: S) -> Vec3d<S> {
+        Vec3d::with(|i| self[i] / other)
+    }
+}
+impl<'a, S: Integer> Div<&'a S> for &'a Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn div(self, other: &'a S) -> Vec3d<S> {
+        Vec3d::with(|i| self[i] / other)
+    }
+}
+
 impl<S: Integer> AddAssign for Vec3d<S> {
     fn add_assign(&mut self, other: Vec3d<S>) {
         *self = Vec3d::with(|i| self[i] + other[i])
@@ -598,6 +628,15 @@ mod tests {
         assert_eq!(18, u * &v);
         assert_eq!(18, &u * v);
         assert_eq!(18, &u * &v);
+    }
+
+    #[test]
+    fn test_div_vs() {
+        let v = v3d(6, 14, 2);
+        assert_eq!(v3d(3, 7, 1), v / 2);
+        assert_eq!(v3d(3, 7, 1), &v / 2);
+        assert_eq!(v3d(3, 7, 1), v / &2);
+        assert_eq!(v3d(3, 7, 1), &v / &2);
     }
 
     #[test]

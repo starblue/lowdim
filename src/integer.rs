@@ -13,6 +13,7 @@ where
     Self: ops::Add<Output = Self> + for<'a> ops::Add<&'a Self, Output = Self>,
     Self: ops::Sub<Output = Self> + for<'a> ops::Sub<&'a Self, Output = Self>,
     Self: ops::Mul<Output = Self> + for<'a> ops::Mul<&'a Self, Output = Self>,
+    Self: ops::Div<Output = Self> + for<'a> ops::Div<&'a Self, Output = Self>,
     Self: ops::Neg<Output = Self>,
 {
 }

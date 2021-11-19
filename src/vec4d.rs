@@ -4,6 +4,7 @@ use core::cmp::Ordering;
 use core::fmt;
 use core::ops::Add;
 use core::ops::AddAssign;
+use core::ops::Div;
 use core::ops::Index;
 use core::ops::Mul;
 use core::ops::Neg;
@@ -436,6 +437,35 @@ impl<'a, S: Integer> Mul<&'a Vec4d<S>> for &'a Vec4d<S> {
     }
 }
 
+impl<S: Integer> Div<S> for Vec4d<S> {
+    type Output = Vec4d<S>;
+
+    fn div(self, other: S) -> Vec4d<S> {
+        Vec4d::with(|i| self[i] / other)
+    }
+}
+impl<'a, S: Integer> Div<&'a S> for Vec4d<S> {
+    type Output = Vec4d<S>;
+
+    fn div(self, other: &'a S) -> Vec4d<S> {
+        Vec4d::with(|i| self[i] / other)
+    }
+}
+impl<'a, S: Integer> Div<S> for &'a Vec4d<S> {
+    type Output = Vec4d<S>;
+
+    fn div(self, other: S) -> Vec4d<S> {
+        Vec4d::with(|i| self[i] / other)
+    }
+}
+impl<'a, S: Integer> Div<&'a S> for &'a Vec4d<S> {
+    type Output = Vec4d<S>;
+
+    fn div(self, other: &'a S) -> Vec4d<S> {
+        Vec4d::with(|i| self[i] / other)
+    }
+}
+
 impl<S: Integer> AddAssign for Vec4d<S> {
     fn add_assign(&mut self, other: Vec4d<S>) {
         *self = Vec4d::with(|i| self[i] + other[i])
@@ -704,6 +734,15 @@ mod tests {
         assert_eq!(2, u * &v);
         assert_eq!(2, &u * v);
         assert_eq!(2, &u * &v);
+    }
+
+    #[test]
+    fn test_div_vs() {
+        let v = v4d(6, 14, 2, 8);
+        assert_eq!(v4d(3, 7, 1, 4), v / 2);
+        assert_eq!(v4d(3, 7, 1, 4), &v / 2);
+        assert_eq!(v4d(3, 7, 1, 4), v / &2);
+        assert_eq!(v4d(3, 7, 1, 4), &v / &2);
     }
 
     #[test]
