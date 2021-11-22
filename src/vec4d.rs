@@ -236,11 +236,7 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
     /// The L2-norm is also called the Euclidean norm and
     /// is the standard notion of the length of a vector.
     fn norm_l2_squared(&self) -> S {
-        let x = self.x();
-        let y = self.y();
-        let z = self.z();
-        let w = self.w();
-        x * x + y * y + z * z + w * w
+        self * self
     }
 
     /// Creates a vector of the 80 vectors with L∞ norm equal to 1.
