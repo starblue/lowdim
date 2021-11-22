@@ -77,7 +77,9 @@ where
         Self::with(|i| self[i].signum())
     }
 
-    /// The L1, taxicab or Manhatten norm.
+    /// Returns the L1 norm of the vector.
+    ///
+    /// This is also called the taxicab, Manhatten or city block norm.
     fn norm_l1(&self) -> S;
 
     /// Creates a vector of the unit vectors.
@@ -97,8 +99,16 @@ where
             .collect::<Vec<_>>()
     }
 
-    /// The maximum, Chebychev or L∞ norm.
+    /// Returns the L∞ norm of the vector.
+    ///
+    /// This is also called the maximum or Chebychev norm.
     fn norm_l_infty(&self) -> S;
+
+    /// Returns the square of the L2-norm of the vector.
+    ///
+    /// The L2-norm is also called the Euclidean norm and
+    /// is the standard notion of the length of a vector.
+    fn norm_l2_squared(&self) -> S;
 
     /// Creates a vector of the vectors with L∞ norm equal to 1.
     ///

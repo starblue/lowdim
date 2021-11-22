@@ -174,21 +174,35 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
         Vec3d([f(0), f(1), f(2)])
     }
 
-    /// The L1, taxicab or Manhatten norm.
+    /// Returns the L1 norm of the vector.
+    ///
+    /// This is also called the taxicab, Manhatten or city block norm.
     fn norm_l1(&self) -> S {
         let abs_x = self.x().abs();
         let abs_y = self.y().abs();
         let abs_z = self.z().abs();
         abs_x + abs_y + abs_z
     }
-
-    /// The maximum, Chebychev or L-infinity norm.
+    /// Returns the L∞ norm of the vector.
+    ///
+    /// This is also called the maximum or Chebychev norm.
     fn norm_l_infty(&self) -> S {
         let abs_x = self.x().abs();
         let abs_y = self.y().abs();
         let abs_z = self.z().abs();
         abs_x.max(abs_y).max(abs_z)
     }
+    /// Returns the square of the L2-norm of the vector.
+    ///
+    /// The L2-norm is also called the Euclidean norm and
+    /// is the standard notion of the length of a vector.
+    fn norm_l2_squared(&self) -> S {
+        let x = self.x();
+        let y = self.y();
+        let z = self.z();
+        x * x + y * y + z * z
+    }
+
     /// Creates a vector of the 26 vectors with L∞ norm equal to 1.
     fn unit_vecs_l_infty() -> Vec<Self> {
         let mut result = Vec::new();
@@ -518,6 +532,17 @@ mod tests {
         assert_eq!(5, v3d(-2, 3, -5).norm_l_infty());
         assert_eq!(5, v3d(2, -3, -5).norm_l_infty());
         assert_eq!(5, v3d(-2, -3, -5).norm_l_infty());
+    }
+    #[test]
+    fn test_norm_l2_squared() {
+        assert_eq!(38, v3d(2, 3, 5).norm_l2_squared());
+        assert_eq!(38, v3d(-2, 3, 5).norm_l2_squared());
+        assert_eq!(38, v3d(2, -3, 5).norm_l2_squared());
+        assert_eq!(38, v3d(-2, -3, 5).norm_l2_squared());
+        assert_eq!(38, v3d(2, 3, -5).norm_l2_squared());
+        assert_eq!(38, v3d(-2, 3, -5).norm_l2_squared());
+        assert_eq!(38, v3d(2, -3, -5).norm_l2_squared());
+        assert_eq!(38, v3d(-2, -3, -5).norm_l2_squared());
     }
 
     #[test]
