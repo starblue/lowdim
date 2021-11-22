@@ -19,7 +19,7 @@ where
     usize: TryFrom<S>,
 {
     bounds: BBox2d<S>,
-    data: Vec<T>,
+    data: Box<[T]>,
 }
 
 impl<S: Integer, T> Array2d<S, T>
@@ -32,7 +32,7 @@ where
     where
         T: Clone,
     {
-        let data = repeat(d).take(bounds.area() as usize).collect::<Vec<_>>();
+        let data = repeat(d).take(bounds.area() as usize).collect::<Box<[_]>>();
         Array2d { bounds, data }
     }
 
@@ -42,7 +42,7 @@ where
     where
         F: Fn(Point2d<S>) -> T,
     {
-        let data = bounds.iter().map(f).collect::<Vec<_>>();
+        let data = bounds.iter().map(f).collect::<Box<[_]>>();
         Array2d { bounds, data }
     }
 
