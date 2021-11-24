@@ -1,6 +1,6 @@
 //! Contains traits defining required properties of the underlying integer types.
 
-use core::fmt::Display;
+use core::fmt;
 use core::iter;
 use core::ops;
 
@@ -30,7 +30,8 @@ where
 pub trait Integer
 where
     Self: Copy,
-    Self: Display,
+    Self: fmt::Display,
+    Self: TryFrom<usize>,
     Self: Ord,
     Self: IntegerOps,
 {
@@ -50,6 +51,23 @@ where
     ///
     /// Returns `1` for positive numbers, `0` for zero and `-1` for negative numbers.
     fn signum(self) -> Self;
+
+    /// Converts to an `usize` if possible, or panics otherwise.
+    fn to_usize(self) -> usize
+    where
+        usize: TryFrom<Self>,
+        <usize as TryFrom<Self>>::Error: fmt::Debug,
+    {
+        usize::try_from(self).unwrap()
+    }
+
+    /// Converts from an `usize` if possible, or panics otherwise.
+    fn from_usize(n: usize) -> Self
+    where
+        <Self as TryFrom<usize>>::Error: fmt::Debug,
+    {
+        Self::try_from(n).unwrap()
+    }
 }
 
 #[doc(hidden)]

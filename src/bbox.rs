@@ -1,7 +1,7 @@
 //! n-dimensional bounding boxes.
 
 use core::cmp::PartialOrd;
-use core::convert::TryFrom;
+use core::fmt;
 use core::fmt::Debug;
 use core::ops::Range;
 
@@ -251,29 +251,17 @@ where
     }
 
     /// Returns the width of the bounding box.
-    pub fn x_len(&self) -> usize
-    where
-        usize: TryFrom<S>,
-        <usize as TryFrom<S>>::Error: Debug,
-    {
-        usize::try_from(self.max.x() - self.min.x() + S::one()).unwrap()
+    pub fn x_len(&self) -> S {
+        self.max.x() - self.min.x() + S::one()
     }
 
     /// Returns the height of the bounding box.
-    pub fn y_len(&self) -> usize
-    where
-        usize: TryFrom<S>,
-        <usize as TryFrom<S>>::Error: Debug,
-    {
-        usize::try_from(self.max.y() - self.min.y() + S::one()).unwrap()
+    pub fn y_len(&self) -> S {
+        self.max.y() - self.min.y() + S::one()
     }
 
     /// Returns the area of the bounding box.
-    pub fn area(&self) -> usize
-    where
-        usize: TryFrom<S>,
-        <usize as TryFrom<S>>::Error: Debug,
-    {
+    pub fn area(&self) -> S {
         self.x_len() * self.y_len()
     }
 
@@ -292,6 +280,7 @@ where
     pub fn iter(&self) -> Iter<S>
     where
         usize: TryFrom<S>,
+        <usize as TryFrom<S>>::Error: fmt::Debug,
     {
         let next_point = Some(self.min);
         Iter {
@@ -306,12 +295,12 @@ where
     pub fn seq_index(&self, p: Point2d<S>) -> usize
     where
         usize: TryFrom<S>,
-        <usize as TryFrom<S>>::Error: Debug,
+        <usize as TryFrom<S>>::Error: fmt::Debug,
     {
         assert!(self.contains(&p));
-        let dx = usize::try_from(p.x() - self.x_start()).unwrap_or(0);
-        let dy = usize::try_from(p.y() - self.y_start()).unwrap_or(0);
-        let w = self.x_len();
+        let dx = (p.x() - self.x_start()).to_usize();
+        let dy = (p.y() - self.y_start()).to_usize();
+        let w = self.x_len().to_usize();
         dx + dy * w
     }
 
@@ -352,7 +341,7 @@ pub fn bb4d<S: Integer>(rx: Range<S>, ry: Range<S>, rz: Range<S>, rw: Range<S>) 
 impl<'a, S: Integer> IntoIterator for &'a BBox2d<S>
 where
     usize: TryFrom<S>,
-    <usize as TryFrom<S>>::Error: Debug,
+    <usize as TryFrom<S>>::Error: fmt::Debug,
 {
     type Item = Point2d<S>;
 
@@ -363,7 +352,11 @@ where
     }
 }
 /// An iterator over the points in a 2d bounding box.
-pub struct Iter<'a, S: Integer> {
+pub struct Iter<'a, S: Integer>
+where
+    usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: fmt::Debug,
+{
     bbox: &'a BBox2d<S>,
     next_point: Option<Point2d<S>>,
 }
@@ -371,7 +364,7 @@ pub struct Iter<'a, S: Integer> {
 impl<'a, S: Integer> Iterator for Iter<'a, S>
 where
     usize: TryFrom<S>,
-    <usize as TryFrom<S>>::Error: Debug,
+    <usize as TryFrom<S>>::Error: fmt::Debug,
 {
     type Item = Point2d<S>;
 
@@ -401,7 +394,7 @@ where
         let len = {
             match self.next_point {
                 None => 0,
-                Some(p) => self.bbox.area() - self.bbox.seq_index(p),
+                Some(p) => self.bbox.area().to_usize() - self.bbox.seq_index(p),
             }
         };
         (len, Some(len))
@@ -412,7 +405,7 @@ impl<'a, S: Integer> ExactSizeIterator for Iter<'a, S>
 where
     S: Copy + PartialOrd,
     usize: TryFrom<S>,
-    <usize as TryFrom<S>>::Error: Debug,
+    <usize as TryFrom<S>>::Error: fmt::Debug,
 {
     fn len(&self) -> usize {
         self.size_hint().0
