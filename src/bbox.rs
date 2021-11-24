@@ -134,6 +134,20 @@ where
         let max = self.max().max(p);
         BBox { min, max }
     }
+
+    /// Returns the closest point inside the bounding box for a given point.
+    ///
+    /// If the point is inside the bounding box it is returned unchanged.
+    /// Otherwise the coordinates that fall outside the ranges of the box
+    /// are clamped to the closest endpoints of the ranges.
+    pub fn clamp(&self, p: Point<S, V>) -> Point<S, V> {
+        p.max(self.min).min(self.max)
+    }
+
+    /// Returns true if the point is inside the bounding box.
+    pub fn contains(&self, p: &Point<S, V>) -> bool {
+        self.clamp(*p) == *p
+    }
 }
 
 impl<S> BBox2d<S>
@@ -226,11 +240,6 @@ where
         usize: TryFrom<S>,
     {
         self.x_len() * self.y_len()
-    }
-
-    /// Returns true if the point is inside the bounding box.
-    pub fn contains(&self, p: &Point2d<S>) -> bool {
-        self.x_range().contains(&p.x()) && self.y_range().contains(&p.y())
     }
 
     /// The range of the x coordinate
