@@ -51,17 +51,6 @@ where
 
     /// Creates a new array with the given bounds
     /// that is filled using a function which takes a location as input.
-    #[deprecated = "Use `with` instead."]
-    pub fn new_with<F>(bounds: BBox2d<S>, f: F) -> Array2d<S, T>
-    where
-        F: Fn(Point2d<S>) -> T,
-        <usize as TryFrom<S>>::Error: Debug,
-    {
-        Self::with(bounds, f)
-    }
-
-    /// Creates a new array with the given bounds
-    /// that is filled using a function which takes a location as input.
     pub fn from_vec(v: Vec<Vec<T>>) -> Array2d<S, T>
     where
         T: Copy,

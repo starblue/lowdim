@@ -233,17 +233,6 @@ where
         self.max.x()
     }
 
-    /// Returns the lower bound in the x-coordinate (inclusive).
-    #[deprecated = "Use `x_start` or `x_min` instead."]
-    pub fn x0(&self) -> S {
-        self.min.x()
-    }
-    /// Returns the upper bound in the x-coordinate (exclusive).
-    #[deprecated = "Use `x_end` instead, or consider using `x_max`."]
-    pub fn x1(&self) -> S {
-        self.max.x() + S::one()
-    }
-
     /// Returns the lower bound in the y-coordinate (inclusive).
     pub fn y_start(&self) -> S {
         self.min.y()
@@ -259,17 +248,6 @@ where
     /// Returns the upper bound in the y-coordinate (inclusive).
     pub fn y_max(&self) -> S {
         self.max.y()
-    }
-
-    /// Returns the lower bound in the y-coordinate (inclusive).
-    #[deprecated = "Use `y_start` or `y_min` instead."]
-    pub fn y0(&self) -> S {
-        self.min.y()
-    }
-    /// Returns the upper bound in the y-coordinate (exclusive).
-    #[deprecated = "Use `y_end` instead, or consider using `y_max`."]
-    pub fn y1(&self) -> S {
-        self.max.y() + S::one()
     }
 
     /// Returns the width of the bounding box.
@@ -806,19 +784,6 @@ mod tests {
     }
 
     #[test]
-    #[allow(deprecated)]
-    fn test_x0() {
-        let bb = bb2d(-2..3, -1..2);
-        assert_eq!(-2, bb.x0());
-    }
-    #[test]
-    #[allow(deprecated)]
-    fn test_x1() {
-        let bb = bb2d(-2..3, -1..2);
-        assert_eq!(3, bb.x1());
-    }
-
-    #[test]
     fn test_y_start_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(-1, bb.y_start());
@@ -880,19 +845,6 @@ mod tests {
     fn test_y_max_4d() {
         let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
         assert_eq!(1, bb.y_max());
-    }
-
-    #[test]
-    #[allow(deprecated)]
-    fn test_y0() {
-        let bb = bb2d(-2..3, -1..2);
-        assert_eq!(-1, bb.y0());
-    }
-    #[test]
-    #[allow(deprecated)]
-    fn test_y1() {
-        let bb = bb2d(-2..3, -1..2);
-        assert_eq!(2, bb.y1());
     }
 
     #[test]
