@@ -1,6 +1,7 @@
 //! Traits for vectors.
 
 use core::cmp::Ordering;
+use core::iter;
 use core::iter::once;
 use core::ops;
 
@@ -26,6 +27,7 @@ where
     Self: Clone + Copy,
     Self: ops::Index<usize, Output = S>,
     Self: PartialOrd,
+    Self: iter::FromIterator<S>,
     Self: VectorOps<S, Self>,
     Self: for<'a> VectorOps<S, &'a Self>,
     Self: ops::Div<S, Output = Self>,

@@ -2,6 +2,7 @@
 
 use core::cmp::Ordering;
 use core::fmt;
+use core::iter;
 use core::ops::Add;
 use core::ops::AddAssign;
 use core::ops::Div;
@@ -228,6 +229,19 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
 /// This is a utility function for concisely representing vectors.
 pub fn v3d<S: Integer>(x: S, y: S, z: S) -> Vec3d<S> {
     Vec3d::new(x, y, z)
+}
+
+impl<S: Integer> iter::FromIterator<S> for Vec3d<S> {
+    fn from_iter<II>(ii: II) -> Self
+    where
+        II: IntoIterator<Item = S>,
+    {
+        let mut i = ii.into_iter();
+        let x = i.next().unwrap();
+        let y = i.next().unwrap();
+        let z = i.next().unwrap();
+        Vec3d([x, y, z])
+    }
 }
 
 impl<S: Integer> fmt::Debug for Vec3d<S> {
@@ -540,6 +554,11 @@ mod tests {
         assert_eq!(38, v3d(-2, 3, -5).norm_l2_squared());
         assert_eq!(38, v3d(2, -3, -5).norm_l2_squared());
         assert_eq!(38, v3d(-2, -3, -5).norm_l2_squared());
+    }
+
+    #[test]
+    fn test_from_iter() {
+        assert_eq!(v3d(1, 2, 3), vec![1, 2, 3].into_iter().collect::<Vec3d>());
     }
 
     #[test]

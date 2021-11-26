@@ -2,6 +2,7 @@
 
 use core::cmp::Ordering;
 use core::fmt;
+use core::iter;
 use core::ops::Add;
 use core::ops::AddAssign;
 use core::ops::Div;
@@ -273,6 +274,20 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
 /// This is a utility function for concisely representing vectors.
 pub fn v4d<S: Integer>(x: S, y: S, z: S, w: S) -> Vec4d<S> {
     Vec4d::new(x, y, z, w)
+}
+
+impl<S: Integer> iter::FromIterator<S> for Vec4d<S> {
+    fn from_iter<II>(ii: II) -> Self
+    where
+        II: IntoIterator<Item = S>,
+    {
+        let mut i = ii.into_iter();
+        let x = i.next().unwrap();
+        let y = i.next().unwrap();
+        let z = i.next().unwrap();
+        let w = i.next().unwrap();
+        Vec4d([x, y, z, w])
+    }
 }
 
 impl<S: Integer> fmt::Debug for Vec4d<S> {
@@ -640,6 +655,11 @@ mod tests {
     fn test_norm_l2_squared() {
         assert_eq!(102, v4d(2, 3, 5, 8).norm_l2_squared());
         assert_eq!(102, v4d(-2, -3, -5, -8).norm_l2_squared());
+    }
+
+    #[test]
+    fn test_from_iter() {
+        assert_eq!(v4d(1, 2, 3, 4), vec![1, 2, 3, 4].into_iter().collect::<Vec4d>());
     }
 
     #[test]
