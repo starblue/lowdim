@@ -1,6 +1,7 @@
 //! Contains traits defining required properties of the underlying integer types.
 
 use core::fmt::Display;
+use core::iter;
 use core::ops;
 
 /// Required arithmetic operations for integers.
@@ -15,6 +16,8 @@ where
     Self: ops::Mul<Output = Self> + for<'a> ops::Mul<&'a Self, Output = Self>,
     Self: ops::Div<Output = Self> + for<'a> ops::Div<&'a Self, Output = Self>,
     Self: ops::Neg<Output = Self>,
+    Self: iter::Sum<Self> + for<'a> iter::Sum<&'a Self>,
+    Self: iter::Product<Self> + for<'a> iter::Product<&'a Self>,
 {
 }
 
