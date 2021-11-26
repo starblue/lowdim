@@ -75,6 +75,16 @@ where
         self.v
     }
 
+    /// Returns a slice containing the coordinates of the point.
+    pub fn as_slice(&self) -> &[S] {
+        self.v.as_slice()
+    }
+
+    /// Returns a mutable slice containing the coordinates of the point.
+    pub fn as_mut_slice(&mut self) -> &mut [S] {
+        self.v.as_mut_slice()
+    }
+
     /// Returns the point constructed by taking the minimum with another point at each coordinate.
     ///
     /// # Example
@@ -589,6 +599,18 @@ mod tests {
     #[test]
     fn test_with() {
         assert_eq!(p2d(2, 3), Point2d::with(|i| i64::try_from(i + 2).unwrap()));
+    }
+
+    #[test]
+    fn test_as_slice() {
+        assert_eq!(&[2, 3], p2d(2, 3).as_slice());
+    }
+    #[test]
+    fn test_as_mut_slice() {
+        let mut v = p2d(2, 3);
+        let s = v.as_mut_slice();
+        s[1] += 1;
+        assert_eq!(&[2, 4], s);
     }
 
     #[test]

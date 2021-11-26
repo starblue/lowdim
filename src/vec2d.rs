@@ -160,6 +160,16 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
         Vec2d([f(0), f(1)])
     }
 
+    /// Returns a slice containing the coordinates of the vector.
+    fn as_slice(&self) -> &[S] {
+        &self.0
+    }
+
+    /// Returns a mutable slice containing the coordinates of the vector.
+    fn as_mut_slice(&mut self) -> &mut [S] {
+        &mut self.0
+    }
+
     /// Returns the L1 norm of the vector.
     ///
     /// This is also called the taxicab, Manhatten or city block norm.
@@ -448,6 +458,18 @@ mod tests {
     #[test]
     fn test_with() {
         assert_eq!(v2d(2, 3), Vec2d::with(|i| i64::try_from(i + 2).unwrap()));
+    }
+
+    #[test]
+    fn test_as_slice() {
+        assert_eq!(&[2, 3], v2d(2, 3).as_slice());
+    }
+    #[test]
+    fn test_as_mut_slice() {
+        let mut v = v2d(2, 3);
+        let s = v.as_mut_slice();
+        s[1] += 1;
+        assert_eq!(&[2, 4], s);
     }
 
     #[test]

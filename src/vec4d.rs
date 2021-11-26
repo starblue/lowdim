@@ -212,6 +212,16 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
         Vec4d([f(0), f(1), f(2), f(3)])
     }
 
+    /// Returns a slice containing the coordinates of the vector.
+    fn as_slice(&self) -> &[S] {
+        &self.0
+    }
+
+    /// Returns a mutable slice containing the coordinates of the vector.
+    fn as_mut_slice(&mut self) -> &mut [S] {
+        &mut self.0
+    }
+
     /// Returns the L1 norm of the vector.
     ///
     /// This is also called the taxicab, Manhatten or city block norm.
@@ -517,6 +527,18 @@ mod tests {
     }
 
     #[test]
+    fn test_as_slice() {
+        assert_eq!(&[2, 3, 4, 5], v4d(2, 3, 4, 5).as_slice());
+    }
+    #[test]
+    fn test_as_mut_slice() {
+        let mut v = v4d(2, 3, 4, 5);
+        let s = v.as_mut_slice();
+        s[1] += 1;
+        assert_eq!(&[2, 4, 4, 5], s);
+    }
+
+    #[test]
     fn test_unit_vecs() {
         let mut uv: Vec<Vec4d<i64>> = Vec4d::unit_vecs();
         uv.sort_by(Vec4d::lex_cmp);
@@ -659,7 +681,10 @@ mod tests {
 
     #[test]
     fn test_from_iter() {
-        assert_eq!(v4d(1, 2, 3, 4), vec![1, 2, 3, 4].into_iter().collect::<Vec4d>());
+        assert_eq!(
+            v4d(1, 2, 3, 4),
+            vec![1, 2, 3, 4].into_iter().collect::<Vec4d>()
+        );
     }
 
     #[test]

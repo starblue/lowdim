@@ -52,6 +52,12 @@ where
     where
         F: Fn(usize) -> S;
 
+    /// Returns a slice containing the coordinates of the vector.
+    fn as_slice(&self) -> &[S];
+
+    /// Returns a mutable slice containing the coordinates of the vector.
+    fn as_mut_slice(&mut self) -> &mut [S];
+
     /// Creates the zero vector.
     fn zero() -> Self {
         Self::with(|_| S::zero())
