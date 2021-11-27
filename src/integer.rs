@@ -16,6 +16,11 @@ where
     Self: ops::Mul<Output = Self> + for<'a> ops::Mul<&'a Self, Output = Self>,
     Self: ops::Div<Output = Self> + for<'a> ops::Div<&'a Self, Output = Self>,
     Self: ops::Neg<Output = Self>,
+    Self: ops::AddAssign<Self> + for<'a> ops::AddAssign<&'a Self>,
+    Self: ops::SubAssign<Self> + for<'a> ops::SubAssign<&'a Self>,
+    Self: ops::MulAssign<Self> + for<'a> ops::MulAssign<&'a Self>,
+    Self: ops::DivAssign<Self> + for<'a> ops::DivAssign<&'a Self>,
+    Self: ops::RemAssign<Self> + for<'a> ops::RemAssign<&'a Self>,
     Self: iter::Sum<Self> + for<'a> iter::Sum<&'a Self>,
     Self: iter::Product<Self> + for<'a> iter::Product<&'a Self>,
 {
