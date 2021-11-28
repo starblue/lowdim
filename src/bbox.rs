@@ -113,6 +113,20 @@ where
         self.max
     }
 
+    /// Returns a vector of the lengths for the coordinates.
+    ///
+    /// # Example
+    /// ```
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
+    /// let b = bb2d(-1..3, 3..5);
+    /// assert_eq!(p2d(2, 4), b.max());
+    /// ```
+    pub fn lengths(&self) -> V {
+        self.max - self.min + V::ones()
+    }
+
     /// The center point in the bounding box.
     ///
     /// This is only the true center of the bounding box
@@ -641,6 +655,8 @@ mod tests {
     use crate::p3d;
     use crate::p4d;
     use crate::v2d;
+    use crate::v3d;
+    use crate::v4d;
     use crate::BBox2d;
 
     #[cfg(feature = "random")]
@@ -696,6 +712,22 @@ mod tests {
     fn test_max_4d() {
         let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
         assert_eq!(p4d(2, 1, 3, -3), bb.max());
+    }
+
+    #[test]
+    fn test_lengths_2d() {
+        let bb = bb2d(-2..3, -1..2);
+        assert_eq!(v2d(5, 3), bb.lengths());
+    }
+    #[test]
+    fn test_lengths_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(v3d(5, 3, 3), bb.lengths());
+    }
+    #[test]
+    fn test_lengths_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(v4d(5, 3, 3, 3), bb.lengths());
     }
 
     #[test]
