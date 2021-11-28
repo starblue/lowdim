@@ -11,6 +11,8 @@ use rand::distributions::uniform::SampleUniform;
 use rand::Rng;
 
 use crate::p2d;
+use crate::p3d;
+use crate::p4d;
 use crate::Integer;
 use crate::Point;
 use crate::Point2d;
@@ -341,16 +343,25 @@ where
 }
 
 /// Creates a 2d bounding box from ranges of x and y coordinates.
-pub fn bb2d<S: Integer>(x_range: Range<S>, y_range: Range<S>) -> BBox2d<S> {
-    let Range {
-        start: x_start,
-        end: x_end,
-    } = x_range;
-    let Range {
-        start: y_start,
-        end: y_end,
-    } = y_range;
-    BBox2d::from_bounds(x_start, x_end, y_start, y_end)
+pub fn bb2d<S: Integer>(rx: Range<S>, ry: Range<S>) -> BBox2d<S> {
+    let one = S::from(1);
+    let p_min = p2d(rx.start, ry.start);
+    let p_max = p2d(rx.end - one, ry.end - one);
+    BBox2d::from_points(p_min, p_max)
+}
+/// Creates a 3d bounding box from ranges of x, y and z coordinates.
+pub fn bb3d<S: Integer>(rx: Range<S>, ry: Range<S>, rz: Range<S>) -> BBox3d<S> {
+    let one = S::from(1);
+    let p_min = p3d(rx.start, ry.start, rz.start);
+    let p_max = p3d(rx.end - one, ry.end - one, rz.end - one);
+    BBox3d::from_points(p_min, p_max)
+}
+/// Creates a 4d bounding box from ranges of x, y, z and w coordinates.
+pub fn bb4d<S: Integer>(rx: Range<S>, ry: Range<S>, rz: Range<S>, rw: Range<S>) -> BBox4d<S> {
+    let one = S::from(1);
+    let p_min = p4d(rx.start, ry.start, rz.start, rw.start);
+    let p_max = p4d(rx.end - one, ry.end - one, rz.end - one, rw.end - one);
+    BBox4d::from_points(p_min, p_max)
 }
 
 impl<'a, S: Integer> IntoIterator for &'a BBox2d<S>

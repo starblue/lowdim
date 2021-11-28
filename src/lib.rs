@@ -98,6 +98,10 @@ pub mod bbox;
 #[doc(inline)]
 pub use crate::bbox::bb2d;
 #[doc(inline)]
+pub use crate::bbox::bb3d;
+#[doc(inline)]
+pub use crate::bbox::bb4d;
+#[doc(inline)]
 pub use crate::bbox::BBox;
 #[doc(inline)]
 pub use crate::bbox::BBox2d;
