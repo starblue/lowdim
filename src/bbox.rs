@@ -228,6 +228,7 @@ where
     pub fn x_max(&self) -> S {
         self.max.x()
     }
+
     /// Returns the lower bound in the x-coordinate (inclusive).
     #[deprecated = "Use `x_start` or `x_min` instead."]
     pub fn x0(&self) -> S {
@@ -255,6 +256,7 @@ where
     pub fn y_max(&self) -> S {
         self.max.y()
     }
+
     /// Returns the lower bound in the y-coordinate (inclusive).
     #[deprecated = "Use `y_start` or `y_min` instead."]
     pub fn y0(&self) -> S {
@@ -431,11 +433,206 @@ where
     }
 }
 
+impl<S> BBox3d<S>
+where
+    S: Integer,
+{
+    /// Returns the lower bound in the x-coordinate (inclusive).
+    pub fn x_start(&self) -> S {
+        self.min.x()
+    }
+    /// Returns the upper bound in the x-coordinate (exclusive).
+    pub fn x_end(&self) -> S {
+        self.max.x() + S::from(1)
+    }
+    /// Returns the lower bound in the x-coordinate (inclusive).
+    pub fn x_min(&self) -> S {
+        self.min.x()
+    }
+    /// Returns the upper bound in the x-coordinate (inclusive).
+    pub fn x_max(&self) -> S {
+        self.max.x()
+    }
+
+    /// Returns the lower bound in the y-coordinate (inclusive).
+    pub fn y_start(&self) -> S {
+        self.min.y()
+    }
+    /// Returns the upper bound in the y-coordinate (exclusive).
+    pub fn y_end(&self) -> S {
+        self.max.y() + S::from(1)
+    }
+    /// Returns the lower bound in the y-coordinate (inclusive).
+    pub fn y_min(&self) -> S {
+        self.min.y()
+    }
+    /// Returns the upper bound in the y-coordinate (inclusive).
+    pub fn y_max(&self) -> S {
+        self.max.y()
+    }
+
+    /// Returns the lower bound in the z-coordinate (inclusive).
+    pub fn z_start(&self) -> S {
+        self.min.z()
+    }
+    /// Returns the upper bound in the z-coordinate (exclusive).
+    pub fn z_end(&self) -> S {
+        self.max.z() + S::from(1)
+    }
+    /// Returns the lower bound in the z-coordinate (inclusive).
+    pub fn z_min(&self) -> S {
+        self.min.z()
+    }
+    /// Returns the upper bound in the z-coordinate (inclusive).
+    pub fn z_max(&self) -> S {
+        self.max.z()
+    }
+
+    /// Returns the size of the x-dimension of the bounding box.
+    pub fn x_len(&self) -> S {
+        self.max.x() - self.min.x() + S::from(1)
+    }
+    /// Returns the size of the y-dimension of the bounding box.
+    pub fn y_len(&self) -> S {
+        self.max.y() - self.min.y() + S::from(1)
+    }
+    /// Returns the size of the z-dimension of the bounding box.
+    pub fn z_len(&self) -> S {
+        self.max.z() - self.min.z() + S::from(1)
+    }
+
+    /// Returns the range of the x coordinate.
+    pub fn x_range(&self) -> Range<S> {
+        self.x_start()..self.x_end()
+    }
+    /// Returns the range of the y coordinate.
+    pub fn y_range(&self) -> Range<S> {
+        self.y_start()..self.y_end()
+    }
+    /// Returns the range of the z coordinate.
+    pub fn z_range(&self) -> Range<S> {
+        self.z_start()..self.z_end()
+    }
+}
+
+impl<S> BBox4d<S>
+where
+    S: Integer,
+{
+    /// Returns the lower bound in the x-coordinate (inclusive).
+    pub fn x_start(&self) -> S {
+        self.min.x()
+    }
+    /// Returns the upper bound in the x-coordinate (exclusive).
+    pub fn x_end(&self) -> S {
+        self.max.x() + S::from(1)
+    }
+    /// Returns the lower bound in the x-coordinate (inclusive).
+    pub fn x_min(&self) -> S {
+        self.min.x()
+    }
+    /// Returns the upper bound in the x-coordinate (inclusive).
+    pub fn x_max(&self) -> S {
+        self.max.x()
+    }
+
+    /// Returns the lower bound in the y-coordinate (inclusive).
+    pub fn y_start(&self) -> S {
+        self.min.y()
+    }
+    /// Returns the upper bound in the y-coordinate (exclusive).
+    pub fn y_end(&self) -> S {
+        self.max.y() + S::from(1)
+    }
+    /// Returns the lower bound in the y-coordinate (inclusive).
+    pub fn y_min(&self) -> S {
+        self.min.y()
+    }
+    /// Returns the upper bound in the y-coordinate (inclusive).
+    pub fn y_max(&self) -> S {
+        self.max.y()
+    }
+
+    /// Returns the lower bound in the z-coordinate (inclusive).
+    pub fn z_start(&self) -> S {
+        self.min.z()
+    }
+    /// Returns the upper bound in the z-coordinate (exclusive).
+    pub fn z_end(&self) -> S {
+        self.max.z() + S::from(1)
+    }
+    /// Returns the lower bound in the z-coordinate (inclusive).
+    pub fn z_min(&self) -> S {
+        self.min.z()
+    }
+    /// Returns the upper bound in the z-coordinate (inclusive).
+    pub fn z_max(&self) -> S {
+        self.max.z()
+    }
+
+    /// Returns the lower bound in the w-coordinate (inclusive).
+    pub fn w_start(&self) -> S {
+        self.min.w()
+    }
+    /// Returns the upper bound in the w-coordinate (exclusive).
+    pub fn w_end(&self) -> S {
+        self.max.w() + S::from(1)
+    }
+    /// Returns the lower bound in the w-coordinate (inclusive).
+    pub fn w_min(&self) -> S {
+        self.min.w()
+    }
+    /// Returns the upper bound in the w-coordinate (inclusive).
+    pub fn w_max(&self) -> S {
+        self.max.w()
+    }
+
+    /// Returns the size of the x-dimension of the bounding box.
+    pub fn x_len(&self) -> S {
+        self.max.x() - self.min.x() + S::from(1)
+    }
+    /// Returns the size of the y-dimension of the bounding box.
+    pub fn y_len(&self) -> S {
+        self.max.y() - self.min.y() + S::from(1)
+    }
+    /// Returns the size of the z-dimension of the bounding box.
+    pub fn z_len(&self) -> S {
+        self.max.z() - self.min.z() + S::from(1)
+    }
+    /// Returns the size of the w-dimension of the bounding box.
+    pub fn w_len(&self) -> S {
+        self.max.w() - self.min.w() + S::from(1)
+    }
+
+    /// Returns the range of the x coordinate.
+    pub fn x_range(&self) -> Range<S> {
+        self.x_start()..self.x_end()
+    }
+    /// Returns the range of the y coordinate.
+    pub fn y_range(&self) -> Range<S> {
+        self.y_start()..self.y_end()
+    }
+    /// Returns the range of the z coordinate.
+    pub fn z_range(&self) -> Range<S> {
+        self.z_start()..self.z_end()
+    }
+    /// Returns the range of the w coordinate.
+    pub fn w_range(&self) -> Range<S> {
+        self.w_start()..self.w_end()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::bb2d;
+    use crate::bb3d;
+    use crate::bb4d;
     use crate::p2d;
+    use crate::p3d;
+    use crate::p4d;
     use crate::v2d;
+    use crate::v3d;
+    use crate::v4d;
     use crate::BBox2d;
 
     #[test]
@@ -457,14 +654,35 @@ mod tests {
     }
 
     #[test]
-    fn test_min() {
+    fn test_min_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(p2d(-2, -1), bb.min());
     }
     #[test]
-    fn test_max() {
+    fn test_min_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(p3d(-2, -1, 1), bb.min());
+    }
+    #[test]
+    fn test_min_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(p4d(-2, -1, 1, -5), bb.min());
+    }
+
+    #[test]
+    fn test_max_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(p2d(2, 1), bb.max());
+    }
+    #[test]
+    fn test_max_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(p3d(2, 1, 3), bb.max());
+    }
+    #[test]
+    fn test_max_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(p4d(2, 1, 3, -3), bb.max());
     }
 
     #[test]
@@ -482,25 +700,69 @@ mod tests {
     }
 
     #[test]
-    fn test_x_start() {
+    fn test_x_start_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(-2, bb.x_start());
     }
     #[test]
-    fn test_x_end() {
+    fn test_x_start_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(-2, bb.x_start());
+    }
+    #[test]
+    fn test_x_start_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(-2, bb.x_start());
+    }
+
+    #[test]
+    fn test_x_end_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(3, bb.x_end());
     }
     #[test]
-    fn test_x_min() {
+    fn test_x_end_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(3, bb.x_end());
+    }
+    #[test]
+    fn test_x_end_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(3, bb.x_end());
+    }
+
+    #[test]
+    fn test_x_min_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(-2, bb.x_min());
     }
     #[test]
-    fn test_x_max() {
+    fn test_x_min_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(-2, bb.x_min());
+    }
+    #[test]
+    fn test_x_min_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(-2, bb.x_min());
+    }
+
+    #[test]
+    fn test_x_max_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(2, bb.x_max());
     }
+    #[test]
+    fn test_x_max_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(2, bb.x_max());
+    }
+    #[test]
+    fn test_x_max_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(2, bb.x_max());
+    }
+
     #[test]
     #[allow(deprecated)]
     fn test_x0() {
@@ -515,25 +777,69 @@ mod tests {
     }
 
     #[test]
-    fn test_y_start() {
+    fn test_y_start_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(-1, bb.y_start());
     }
     #[test]
-    fn test_y_end() {
+    fn test_y_start_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(-1, bb.y_start());
+    }
+    #[test]
+    fn test_y_start_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(-1, bb.y_start());
+    }
+
+    #[test]
+    fn test_y_end_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(2, bb.y_end());
     }
     #[test]
-    fn test_y_min() {
+    fn test_y_end_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(2, bb.y_end());
+    }
+    #[test]
+    fn test_y_end_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(2, bb.y_end());
+    }
+
+    #[test]
+    fn test_y_min_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(-1, bb.y_min());
     }
     #[test]
-    fn test_y_max() {
+    fn test_y_min_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(-1, bb.y_min());
+    }
+    #[test]
+    fn test_y_min_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(-1, bb.y_min());
+    }
+
+    #[test]
+    fn test_y_max_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(1, bb.y_max());
     }
+    #[test]
+    fn test_y_max_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(1, bb.y_max());
+    }
+    #[test]
+    fn test_y_max_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(1, bb.y_max());
+    }
+
     #[test]
     #[allow(deprecated)]
     fn test_y0() {
@@ -548,15 +854,122 @@ mod tests {
     }
 
     #[test]
-    fn test_x_len() {
+    fn test_z_start_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(1, bb.z_start());
+    }
+    #[test]
+    fn test_z_start_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(1, bb.z_start());
+    }
+
+    #[test]
+    fn test_z_end_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(4, bb.z_end());
+    }
+    #[test]
+    fn test_z_end_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(4, bb.z_end());
+    }
+
+    #[test]
+    fn test_z_min_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(1, bb.z_min());
+    }
+    #[test]
+    fn test_z_min_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(1, bb.z_min());
+    }
+
+    #[test]
+    fn test_z_max_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(3, bb.z_max());
+    }
+    #[test]
+    fn test_z_max_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(3, bb.z_max());
+    }
+
+    #[test]
+    fn test_w_start_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(-5, bb.w_start());
+    }
+
+    #[test]
+    fn test_w_end_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(-2, bb.w_end());
+    }
+
+    #[test]
+    fn test_w_min_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(-5, bb.w_min());
+    }
+
+    #[test]
+    fn test_w_max_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(-3, bb.w_max());
+    }
+
+    #[test]
+    fn test_x_len_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(5, bb.x_len());
     }
     #[test]
-    fn test_y_len() {
+    fn test_x_len_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(5, bb.x_len());
+    }
+    #[test]
+    fn test_x_len_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(5, bb.x_len());
+    }
+
+    #[test]
+    fn test_y_len_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(3, bb.y_len());
     }
+    #[test]
+    fn test_y_len_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(3, bb.y_len());
+    }
+    #[test]
+    fn test_y_len_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(3, bb.y_len());
+    }
+
+    #[test]
+    fn test_z_len_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(3, bb.z_len());
+    }
+    #[test]
+    fn test_z_len_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(3, bb.z_len());
+    }
+
+    #[test]
+    fn test_w_len_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(3, bb.w_len());
+    }
+
     #[test]
     fn test_area() {
         let bb = bb2d(-2..3, -1..2);
@@ -578,14 +991,52 @@ mod tests {
     }
 
     #[test]
-    fn test_x_range() {
+    fn test_x_range_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(-2..3, bb.x_range());
     }
     #[test]
-    fn test_y_range() {
+    fn test_x_range_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(-2..3, bb.x_range());
+    }
+    #[test]
+    fn test_x_range_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(-2..3, bb.x_range());
+    }
+
+    #[test]
+    fn test_y_range_2d() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(-1..2, bb.y_range());
+    }
+    #[test]
+    fn test_y_range_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(-1..2, bb.y_range());
+    }
+    #[test]
+    fn test_y_range_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(-1..2, bb.y_range());
+    }
+
+    #[test]
+    fn test_z_range_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(1..4, bb.z_range());
+    }
+    #[test]
+    fn test_z_range_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(1..4, bb.z_range());
+    }
+
+    #[test]
+    fn test_w_range_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(-5..-2, bb.w_range());
     }
 
     #[test]
