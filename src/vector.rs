@@ -17,6 +17,7 @@ where
     Self: ops::Add<RHS, Output = Output>,
     Self: ops::Sub<RHS, Output = Output>,
     Self: ops::Neg<Output = Output>,
+    Self: ops::Mul<RHS, Output = S>,
 {
 }
 
