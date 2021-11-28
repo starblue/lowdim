@@ -35,7 +35,7 @@ where
         usize: TryFrom<S>,
         <usize as TryFrom<S>>::Error: fmt::Debug,
     {
-        let data = repeat(d).take(bbox.area().to_usize()).collect::<Box<[_]>>();
+        let data = repeat(d).take(bbox.area()).collect::<Box<[_]>>();
         Array2d { bbox, data }
     }
 

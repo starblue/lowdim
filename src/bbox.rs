@@ -127,6 +127,28 @@ where
         self.max - self.min + V::ones()
     }
 
+    /// Returns the volume of the bounding box.
+    ///
+    /// # Example
+    /// ```
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
+    /// let b = bb2d(-1..3, 3..5);
+    /// assert_eq!(8, b.volume());
+    /// ```
+    pub fn volume(&self) -> usize
+    where
+        usize: TryFrom<S>,
+        <usize as TryFrom<S>>::Error: fmt::Debug,
+    {
+        self.lengths()
+            .as_slice()
+            .iter()
+            .map(|&len| len.to_usize())
+            .product()
+    }
+
     /// The center point in the bounding box.
     ///
     /// This is only the true center of the bounding box
@@ -275,8 +297,12 @@ where
     }
 
     /// Returns the area of the bounding box.
-    pub fn area(&self) -> S {
-        self.x_len() * self.y_len()
+    pub fn area(&self) -> usize
+    where
+        usize: TryFrom<S>,
+        <usize as TryFrom<S>>::Error: fmt::Debug,
+    {
+        self.volume()
     }
 
     /// The range of the x coordinate
@@ -408,7 +434,7 @@ where
         let len = {
             match self.next_point {
                 None => 0,
-                Some(p) => self.bbox.area().to_usize() - self.bbox.seq_index(p),
+                Some(p) => self.bbox.area() - self.bbox.seq_index(p),
             }
         };
         (len, Some(len))
@@ -728,6 +754,22 @@ mod tests {
     fn test_lengths_4d() {
         let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
         assert_eq!(v4d(5, 3, 3, 3), bb.lengths());
+    }
+
+    #[test]
+    fn test_volume_2d() {
+        let bb = bb2d(-2..3, -1..2);
+        assert_eq!(15, bb.volume());
+    }
+    #[test]
+    fn test_volume_3d() {
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(45, bb.volume());
+    }
+    #[test]
+    fn test_volume_4d() {
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(135, bb.volume());
     }
 
     #[test]
