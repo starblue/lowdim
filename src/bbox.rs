@@ -81,10 +81,28 @@ where
         BBox { min, max }
     }
     /// The minimal point in the bounding box.
+    ///
+    /// # Example
+    /// ```
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
+    /// let b = bb2d(-1..3, 3..5);
+    /// assert_eq!(p2d(-1, 3), b.min());
+    /// ```
     pub fn min(&self) -> Point<S, V> {
         self.min
     }
     /// The maximal point in the bounding box.
+    ///
+    /// # Example
+    /// ```
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
+    /// let b = bb2d(-1..3, 3..5);
+    /// assert_eq!(p2d(2, 4), b.max());
+    /// ```
     pub fn max(&self) -> Point<S, V> {
         self.max
     }
@@ -95,6 +113,15 @@ where
     /// if the bounding box has odd dimensions.
     /// Otherwise the coordinates of the center are rounded
     /// according to the rules for integer division, i.e. towards zero.
+    ///
+    /// # Example
+    /// ```
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
+    /// let b = bb2d(-1..4, 3..6);
+    /// assert_eq!(p2d(1, 4), b.center());
+    /// ```
     pub fn center(&self) -> Point<S, V> {
         Point::<S, V>::from((self.min.to_vec() + self.max.to_vec()) / S::from(2))
     }
@@ -140,11 +167,30 @@ where
     /// If the point is inside the bounding box it is returned unchanged.
     /// Otherwise the coordinates that fall outside the ranges of the box
     /// are clamped to the closest endpoints of the ranges.
+    ///
+    /// # Example
+    /// ```
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
+    /// let b = bb2d(-1..4, 3..6);
+    /// assert_eq!(p2d(3, 4), b.clamp(p2d(10, 4)));
+    /// ```
     pub fn clamp(&self, p: Point<S, V>) -> Point<S, V> {
         p.max(self.min).min(self.max)
     }
 
     /// Returns true if the point is inside the bounding box.
+    ///
+    /// # Example
+    /// ```
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
+    /// let b = bb2d(-1..4, 3..6);
+    /// assert!(b.contains(&p2d(0, 4)));
+    /// assert!(!b.contains(&p2d(10, 4)));
+    /// ```
     pub fn contains(&self, p: &Point<S, V>) -> bool {
         self.clamp(*p) == *p
     }
