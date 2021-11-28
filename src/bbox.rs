@@ -16,6 +16,8 @@ use crate::p4d;
 use crate::Integer;
 use crate::Point;
 use crate::Point2d;
+use crate::Point3d;
+use crate::Point4d;
 use crate::Vec2d;
 use crate::Vec3d;
 use crate::Vec4d;
@@ -513,6 +515,21 @@ where
     pub fn z_range(&self) -> Range<S> {
         self.z_start()..self.z_end()
     }
+
+    /// Returns a random point inside the bounding box.
+    ///
+    /// Uses a uniform distribution.
+    #[cfg(feature = "random")]
+    pub fn random_point<R>(&self, rng: &mut R) -> Point3d<S>
+    where
+        R: Rng,
+        S: SampleUniform,
+    {
+        let x = rng.gen_range(self.x_range());
+        let y = rng.gen_range(self.y_range());
+        let z = rng.gen_range(self.z_range());
+        p3d(x, y, z)
+    }
 }
 
 impl<S> BBox4d<S>
@@ -620,6 +637,22 @@ where
     pub fn w_range(&self) -> Range<S> {
         self.w_start()..self.w_end()
     }
+
+    /// Returns a random point inside the bounding box.
+    ///
+    /// Uses a uniform distribution.
+    #[cfg(feature = "random")]
+    pub fn random_point<R>(&self, rng: &mut R) -> Point4d<S>
+    where
+        R: Rng,
+        S: SampleUniform,
+    {
+        let x = rng.gen_range(self.x_range());
+        let y = rng.gen_range(self.y_range());
+        let z = rng.gen_range(self.z_range());
+        let w = rng.gen_range(self.w_range());
+        p4d(x, y, z, w)
+    }
 }
 
 #[cfg(test)]
@@ -634,6 +667,11 @@ mod tests {
     use crate::v3d;
     use crate::v4d;
     use crate::BBox2d;
+
+    #[cfg(feature = "random")]
+    use rand::rngs::StdRng;
+    #[cfg(feature = "random")]
+    use rand::SeedableRng;
 
     #[test]
     fn test_new() {
@@ -1043,6 +1081,28 @@ mod tests {
     fn test_center() {
         let bb = bb2d(-2..3, -1..2);
         assert_eq!(p2d(0, 0), bb.center());
+    }
+
+    #[cfg(feature = "random")]
+    #[test]
+    fn test_random_point_2d() {
+        let mut rng = StdRng::seed_from_u64(42);
+        let bb = bb2d(-2..3, -1..2);
+        assert_eq!(p2d(-1, 0), bb.random_point(&mut rng));
+    }
+    #[cfg(feature = "random")]
+    #[test]
+    fn test_random_point_3d() {
+        let mut rng = StdRng::seed_from_u64(42);
+        let bb = bb3d(-2..3, -1..2, 1..4);
+        assert_eq!(p3d(-1, 0, 3), bb.random_point(&mut rng));
+    }
+    #[cfg(feature = "random")]
+    #[test]
+    fn test_random_point_4d() {
+        let mut rng = StdRng::seed_from_u64(42);
+        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        assert_eq!(p4d(-1, 0, 3, -4), bb.random_point(&mut rng));
     }
 
     #[test]
