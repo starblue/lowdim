@@ -63,6 +63,10 @@ where
     fn zero() -> Self {
         Self::with(|_| S::zero())
     }
+    /// Creates a vector of ones.
+    fn ones() -> Self {
+        Self::with(|_| S::one())
+    }
 
     /// Returns `true` if a vector is the zero vector.
     fn is_zero(&self) -> bool {
