@@ -6,6 +6,7 @@ use core::iter::once;
 use core::ops;
 
 use crate::Integer;
+use crate::Layout;
 
 /// Required arithmetic operations for vectors.
 ///
@@ -35,6 +36,9 @@ where
 {
     /// The dimension of the vectors in this type.
     const DIM: usize;
+
+    /// The default layout to use with this vector.
+    type DefaultLayout: Layout<S, Self>;
 
     /// Create a vector from a function which computes the coordinates.
     ///

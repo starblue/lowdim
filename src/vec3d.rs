@@ -16,6 +16,7 @@ use crate::lex_then;
 use crate::partial_then;
 use crate::scalar_mul;
 use crate::Integer;
+use crate::Layout3d;
 use crate::Vector;
 use crate::VectorOps;
 
@@ -167,6 +168,8 @@ impl<'a, S: Integer> VectorOps<S, &'a Vec3d<S>, Vec3d<S>> for &'a Vec3d<S> {}
 
 impl<S: Integer> Vector<S> for Vec3d<S> {
     const DIM: usize = 3;
+
+    type DefaultLayout = Layout3d<S>;
 
     fn with<F>(f: F) -> Vec3d<S>
     where

@@ -16,6 +16,7 @@ use crate::lex_then;
 use crate::partial_then;
 use crate::scalar_mul;
 use crate::Integer;
+use crate::Layout2d;
 use crate::Vector;
 use crate::VectorOps;
 
@@ -152,6 +153,8 @@ impl<'a, S: Integer> VectorOps<S, &'a Vec2d<S>, Vec2d<S>> for &'a Vec2d<S> {}
 
 impl<S: Integer> Vector<S> for Vec2d<S> {
     const DIM: usize = 2;
+
+    type DefaultLayout = Layout2d<S>;
 
     fn with<F>(f: F) -> Vec2d<S>
     where

@@ -126,7 +126,16 @@ pub use crate::affine_transformation::AffineTransformation4d;
 
 pub mod array;
 #[doc(inline)]
+pub use crate::array::Array;
 pub use crate::array::Array2d;
+pub use crate::array::Array3d;
+pub use crate::array::Array4d;
+
+mod layout;
+use crate::layout::Layout;
+use crate::layout::Layout2d;
+use crate::layout::Layout3d;
+use crate::layout::Layout4d;
 
 mod util;
 use crate::util::lex_then;

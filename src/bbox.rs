@@ -2,7 +2,6 @@
 
 use core::cmp::PartialOrd;
 use core::fmt;
-use core::fmt::Debug;
 use core::ops::Range;
 
 #[cfg(feature = "random")]
@@ -324,7 +323,7 @@ where
     {
         let next_point = Some(self.min);
         Iter {
-            bbox: self,
+            bbox: self.clone(),
             next_point,
         }
     }
@@ -385,23 +384,19 @@ where
 {
     type Item = Point2d<S>;
 
-    type IntoIter = Iter<'a, S>;
+    type IntoIter = Iter<S>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.iter()
     }
 }
 /// An iterator over the points in a 2d bounding box.
-pub struct Iter<'a, S: Integer>
-where
-    usize: TryFrom<S>,
-    <usize as TryFrom<S>>::Error: fmt::Debug,
-{
-    bbox: &'a BBox2d<S>,
+pub struct Iter<S: Integer> {
+    bbox: BBox2d<S>,
     next_point: Option<Point2d<S>>,
 }
 
-impl<'a, S: Integer> Iterator for Iter<'a, S>
+impl<S: Integer> Iterator for Iter<S>
 where
     usize: TryFrom<S>,
     <usize as TryFrom<S>>::Error: fmt::Debug,
@@ -441,7 +436,7 @@ where
     }
 }
 
-impl<'a, S: Integer> ExactSizeIterator for Iter<'a, S>
+impl<S: Integer> ExactSizeIterator for Iter<S>
 where
     S: Copy + PartialOrd,
     usize: TryFrom<S>,

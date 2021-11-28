@@ -16,6 +16,7 @@ use crate::lex_then;
 use crate::partial_then;
 use crate::scalar_mul;
 use crate::Integer;
+use crate::Layout4d;
 use crate::Vector;
 use crate::VectorOps;
 
@@ -204,6 +205,8 @@ impl<'a, S: Integer> VectorOps<S, &'a Vec4d<S>, Vec4d<S>> for &'a Vec4d<S> {}
 
 impl<S: Integer> Vector<S> for Vec4d<S> {
     const DIM: usize = 4;
+
+    type DefaultLayout = Layout4d<S>;
 
     fn with<F>(f: F) -> Vec4d<S>
     where
