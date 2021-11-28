@@ -664,8 +664,6 @@ mod tests {
     use crate::p3d;
     use crate::p4d;
     use crate::v2d;
-    use crate::v3d;
-    use crate::v4d;
     use crate::BBox2d;
 
     #[cfg(feature = "random")]
