@@ -161,6 +161,11 @@ where
             .collect()
     }
 
+    /// Returns the componentwise partial ordering for this and another point.
+    pub fn componentwise_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.v.componentwise_cmp(&other.v)
+    }
+
     /// Returns the lexicographic total ordering for this and another point.
     ///
     /// That is, the first different coordinate decides the ordering.
@@ -345,16 +350,6 @@ where
     type Output = S;
     fn index(&self, i: usize) -> &S {
         self.v.index(i)
-    }
-}
-
-impl<S, V> PartialOrd for Point<S, V>
-where
-    S: Integer,
-    V: Vector<S>,
-{
-    fn partial_cmp(&self, other: &Point<S, V>) -> Option<Ordering> {
-        self.v.partial_cmp(&other.v)
     }
 }
 
@@ -641,27 +636,27 @@ mod tests {
     }
 
     #[test]
-    fn test_partial_ord_none() {
+    fn test_componentwise_cmp_none() {
         let u = p2d(2, 1);
         let v = p2d(3, -7);
-        assert_eq!(None, u.partial_cmp(&v));
+        assert_eq!(None, u.componentwise_cmp(&v));
     }
     #[test]
-    fn test_partial_ord_less() {
+    fn test_componentwise_cmp_less() {
         let u = p2d(2, 1);
         let v = p2d(3, 7);
-        assert_eq!(Some(Ordering::Less), u.partial_cmp(&v));
+        assert_eq!(Some(Ordering::Less), u.componentwise_cmp(&v));
     }
     #[test]
-    fn test_partial_ord_equal() {
+    fn test_componentwise_cmp_equal() {
         let v = p2d(3, 7);
-        assert_eq!(Some(Ordering::Equal), v.partial_cmp(&v));
+        assert_eq!(Some(Ordering::Equal), v.componentwise_cmp(&v));
     }
     #[test]
-    fn test_partial_ord_greater() {
+    fn test_componentwise_cmp_greater() {
         let u = p2d(2, 1);
         let v = p2d(3, 7);
-        assert_eq!(Some(Ordering::Greater), v.partial_cmp(&u));
+        assert_eq!(Some(Ordering::Greater), v.componentwise_cmp(&u));
     }
 
     #[test]

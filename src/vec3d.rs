@@ -228,6 +228,13 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
         result
     }
 
+    fn componentwise_cmp(&self, other: &Vec3d<S>) -> Option<Ordering> {
+        let x_ordering = Some(self.x().cmp(&other.x()));
+        let y_ordering = Some(self.y().cmp(&other.y()));
+        let z_ordering = Some(self.z().cmp(&other.z()));
+        partial_then(partial_then(x_ordering, y_ordering), z_ordering)
+    }
+
     fn lex_cmp(&self, other: &Vec3d<S>) -> Ordering {
         let x_ordering = self.x().cmp(&other.x());
         let y_ordering = self.y().cmp(&other.y());
@@ -272,14 +279,6 @@ impl<S: Integer> Index<usize> for Vec3d<S> {
     type Output = S;
     fn index(&self, i: usize) -> &S {
         self.0.index(i)
-    }
-}
-impl<S: Integer> PartialOrd for Vec3d<S> {
-    fn partial_cmp(&self, other: &Vec3d<S>) -> Option<Ordering> {
-        let x_ordering = Some(self.x().cmp(&other.x()));
-        let y_ordering = Some(self.y().cmp(&other.y()));
-        let z_ordering = Some(self.z().cmp(&other.z()));
-        partial_then(partial_then(x_ordering, y_ordering), z_ordering)
     }
 }
 
@@ -599,27 +598,27 @@ mod tests {
     }
 
     #[test]
-    fn test_partial_ord_none() {
+    fn test_componentwise_cmp_none() {
         let u = v3d(3, 1, -5);
         let v = v3d(2, 1, 1);
-        assert_eq!(None, u.partial_cmp(&v));
+        assert_eq!(None, u.componentwise_cmp(&v));
     }
     #[test]
-    fn test_partial_ord_less() {
+    fn test_componentwise_cmp_less() {
         let u = v3d(2, 1, 1);
         let v = v3d(3, 7, 5);
-        assert_eq!(Some(Ordering::Less), u.partial_cmp(&v));
+        assert_eq!(Some(Ordering::Less), u.componentwise_cmp(&v));
     }
     #[test]
-    fn test_partial_ord_equal() {
+    fn test_componentwise_cmp_equal() {
         let v = v3d(3, 7, 5);
-        assert_eq!(Some(Ordering::Equal), v.partial_cmp(&v));
+        assert_eq!(Some(Ordering::Equal), v.componentwise_cmp(&v));
     }
     #[test]
-    fn test_partial_ord_greater() {
+    fn test_componentwise_cmp_greater() {
         let u = v3d(2, 1, 1);
         let v = v3d(2, 7, 5);
-        assert_eq!(Some(Ordering::Greater), v.partial_cmp(&u));
+        assert_eq!(Some(Ordering::Greater), v.componentwise_cmp(&u));
     }
 
     #[test]

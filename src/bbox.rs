@@ -54,7 +54,7 @@ where
     pub fn new(origin: Point<S, V>, size: V) -> BBox<S, V> {
         let min = origin;
         let max = Point::with(|i| origin[i] + size[i] - S::one());
-        assert!(max >= min);
+        assert!(size.as_slice().iter().all(|&c| c > S::zero()));
         BBox { min, max }
     }
     /// Constructs a bounding box which contains a single point.

@@ -25,9 +25,8 @@ where
 pub trait Vector<S>
 where
     S: Integer,
-    Self: Clone + Copy,
+    Self: Clone + Copy + Eq,
     Self: ops::Index<usize, Output = S>,
-    Self: PartialOrd,
     Self: iter::FromIterator<S>,
     Self: VectorOps<S, Self>,
     Self: for<'a> VectorOps<S, &'a Self>,
@@ -127,6 +126,9 @@ where
     ///
     /// These correspond to a single orthogonal or diagonal step.
     fn unit_vecs_l_infty() -> Vec<Self>;
+
+    /// Returns the partial ordering by component of two vectors.
+    fn componentwise_cmp(&self, other: &Self) -> Option<Ordering>;
 
     /// Returns the lexicographic total ordering for this and another vector.
     ///

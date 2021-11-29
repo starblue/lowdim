@@ -269,6 +269,17 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
         result
     }
 
+    fn componentwise_cmp(&self, other: &Vec4d<S>) -> Option<Ordering> {
+        let x_ordering = Some(self.x().cmp(&other.x()));
+        let y_ordering = Some(self.y().cmp(&other.y()));
+        let z_ordering = Some(self.z().cmp(&other.z()));
+        let w_ordering = Some(self.w().cmp(&other.w()));
+        partial_then(
+            partial_then(partial_then(x_ordering, y_ordering), z_ordering),
+            w_ordering,
+        )
+    }
+
     fn lex_cmp(&self, other: &Vec4d<S>) -> Ordering {
         let x_ordering = self.x().cmp(&other.x());
         let y_ordering = self.y().cmp(&other.y());
@@ -318,19 +329,6 @@ impl<S: Integer> Index<usize> for Vec4d<S> {
     type Output = S;
     fn index(&self, i: usize) -> &S {
         self.0.index(i)
-    }
-}
-
-impl<S: Integer> PartialOrd for Vec4d<S> {
-    fn partial_cmp(&self, other: &Vec4d<S>) -> Option<Ordering> {
-        let x_ordering = Some(self.x().cmp(&other.x()));
-        let y_ordering = Some(self.y().cmp(&other.y()));
-        let z_ordering = Some(self.z().cmp(&other.z()));
-        let w_ordering = Some(self.w().cmp(&other.w()));
-        partial_then(
-            partial_then(partial_then(x_ordering, y_ordering), z_ordering),
-            w_ordering,
-        )
     }
 }
 
@@ -704,27 +702,27 @@ mod tests {
     }
 
     #[test]
-    fn test_partial_ord_none() {
+    fn test_componentwise_cmp_none() {
         let u = v4d(2, 1, 5, -4);
         let v = v4d(2, 7, 1, 4);
-        assert_eq!(None, u.partial_cmp(&v));
+        assert_eq!(None, u.componentwise_cmp(&v));
     }
     #[test]
-    fn test_partial_ord_less() {
+    fn test_componentwise_cmp_less() {
         let u = v4d(2, 1, 1, -4);
         let v = v4d(3, 1, 5, 4);
-        assert_eq!(Some(Ordering::Less), u.partial_cmp(&v));
+        assert_eq!(Some(Ordering::Less), u.componentwise_cmp(&v));
     }
     #[test]
-    fn test_partial_ord_equal() {
+    fn test_componentwise_cmp_equal() {
         let v = v4d(3, 7, 5, 4);
-        assert_eq!(Some(Ordering::Equal), v.partial_cmp(&v));
+        assert_eq!(Some(Ordering::Equal), v.componentwise_cmp(&v));
     }
     #[test]
-    fn test_partial_ord_greater() {
+    fn test_componentwise_cmp_greater() {
         let u = v4d(2, 1, 1, -4);
         let v = v4d(3, 1, 5, 4);
-        assert_eq!(Some(Ordering::Greater), v.partial_cmp(&u));
+        assert_eq!(Some(Ordering::Greater), v.componentwise_cmp(&u));
     }
 
     #[test]
