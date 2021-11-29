@@ -98,7 +98,7 @@ where
     /// Creates a vector of the unit vectors.
     fn unit_vecs() -> Vec<Self> {
         (0..Self::DIM)
-            .map(|i| Self::with(|j| S::from(if i == j { 1 } else { 0 })))
+            .map(|i| Self::with(|j| if i == j { S::one() } else { S::zero() }))
             .collect::<Vec<_>>()
     }
 

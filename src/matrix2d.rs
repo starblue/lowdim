@@ -63,53 +63,32 @@ impl<S: Integer> Matrix2d<S> {
         self.a[0][0] * self.a[1][1] - self.a[0][1] * self.a[1][0]
     }
     /// Creates a matrix for a left rotation by a right angle.
-    pub fn rotate_left_90() -> Matrix2d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix2d::new(S::from(0), S::from(-1), S::from(1), S::from(0))
+    pub fn rotate_left_90() -> Matrix2d<S> {
+        Matrix2d::new(S::zero(), -S::one(), S::one(), S::zero())
     }
     /// Creates a matrix for a rotation by 180 degrees.
-    pub fn rotate_180() -> Matrix2d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix2d::new(S::from(-1), S::from(0), S::from(0), S::from(-1))
+    pub fn rotate_180() -> Matrix2d<S> {
+        Matrix2d::new(-S::one(), S::zero(), S::zero(), -S::one())
     }
     /// Creates a matrix for a right rotation by a right angle.
-    pub fn rotate_right_90() -> Matrix2d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix2d::new(S::from(0), S::from(1), S::from(-1), S::from(0))
+    pub fn rotate_right_90() -> Matrix2d<S> {
+        Matrix2d::new(S::zero(), S::one(), -S::one(), S::zero())
     }
     /// Creates a matrix for a reflection on the x-axis.
-    pub fn reflect_x_axis() -> Matrix2d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix2d::new(S::from(1), S::from(0), S::from(0), S::from(-1))
+    pub fn reflect_x_axis() -> Matrix2d<S> {
+        Matrix2d::new(S::one(), S::zero(), S::zero(), -S::one())
     }
     /// Creates a matrix for a reflection on the y-axis.
-    pub fn reflect_y_axis() -> Matrix2d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix2d::new(S::from(-1), S::from(0), S::from(0), S::from(1))
+    pub fn reflect_y_axis() -> Matrix2d<S> {
+        Matrix2d::new(-S::one(), S::zero(), S::zero(), S::one())
     }
     /// Creates a matrix for a reflection on the x=y diagonal.
-    pub fn reflect_diagonal() -> Matrix2d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix2d::new(S::from(0), S::from(1), S::from(1), S::from(0))
+    pub fn reflect_diagonal() -> Matrix2d<S> {
+        Matrix2d::new(S::zero(), S::one(), S::one(), S::zero())
     }
     /// Creates a matrix for a reflection on the -x=y anti-diagonal.
-    pub fn reflect_anti_diagonal() -> Matrix2d<S>
-    where
-        S: From<i32>,
-    {
-        Matrix2d::new(S::from(0), S::from(-1), S::from(-1), S::from(0))
+    pub fn reflect_anti_diagonal() -> Matrix2d<S> {
+        Matrix2d::new(S::zero(), -S::one(), -S::one(), S::zero())
     }
 }
 

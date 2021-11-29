@@ -214,11 +214,13 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
     /// Creates a vector of the 26 vectors with L∞ norm equal to 1.
     fn unit_vecs_l_infty() -> Vec<Self> {
         let mut result = Vec::new();
-        for z in -1..=1 {
-            for y in -1..=1 {
-                for x in -1..=1 {
-                    if x != 0 || y != 0 || z != 0 {
-                        result.push(v3d(S::from(x), S::from(y), S::from(z)));
+        let zero = S::zero();
+        let one = S::one();
+        for z in [-one, zero, one] {
+            for y in [-one, zero, one] {
+                for x in [-one, zero, one] {
+                    if x != zero || y != zero || z != zero {
+                        result.push(v3d(x, y, z));
                     }
                 }
             }

@@ -31,19 +31,17 @@ pub trait Integer
 where
     Self: Copy,
     Self: Display,
-    Self: From<i32>,
     Self: Ord,
     Self: IntegerOps,
 {
     /// Returns zero.
-    fn zero() -> Self {
-        Self::from(0)
-    }
+    fn zero() -> Self;
 
     /// Returns one.
-    fn one() -> Self {
-        Self::from(1)
-    }
+    fn one() -> Self;
+
+    /// Returns two.
+    fn two() -> Self;
 
     /// The absolute value function.
     fn abs(self) -> Self;
@@ -60,6 +58,15 @@ macro_rules! impl_integer {
         impl IntegerOps for $t {}
 
         impl Integer for $t {
+            fn zero() -> Self {
+                0
+            }
+            fn one() -> Self {
+                1
+            }
+            fn two() -> Self {
+                2
+            }
             fn abs(self) -> Self {
                 <$t>::abs(self)
             }
@@ -70,9 +77,12 @@ macro_rules! impl_integer {
     };
 }
 
+impl_integer!(i8);
+impl_integer!(i16);
 impl_integer!(i32);
 impl_integer!(i64);
 impl_integer!(i128);
+impl_integer!(isize);
 
 #[cfg(test)]
 mod tests {

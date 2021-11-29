@@ -197,10 +197,12 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
     /// Creates a vector of the 8 vectors with L∞ norm equal to 1.
     fn unit_vecs_l_infty() -> Vec<Self> {
         let mut result = Vec::new();
-        for y in -1..=1 {
-            for x in -1..=1 {
-                if x != 0 || y != 0 {
-                    result.push(v2d(S::from(x), S::from(y)));
+        let zero = S::zero();
+        let one = S::one();
+        for y in [-one, zero, one] {
+            for x in [-one, zero, one] {
+                if x != zero || y != zero {
+                    result.push(v2d(x, y));
                 }
             }
         }

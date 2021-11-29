@@ -253,12 +253,14 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
     /// Creates a vector of the 80 vectors with L∞ norm equal to 1.
     fn unit_vecs_l_infty() -> Vec<Self> {
         let mut result = Vec::new();
-        for w in -1..=1 {
-            for z in -1..=1 {
-                for y in -1..=1 {
-                    for x in -1..=1 {
-                        if x != 0 || y != 0 || z != 0 || w != 0 {
-                            result.push(v4d(S::from(x), S::from(y), S::from(z), S::from(w)));
+        let zero = S::zero();
+        let one = S::one();
+        for w in [-one, zero, one] {
+            for z in [-one, zero, one] {
+                for y in [-one, zero, one] {
+                    for x in [-one, zero, one] {
+                        if x != zero || y != zero || z != zero || w != zero {
+                            result.push(v4d(x, y, z, w));
                         }
                     }
                 }

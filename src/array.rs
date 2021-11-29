@@ -1,5 +1,6 @@
 //! n-dimensional arrays indexed by points in a bounding box.
 
+use core::fmt::Debug;
 use core::ops;
 
 use std::convert::TryFrom;
@@ -31,8 +32,9 @@ where
     pub fn new(bounds: BBox2d<S>, d: T) -> Array2d<S, T>
     where
         T: Clone,
+        <usize as TryFrom<S>>::Error: Debug,
     {
-        let data = repeat(d).take(bounds.area() as usize).collect::<Box<[_]>>();
+        let data = repeat(d).take(bounds.area()).collect::<Box<[_]>>();
         Array2d { bounds, data }
     }
 
@@ -41,6 +43,7 @@ where
     pub fn with<F>(bounds: BBox2d<S>, f: F) -> Array2d<S, T>
     where
         F: Fn(Point2d<S>) -> T,
+        <usize as TryFrom<S>>::Error: Debug,
     {
         let data = bounds.iter().map(f).collect::<Box<[_]>>();
         Array2d { bounds, data }
@@ -52,6 +55,7 @@ where
     pub fn new_with<F>(bounds: BBox2d<S>, f: F) -> Array2d<S, T>
     where
         F: Fn(Point2d<S>) -> T,
+        <usize as TryFrom<S>>::Error: Debug,
     {
         Self::with(bounds, f)
     }
@@ -62,17 +66,19 @@ where
     where
         T: Copy,
         S: TryFrom<usize>,
+        <usize as TryFrom<S>>::Error: Debug,
+        <S as TryFrom<usize>>::Error: Debug,
     {
-        let y_len = S::try_from(v.len()).unwrap_or(0.into());
-        let x_len = if y_len == 0.into() {
-            0.into()
+        let y_len = S::try_from(v.len()).unwrap();
+        let x_len = if y_len == S::zero() {
+            S::zero()
         } else {
-            S::try_from(v[0].len()).unwrap_or(0.into())
+            S::try_from(v[0].len()).unwrap()
         };
-        let bounds = BBox2d::from_bounds(0.into(), x_len, 0.into(), y_len);
+        let bounds = BBox2d::from_bounds(S::zero(), x_len, S::zero(), y_len);
         Array2d::with(bounds, |p| {
-            let x = usize::try_from(p.x()).unwrap_or(0_usize);
-            let y = usize::try_from(p.y()).unwrap_or(0_usize);
+            let x = usize::try_from(p.x()).unwrap();
+            let y = usize::try_from(p.y()).unwrap();
             v[y][x]
         })
     }
@@ -84,7 +90,10 @@ where
 
     /// Returns a reference to the element at the index
     /// or None if the index is out of bounds.
-    pub fn get(&self, index: Point2d<S>) -> Option<&T> {
+    pub fn get(&self, index: Point2d<S>) -> Option<&T>
+    where
+        <usize as TryFrom<S>>::Error: Debug,
+    {
         if self.bounds().contains(&index) {
             Some(&self.data[self.bounds.seq_index(index)])
         } else {
@@ -94,7 +103,10 @@ where
 
     /// Returns a reference to the element at the index
     /// or None if the index is out of bounds.
-    pub fn get_mut(&mut self, index: Point2d<S>) -> Option<&mut T> {
+    pub fn get_mut(&mut self, index: Point2d<S>) -> Option<&mut T>
+    where
+        <usize as TryFrom<S>>::Error: Debug,
+    {
         if self.bounds().contains(&index) {
             Some(&mut self.data[self.bounds.seq_index(index)])
         } else {
@@ -106,6 +118,7 @@ where
     pub fn iter(&self) -> impl Iterator<Item = &T>
     where
         usize: TryFrom<S>,
+        <usize as TryFrom<S>>::Error: Debug,
     {
         Array2dIter {
             array: self,
@@ -124,8 +137,9 @@ where
 }
 impl<'a, S: Integer, T, Iter> Iterator for Array2dIter<'a, S, T, Iter>
 where
-    usize: TryFrom<S>,
     Iter: Iterator<Item = Point2d<S>>,
+    usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: Debug,
 {
     type Item = &'a T;
 
@@ -141,6 +155,7 @@ where
 impl<S: Integer, T> ops::Index<Point2d<S>> for Array2d<S, T>
 where
     usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: Debug,
 {
     type Output = T;
 
@@ -152,6 +167,7 @@ where
 impl<S: Integer, T> ops::IndexMut<Point2d<S>> for Array2d<S, T>
 where
     usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: Debug,
 {
     fn index_mut(&mut self, index: Point2d<S>) -> &mut T {
         &mut self.data[self.bounds.seq_index(index)]

@@ -16,7 +16,9 @@ use crate::p4d;
 use crate::Integer;
 use crate::Point;
 use crate::Point2d;
+#[cfg(feature = "random")]
 use crate::Point3d;
+#[cfg(feature = "random")]
 use crate::Point4d;
 use crate::Vec2d;
 use crate::Vec3d;
@@ -51,7 +53,7 @@ where
     /// All coordinates of `size` must be positive to make the box non-empty.
     pub fn new(origin: Point<S, V>, size: V) -> BBox<S, V> {
         let min = origin;
-        let max = Point::with(|i| origin[i] + size[i] - S::from(1));
+        let max = Point::with(|i| origin[i] + size[i] - S::one());
         assert!(max >= min);
         BBox { min, max }
     }
@@ -127,7 +129,7 @@ where
     /// assert_eq!(p2d(1, 4), b.center());
     /// ```
     pub fn center(&self) -> Point<S, V> {
-        Point::<S, V>::from((self.min.to_vec() + self.max.to_vec()) / S::from(2))
+        Point::<S, V>::from((self.min.to_vec() + self.max.to_vec()) / S::two())
     }
 
     /// The least upper bound of two bounding boxes w.r.t. inclusion.
@@ -210,7 +212,7 @@ where
     pub fn from_bounds(x_start: S, x_end: S, y_start: S, y_end: S) -> BBox2d<S> {
         assert!(x_start <= x_end && y_start <= y_end);
         let min = p2d(x_start, y_start);
-        let max = p2d(x_end - S::from(1), y_end - S::from(1));
+        let max = p2d(x_end - S::one(), y_end - S::one());
         BBox { min, max }
     }
 
@@ -220,7 +222,7 @@ where
     }
     /// Returns the upper bound in the x-coordinate (exclusive).
     pub fn x_end(&self) -> S {
-        self.max.x() + S::from(1)
+        self.max.x() + S::one()
     }
     /// Returns the lower bound in the x-coordinate (inclusive).
     pub fn x_min(&self) -> S {
@@ -239,7 +241,7 @@ where
     /// Returns the upper bound in the x-coordinate (exclusive).
     #[deprecated = "Use `x_end` instead, or consider using `x_max`."]
     pub fn x1(&self) -> S {
-        self.max.x() + S::from(1)
+        self.max.x() + S::one()
     }
 
     /// Returns the lower bound in the y-coordinate (inclusive).
@@ -248,7 +250,7 @@ where
     }
     /// Returns the upper bound in the y-coordinate (exclusive).
     pub fn y_end(&self) -> S {
-        self.max.y() + S::from(1)
+        self.max.y() + S::one()
     }
     /// Returns the lower bound in the y-coordinate (inclusive).
     pub fn y_min(&self) -> S {
@@ -267,29 +269,32 @@ where
     /// Returns the upper bound in the y-coordinate (exclusive).
     #[deprecated = "Use `y_end` instead, or consider using `y_max`."]
     pub fn y1(&self) -> S {
-        self.max.y() + S::from(1)
+        self.max.y() + S::one()
     }
 
     /// Returns the width of the bounding box.
     pub fn x_len(&self) -> usize
     where
         usize: TryFrom<S>,
+        <usize as TryFrom<S>>::Error: Debug,
     {
-        usize::try_from(self.max.x() - self.min.x() + S::from(1)).unwrap_or(0)
+        usize::try_from(self.max.x() - self.min.x() + S::one()).unwrap()
     }
 
     /// Returns the height of the bounding box.
     pub fn y_len(&self) -> usize
     where
         usize: TryFrom<S>,
+        <usize as TryFrom<S>>::Error: Debug,
     {
-        usize::try_from(self.max.y() - self.min.y() + S::from(1)).unwrap_or(0)
+        usize::try_from(self.max.y() - self.min.y() + S::one()).unwrap()
     }
 
     /// Returns the area of the bounding box.
     pub fn area(&self) -> usize
     where
         usize: TryFrom<S>,
+        <usize as TryFrom<S>>::Error: Debug,
     {
         self.x_len() * self.y_len()
     }
@@ -323,6 +328,7 @@ where
     pub fn seq_index(&self, p: Point2d<S>) -> usize
     where
         usize: TryFrom<S>,
+        <usize as TryFrom<S>>::Error: Debug,
     {
         assert!(self.contains(&p));
         let dx = usize::try_from(p.x() - self.x_start()).unwrap_or(0);
@@ -348,29 +354,27 @@ where
 
 /// Creates a 2d bounding box from ranges of x and y coordinates.
 pub fn bb2d<S: Integer>(rx: Range<S>, ry: Range<S>) -> BBox2d<S> {
-    let one = S::from(1);
     let p_min = p2d(rx.start, ry.start);
-    let p_max = p2d(rx.end - one, ry.end - one);
+    let p_max = p2d(rx.end, ry.end) - Vec2d::ones();
     BBox2d::from_points(p_min, p_max)
 }
 /// Creates a 3d bounding box from ranges of x, y and z coordinates.
 pub fn bb3d<S: Integer>(rx: Range<S>, ry: Range<S>, rz: Range<S>) -> BBox3d<S> {
-    let one = S::from(1);
     let p_min = p3d(rx.start, ry.start, rz.start);
-    let p_max = p3d(rx.end - one, ry.end - one, rz.end - one);
+    let p_max = p3d(rx.end, ry.end, rz.end) - Vec3d::ones();
     BBox3d::from_points(p_min, p_max)
 }
 /// Creates a 4d bounding box from ranges of x, y, z and w coordinates.
 pub fn bb4d<S: Integer>(rx: Range<S>, ry: Range<S>, rz: Range<S>, rw: Range<S>) -> BBox4d<S> {
-    let one = S::from(1);
     let p_min = p4d(rx.start, ry.start, rz.start, rw.start);
-    let p_max = p4d(rx.end - one, ry.end - one, rz.end - one, rw.end - one);
+    let p_max = p4d(rx.end, ry.end, rz.end, rw.end) - Vec4d::ones();
     BBox4d::from_points(p_min, p_max)
 }
 
 impl<'a, S: Integer> IntoIterator for &'a BBox2d<S>
 where
     usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: Debug,
 {
     type Item = Point2d<S>;
 
@@ -389,6 +393,7 @@ pub struct Iter<'a, S: Integer> {
 impl<'a, S: Integer> Iterator for Iter<'a, S>
 where
     usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: Debug,
 {
     type Item = Point2d<S>;
 
@@ -396,12 +401,12 @@ where
         match self.next_point {
             Some(p) => {
                 // Move to next point
-                let new_x = p.x() + S::from(1);
+                let new_x = p.x() + S::one();
                 self.next_point = {
                     if new_x < self.bbox.x_end() {
                         Some(p2d(new_x, p.y()))
                     } else {
-                        let new_y = p.y() + S::from(1);
+                        let new_y = p.y() + S::one();
                         if new_y < self.bbox.y_end() {
                             Some(p2d(self.bbox.x_start(), new_y))
                         } else {
@@ -427,8 +432,9 @@ where
 
 impl<'a, S: Integer> ExactSizeIterator for Iter<'a, S>
 where
-    S: Copy + From<u8> + PartialOrd,
+    S: Copy + PartialOrd,
     usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: Debug,
 {
     fn len(&self) -> usize {
         self.size_hint().0
@@ -445,7 +451,7 @@ where
     }
     /// Returns the upper bound in the x-coordinate (exclusive).
     pub fn x_end(&self) -> S {
-        self.max.x() + S::from(1)
+        self.max.x() + S::one()
     }
     /// Returns the lower bound in the x-coordinate (inclusive).
     pub fn x_min(&self) -> S {
@@ -462,7 +468,7 @@ where
     }
     /// Returns the upper bound in the y-coordinate (exclusive).
     pub fn y_end(&self) -> S {
-        self.max.y() + S::from(1)
+        self.max.y() + S::one()
     }
     /// Returns the lower bound in the y-coordinate (inclusive).
     pub fn y_min(&self) -> S {
@@ -479,7 +485,7 @@ where
     }
     /// Returns the upper bound in the z-coordinate (exclusive).
     pub fn z_end(&self) -> S {
-        self.max.z() + S::from(1)
+        self.max.z() + S::one()
     }
     /// Returns the lower bound in the z-coordinate (inclusive).
     pub fn z_min(&self) -> S {
@@ -492,15 +498,15 @@ where
 
     /// Returns the size of the x-dimension of the bounding box.
     pub fn x_len(&self) -> S {
-        self.max.x() - self.min.x() + S::from(1)
+        self.max.x() - self.min.x() + S::one()
     }
     /// Returns the size of the y-dimension of the bounding box.
     pub fn y_len(&self) -> S {
-        self.max.y() - self.min.y() + S::from(1)
+        self.max.y() - self.min.y() + S::one()
     }
     /// Returns the size of the z-dimension of the bounding box.
     pub fn z_len(&self) -> S {
-        self.max.z() - self.min.z() + S::from(1)
+        self.max.z() - self.min.z() + S::one()
     }
 
     /// Returns the range of the x coordinate.
@@ -542,7 +548,7 @@ where
     }
     /// Returns the upper bound in the x-coordinate (exclusive).
     pub fn x_end(&self) -> S {
-        self.max.x() + S::from(1)
+        self.max.x() + S::one()
     }
     /// Returns the lower bound in the x-coordinate (inclusive).
     pub fn x_min(&self) -> S {
@@ -559,7 +565,7 @@ where
     }
     /// Returns the upper bound in the y-coordinate (exclusive).
     pub fn y_end(&self) -> S {
-        self.max.y() + S::from(1)
+        self.max.y() + S::one()
     }
     /// Returns the lower bound in the y-coordinate (inclusive).
     pub fn y_min(&self) -> S {
@@ -576,7 +582,7 @@ where
     }
     /// Returns the upper bound in the z-coordinate (exclusive).
     pub fn z_end(&self) -> S {
-        self.max.z() + S::from(1)
+        self.max.z() + S::one()
     }
     /// Returns the lower bound in the z-coordinate (inclusive).
     pub fn z_min(&self) -> S {
@@ -593,7 +599,7 @@ where
     }
     /// Returns the upper bound in the w-coordinate (exclusive).
     pub fn w_end(&self) -> S {
-        self.max.w() + S::from(1)
+        self.max.w() + S::one()
     }
     /// Returns the lower bound in the w-coordinate (inclusive).
     pub fn w_min(&self) -> S {
@@ -606,19 +612,19 @@ where
 
     /// Returns the size of the x-dimension of the bounding box.
     pub fn x_len(&self) -> S {
-        self.max.x() - self.min.x() + S::from(1)
+        self.max.x() - self.min.x() + S::one()
     }
     /// Returns the size of the y-dimension of the bounding box.
     pub fn y_len(&self) -> S {
-        self.max.y() - self.min.y() + S::from(1)
+        self.max.y() - self.min.y() + S::one()
     }
     /// Returns the size of the z-dimension of the bounding box.
     pub fn z_len(&self) -> S {
-        self.max.z() - self.min.z() + S::from(1)
+        self.max.z() - self.min.z() + S::one()
     }
     /// Returns the size of the w-dimension of the bounding box.
     pub fn w_len(&self) -> S {
-        self.max.w() - self.min.w() + S::from(1)
+        self.max.w() - self.min.w() + S::one()
     }
 
     /// Returns the range of the x coordinate.
