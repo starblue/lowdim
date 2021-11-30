@@ -19,7 +19,7 @@ pub struct Array2d<S: Integer, T>
 where
     usize: TryFrom<S>,
 {
-    bounds: BBox2d<S>,
+    bbox: BBox2d<S>,
     data: Box<[T]>,
 }
 
@@ -27,30 +27,30 @@ impl<S: Integer, T> Array2d<S, T>
 where
     usize: TryFrom<S>,
 {
-    /// Creates a new array with the given bounds
+    /// Creates a new array with the given bounding box
     /// that is filled with copies of a given element.
-    pub fn new(bounds: BBox2d<S>, d: T) -> Array2d<S, T>
+    pub fn new(bbox: BBox2d<S>, d: T) -> Array2d<S, T>
     where
         T: Clone,
         <usize as TryFrom<S>>::Error: Debug,
     {
-        let data = repeat(d).take(bounds.area()).collect::<Box<[_]>>();
-        Array2d { bounds, data }
+        let data = repeat(d).take(bbox.area()).collect::<Box<[_]>>();
+        Array2d { bbox, data }
     }
 
-    /// Creates a new array with the given bounds
+    /// Creates a new array with the given bounding box
     /// that is filled using a function which takes a location as input.
-    pub fn with<F>(bounds: BBox2d<S>, f: F) -> Array2d<S, T>
+    pub fn with<F>(bbox: BBox2d<S>, f: F) -> Array2d<S, T>
     where
         F: Fn(Point2d<S>) -> T,
         <usize as TryFrom<S>>::Error: Debug,
     {
-        let data = bounds.iter().map(f).collect::<Box<[_]>>();
-        Array2d { bounds, data }
+        let data = bbox.iter().map(f).collect::<Box<[_]>>();
+        Array2d { bbox, data }
     }
 
-    /// Creates a new array with the given bounds
-    /// that is filled using a function which takes a location as input.
+    /// Creates a new array with the given bounding box
+    /// that is filled from a vector of vectors.
     pub fn from_vec(v: Vec<Vec<T>>) -> Array2d<S, T>
     where
         T: Copy,
@@ -64,17 +64,22 @@ where
         } else {
             S::try_from(v[0].len()).unwrap()
         };
-        let bounds = BBox2d::from_bounds(S::zero(), x_len, S::zero(), y_len);
-        Array2d::with(bounds, |p| {
+        let bbox = BBox2d::from_bounds(S::zero(), x_len, S::zero(), y_len);
+        Array2d::with(bbox, |p| {
             let x = usize::try_from(p.x()).unwrap();
             let y = usize::try_from(p.y()).unwrap();
             v[y][x]
         })
     }
 
-    /// Returns the bounds of the array.
+    /// Returns the bounding box of the array.
+    pub fn bbox(&self) -> BBox2d<S> {
+        self.bbox
+    }
+    /// Returns the bounding box of the array.
+    #[deprecated = "Use `bbox` instead."]
     pub fn bounds(&self) -> BBox2d<S> {
-        self.bounds
+        self.bbox
     }
 
     /// Returns a reference to the element at the index
@@ -83,8 +88,8 @@ where
     where
         <usize as TryFrom<S>>::Error: Debug,
     {
-        if self.bounds().contains(&index) {
-            Some(&self.data[self.bounds.seq_index(index)])
+        if self.bbox().contains(&index) {
+            Some(&self.data[self.bbox.seq_index(index)])
         } else {
             None
         }
@@ -96,8 +101,8 @@ where
     where
         <usize as TryFrom<S>>::Error: Debug,
     {
-        if self.bounds().contains(&index) {
-            Some(&mut self.data[self.bounds.seq_index(index)])
+        if self.bbox().contains(&index) {
+            Some(&mut self.data[self.bbox.seq_index(index)])
         } else {
             None
         }
@@ -111,7 +116,7 @@ where
     {
         Array2dIter {
             array: self,
-            iter: self.bounds.iter(),
+            iter: self.bbox.iter(),
         }
     }
 }
@@ -149,7 +154,7 @@ where
     type Output = T;
 
     fn index(&self, index: Point2d<S>) -> &T {
-        &self.data[self.bounds.seq_index(index)]
+        &self.data[self.bbox.seq_index(index)]
     }
 }
 
@@ -159,7 +164,7 @@ where
     <usize as TryFrom<S>>::Error: Debug,
 {
     fn index_mut(&mut self, index: Point2d<S>) -> &mut T {
-        &mut self.data[self.bounds.seq_index(index)]
+        &mut self.data[self.bbox.seq_index(index)]
     }
 }
 
