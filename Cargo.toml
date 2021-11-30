@@ -9,7 +9,7 @@ documentation = "https://docs.rs/lowdim"
 keywords = ["geometry", "2d", "3d", "4d", "array"]
 categories = ["mathematics"]
 license = "MIT OR Apache-2.0"
-edition = "2018"
+edition = "2021"
 
 [features]
 default = []
