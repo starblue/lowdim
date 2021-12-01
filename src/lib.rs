@@ -19,7 +19,6 @@
 //! Experimental
 //!
 //! ### Limitations
-//! - Bounding box iterators and arrays are only implemented for the 2d case.
 //! - Rotations and reflections are only implemented for the 2d case.
 //!
 //! ## Crate Feature Flags
