@@ -323,7 +323,7 @@ where
     {
         let next_point = Some(self.min);
         Iter {
-            bbox: self.clone(),
+            bbox: *self,
             next_point,
         }
     }
