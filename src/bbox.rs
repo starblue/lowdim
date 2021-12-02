@@ -247,6 +247,7 @@ where
     /// Constructs a bounding box from bounds.
     ///
     /// As always, lower bbox are inclusive, upper bbox exclusive.
+    #[deprecated = "Use `bb2d` instead."]
     pub fn from_bounds(x_start: S, x_end: S, y_start: S, y_end: S) -> BBox2d<S> {
         assert!(x_start <= x_end && y_start <= y_end);
         let min = p2d(x_start, y_start);

@@ -7,8 +7,8 @@ use core::ops;
 
 use std::iter::repeat;
 
+use crate::bb2d;
 use crate::BBox;
-use crate::BBox2d;
 use crate::Integer;
 use crate::Layout;
 use crate::Point;
@@ -159,8 +159,8 @@ where
         } else {
             S::try_from(v[0].len()).unwrap()
         };
-        let bounds = BBox2d::from_bounds(S::zero(), x_len, S::zero(), y_len);
-        Array2d::with(bounds, |p| {
+        let bbox = bb2d(S::zero()..x_len, S::zero()..y_len);
+        Array2d::with(bbox, |p| {
             let x = p.x().to_usize();
             let y = p.y().to_usize();
             v[y][x]
