@@ -26,8 +26,8 @@
 //! - `random`
 //!   - Off by default.
 //!   - Adds a dependency to the `rand` crate.
-//!   - Adds the method `BBox2d::random_point` to generate random points
-//!     in a bounding box.
+//!   - Adds the method [`random_point`](BBox2d::random_point)
+//!     to generate random points in a bounding box.
 
 #![warn(missing_docs)]
 
@@ -126,8 +126,11 @@ pub use crate::affine_transformation::AffineTransformation4d;
 pub mod array;
 #[doc(inline)]
 pub use crate::array::Array;
+#[doc(inline)]
 pub use crate::array::Array2d;
+#[doc(inline)]
 pub use crate::array::Array3d;
+#[doc(inline)]
 pub use crate::array::Array4d;
 
 mod layout;
