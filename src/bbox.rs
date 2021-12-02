@@ -2,7 +2,10 @@
 
 use core::cmp::PartialOrd;
 use core::fmt;
+use core::ops::Bound;
 use core::ops::Range;
+use core::ops::RangeBounds;
+use core::ops::RangeInclusive;
 
 #[cfg(feature = "random")]
 use rand::distributions::uniform::SampleUniform;
@@ -358,22 +361,67 @@ where
     }
 }
 
+fn to_range_inclusive<S, R>(r: R) -> RangeInclusive<S>
+where
+    S: Integer,
+    R: RangeBounds<S>,
+{
+    let start = match r.start_bound() {
+        Bound::Included(s) => *s,
+        Bound::Excluded(s) => *s + S::one(),
+        Bound::Unbounded => panic!("unbounded ranges are not allowed"),
+    };
+    let end = match r.end_bound() {
+        Bound::Included(s) => *s,
+        Bound::Excluded(s) => *s - S::one(),
+        Bound::Unbounded => panic!("unbounded ranges are not allowed"),
+    };
+    start..=end
+}
+
 /// Creates a 2d bounding box from ranges of x and y coordinates.
-pub fn bb2d<S: Integer>(rx: Range<S>, ry: Range<S>) -> BBox2d<S> {
-    let p_min = p2d(rx.start, ry.start);
-    let p_max = p2d(rx.end, ry.end) - Vec2d::ones();
+pub fn bb2d<S, RX, RY>(rx: RX, ry: RY) -> BBox2d<S>
+where
+    S: Integer,
+    RX: RangeBounds<S>,
+    RY: RangeBounds<S>,
+{
+    let rx = to_range_inclusive(rx);
+    let ry = to_range_inclusive(ry);
+    let p_min = p2d(*rx.start(), *ry.start());
+    let p_max = p2d(*rx.end(), *ry.end());
     BBox2d::from_points(p_min, p_max)
 }
 /// Creates a 3d bounding box from ranges of x, y and z coordinates.
-pub fn bb3d<S: Integer>(rx: Range<S>, ry: Range<S>, rz: Range<S>) -> BBox3d<S> {
-    let p_min = p3d(rx.start, ry.start, rz.start);
-    let p_max = p3d(rx.end, ry.end, rz.end) - Vec3d::ones();
+pub fn bb3d<S, RX, RY, RZ>(rx: RX, ry: RY, rz: RZ) -> BBox3d<S>
+where
+    S: Integer,
+    RX: RangeBounds<S>,
+    RY: RangeBounds<S>,
+    RZ: RangeBounds<S>,
+{
+    let rx = to_range_inclusive(rx);
+    let ry = to_range_inclusive(ry);
+    let rz = to_range_inclusive(rz);
+    let p_min = p3d(*rx.start(), *ry.start(), *rz.start());
+    let p_max = p3d(*rx.end(), *ry.end(), *rz.end());
     BBox3d::from_points(p_min, p_max)
 }
 /// Creates a 4d bounding box from ranges of x, y, z and w coordinates.
-pub fn bb4d<S: Integer>(rx: Range<S>, ry: Range<S>, rz: Range<S>, rw: Range<S>) -> BBox4d<S> {
-    let p_min = p4d(rx.start, ry.start, rz.start, rw.start);
-    let p_max = p4d(rx.end, ry.end, rz.end, rw.end) - Vec4d::ones();
+pub fn bb4d<S, RX, RY, RZ, RW>(rx: RX, ry: RY, rz: RZ, rw: RW) -> BBox4d<S>
+where
+    S: Integer,
+    RX: RangeBounds<S>,
+    RY: RangeBounds<S>,
+    RZ: RangeBounds<S>,
+    RW: RangeBounds<S>,
+{
+    let rx = to_range_inclusive(rx);
+    let ry = to_range_inclusive(ry);
+    let rz = to_range_inclusive(rz);
+    let rw = to_range_inclusive(rw);
+    let p_min = p4d(*rx.start(), *ry.start(), *rz.start(), *rw.start());
+    let p_max = p4d(*rx.end(), *ry.end(), *rz.end(), *rw.end());
     BBox4d::from_points(p_min, p_max)
 }
 
@@ -694,23 +742,23 @@ mod tests {
     #[test]
     fn test_from_point() {
         let bb = BBox2d::from_point(p2d(-2, 3));
-        assert_eq!(bb2d(-2..-1, 3..4), bb);
+        assert_eq!(bb2d(-2..=-2, 3..=3), bb);
     }
 
     #[test]
     fn test_from_points() {
         let bb = BBox2d::from_points(p2d(-2, 3), p2d(4, 7));
-        assert_eq!(bb2d(-2..5, 3..8), bb);
+        assert_eq!(bb2d(-2..=4, 3..=7), bb);
     }
 
     #[test]
     fn test_min_2d() {
-        let bb = bb2d(-2..3, -1..2);
+        let bb = bb2d(-2..=2, -1..=1);
         assert_eq!(p2d(-2, -1), bb.min());
     }
     #[test]
     fn test_min_3d() {
-        let bb = bb3d(-2..3, -1..2, 1..4);
+        let bb = bb3d(-2..=2, -1..=1, 1..=3);
         assert_eq!(p3d(-2, -1, 1), bb.min());
     }
     #[test]
@@ -721,12 +769,12 @@ mod tests {
 
     #[test]
     fn test_max_2d() {
-        let bb = bb2d(-2..3, -1..2);
+        let bb = bb2d(-2..=2, -1..=1);
         assert_eq!(p2d(2, 1), bb.max());
     }
     #[test]
     fn test_max_3d() {
-        let bb = bb3d(-2..3, -1..2, 1..4);
+        let bb = bb3d(-2..=2, -1..=1, 1..=3);
         assert_eq!(p3d(2, 1, 3), bb.max());
     }
     #[test]
@@ -815,33 +863,33 @@ mod tests {
 
     #[test]
     fn test_x_min_2d() {
-        let bb = bb2d(-2..3, -1..2);
+        let bb = bb2d(-2..=2, -1..=1);
         assert_eq!(-2, bb.x_min());
     }
     #[test]
     fn test_x_min_3d() {
-        let bb = bb3d(-2..3, -1..2, 1..4);
+        let bb = bb3d(-2..=2, -1..=1, 1..=3);
         assert_eq!(-2, bb.x_min());
     }
     #[test]
     fn test_x_min_4d() {
-        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        let bb = bb4d(-2..=2, -1..=1, 1..=3, -5..=-3);
         assert_eq!(-2, bb.x_min());
     }
 
     #[test]
     fn test_x_max_2d() {
-        let bb = bb2d(-2..3, -1..2);
+        let bb = bb2d(-2..=2, -1..=1);
         assert_eq!(2, bb.x_max());
     }
     #[test]
     fn test_x_max_3d() {
-        let bb = bb3d(-2..3, -1..2, 1..4);
+        let bb = bb3d(-2..=2, -1..=1, 1..=3);
         assert_eq!(2, bb.x_max());
     }
     #[test]
     fn test_x_max_4d() {
-        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        let bb = bb4d(-2..=2, -1..=1, 1..=3, -5..=-3);
         assert_eq!(2, bb.x_max());
     }
 
@@ -879,33 +927,33 @@ mod tests {
 
     #[test]
     fn test_y_min_2d() {
-        let bb = bb2d(-2..3, -1..2);
+        let bb = bb2d(-2..=2, -1..=1);
         assert_eq!(-1, bb.y_min());
     }
     #[test]
     fn test_y_min_3d() {
-        let bb = bb3d(-2..3, -1..2, 1..4);
+        let bb = bb3d(-2..=2, -1..=1, 1..=3);
         assert_eq!(-1, bb.y_min());
     }
     #[test]
     fn test_y_min_4d() {
-        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        let bb = bb4d(-2..=2, -1..=1, 1..=3, -5..=-3);
         assert_eq!(-1, bb.y_min());
     }
 
     #[test]
     fn test_y_max_2d() {
-        let bb = bb2d(-2..3, -1..2);
+        let bb = bb2d(-2..=2, -1..=1);
         assert_eq!(1, bb.y_max());
     }
     #[test]
     fn test_y_max_3d() {
-        let bb = bb3d(-2..3, -1..2, 1..4);
+        let bb = bb3d(-2..=2, -1..=1, 1..=3);
         assert_eq!(1, bb.y_max());
     }
     #[test]
     fn test_y_max_4d() {
-        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        let bb = bb4d(-2..=2, -1..=1, 1..=3, -5..=-3);
         assert_eq!(1, bb.y_max());
     }
 
@@ -933,23 +981,23 @@ mod tests {
 
     #[test]
     fn test_z_min_3d() {
-        let bb = bb3d(-2..3, -1..2, 1..4);
+        let bb = bb3d(-2..=2, -1..=1, 1..=3);
         assert_eq!(1, bb.z_min());
     }
     #[test]
     fn test_z_min_4d() {
-        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        let bb = bb4d(-2..=2, -1..=1, 1..=3, -5..=-3);
         assert_eq!(1, bb.z_min());
     }
 
     #[test]
     fn test_z_max_3d() {
-        let bb = bb3d(-2..3, -1..2, 1..4);
+        let bb = bb3d(-2..=2, -1..=1, 1..=3);
         assert_eq!(3, bb.z_max());
     }
     #[test]
     fn test_z_max_4d() {
-        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        let bb = bb4d(-2..=2, -1..=1, 1..=3, -5..=-3);
         assert_eq!(3, bb.z_max());
     }
 
@@ -967,13 +1015,13 @@ mod tests {
 
     #[test]
     fn test_w_min_4d() {
-        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        let bb = bb4d(-2..=2, -1..=1, 1..=3, -5..=-3);
         assert_eq!(-5, bb.w_min());
     }
 
     #[test]
     fn test_w_max_4d() {
-        let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
+        let bb = bb4d(-2..=2, -1..=1, 1..=3, -5..=-3);
         assert_eq!(-3, bb.w_max());
     }
 
