@@ -316,6 +316,23 @@ impl<S: Integer> iter::FromIterator<S> for Vec4d<S> {
     }
 }
 
+impl<S: Integer> iter::Sum<Vec4d<S>> for Vec4d<S> {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Vec4d<S>>,
+    {
+        iter.fold(Vec4d::zero(), |sum, v| sum + v)
+    }
+}
+impl<'a, S: Integer> iter::Sum<&'a Vec4d<S>> for Vec4d<S> {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Vec4d<S>>,
+    {
+        iter.fold(Vec4d::zero(), |sum, v| sum + v)
+    }
+}
+
 impl<S: Integer> fmt::Debug for Vec4d<S> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "(")?;
@@ -687,6 +704,16 @@ mod tests {
         assert_eq!(
             v4d(1, 2, 3, 4),
             vec![1, 2, 3, 4].into_iter().collect::<Vec4d>()
+        );
+    }
+
+    #[test]
+    fn test_sum() {
+        assert_eq!(
+            v4d(3, -2, 2, 1),
+            vec![v4d(1, 0, -1, -2), v4d(0, 1, 2, 3), v4d(2, -3, 1, 0)]
+                .iter()
+                .sum()
         );
     }
 

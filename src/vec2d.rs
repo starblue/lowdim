@@ -244,6 +244,23 @@ impl<S: Integer> iter::FromIterator<S> for Vec2d<S> {
     }
 }
 
+impl<S: Integer> iter::Sum<Vec2d<S>> for Vec2d<S> {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Vec2d<S>>,
+    {
+        iter.fold(Vec2d::zero(), |sum, v| sum + v)
+    }
+}
+impl<'a, S: Integer> iter::Sum<&'a Vec2d<S>> for Vec2d<S> {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Vec2d<S>>,
+    {
+        iter.fold(Vec2d::zero(), |sum, v| sum + v)
+    }
+}
+
 impl<S: Integer> fmt::Debug for Vec2d<S> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "(")?;
@@ -546,6 +563,14 @@ mod tests {
     #[test]
     fn test_from_iter() {
         assert_eq!(v2d(1, 2), vec![1, 2].into_iter().collect::<Vec2d>());
+    }
+
+    #[test]
+    fn test_sum() {
+        assert_eq!(
+            v2d(3, -2),
+            vec![v2d(1, 0), v2d(0, 1), v2d(2, -3)].iter().sum()
+        );
     }
 
     #[test]

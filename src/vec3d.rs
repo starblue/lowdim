@@ -266,6 +266,23 @@ impl<S: Integer> iter::FromIterator<S> for Vec3d<S> {
     }
 }
 
+impl<S: Integer> iter::Sum<Vec3d<S>> for Vec3d<S> {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Vec3d<S>>,
+    {
+        iter.fold(Vec3d::zero(), |sum, v| sum + v)
+    }
+}
+impl<'a, S: Integer> iter::Sum<&'a Vec3d<S>> for Vec3d<S> {
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Vec3d<S>>,
+    {
+        iter.fold(Vec3d::zero(), |sum, v| sum + v)
+    }
+}
+
 impl<S: Integer> fmt::Debug for Vec3d<S> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "(")?;
@@ -585,6 +602,16 @@ mod tests {
     #[test]
     fn test_from_iter() {
         assert_eq!(v3d(1, 2, 3), vec![1, 2, 3].into_iter().collect::<Vec3d>());
+    }
+
+    #[test]
+    fn test_sum() {
+        assert_eq!(
+            v3d(3, -2, 2),
+            vec![v3d(1, 0, -1), v3d(0, 1, 2), v3d(2, -3, 1)]
+                .iter()
+                .sum()
+        );
     }
 
     #[test]
