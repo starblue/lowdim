@@ -605,13 +605,11 @@ mod tests {
     }
 
     #[test]
+    #[test]
     fn test_sum() {
-        assert_eq!(
-            v3d(3, -2, 2),
-            vec![v3d(1, 0, -1), v3d(0, 1, 2), v3d(2, -3, 1)]
-                .iter()
-                .sum()
-        );
+        let vs = vec![v3d(1, 0, -1), v3d(0, 1, 2), v3d(2, -3, 1)];
+        assert_eq!(v3d(3, -2, 2), vs.iter().map(|v: &Vec3d| v).sum());
+        assert_eq!(v3d(3, -2, 2), vs.into_iter().map(|v: Vec3d| v).sum());
     }
 
     #[test]

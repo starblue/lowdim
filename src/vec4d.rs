@@ -709,12 +709,9 @@ mod tests {
 
     #[test]
     fn test_sum() {
-        assert_eq!(
-            v4d(3, -2, 2, 1),
-            vec![v4d(1, 0, -1, -2), v4d(0, 1, 2, 3), v4d(2, -3, 1, 0)]
-                .iter()
-                .sum()
-        );
+        let vs = vec![v4d(1, 0, -1, -2), v4d(0, 1, 2, 3), v4d(2, -3, 1, 0)];
+        assert_eq!(v4d(3, -2, 2, 1), vs.iter().map(|v: &Vec4d| v).sum());
+        assert_eq!(v4d(3, -2, 2, 1), vs.into_iter().map(|v: Vec4d| v).sum());
     }
 
     #[test]
