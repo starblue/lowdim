@@ -27,6 +27,7 @@ use crate::Vector;
 /// in order of increasing index.
 pub trait Layout<S, V>
 where
+    Self: Sized + Clone,
     S: Integer,
     V: Vector<S>,
 {
@@ -59,8 +60,23 @@ where
     /// Returns the bounding box of the points mapped by this layout.
     fn bbox(&self) -> BBox<S, V>;
 
+    /// Returns the number of points in this layout.
+    fn len(&self) -> usize
+    where
+        usize: TryFrom<S>,
+        <usize as TryFrom<S>>::Error: fmt::Debug,
+    {
+        self.bbox().volume()
+    }
+
     /// Returns an iterator over the points in the bounding box in index order.
-    fn points(&self) -> Points<S, V>;
+    fn into_points(self) -> Points<S, V, Self>;
+
+    /// Returns an iterator over the points in the bounding box
+    /// in the order of their internal indices.
+    fn points(&self) -> Points<S, V, Self> {
+        self.clone().into_points()
+    }
 
     /// Returns the coefficients for index calculation.
     fn coeffs(&self) -> &[usize];
@@ -102,11 +118,8 @@ where
 
     /// Returns an iterator over the points in the bounding box
     /// in the order of their internal indices.
-    fn points(&self) -> Points<S, Vec2d<S>> {
-        Points {
-            bbox: self.bbox(),
-            next_point: Some(self.bbox.min()),
-        }
+    fn into_points(self) -> Points<S, Vec2d<S>, Layout2d<S>> {
+        Points::new(self)
     }
 
     /// Returns the coefficients for index calculation.
@@ -151,11 +164,8 @@ where
 
     /// Returns an iterator over the points in the bounding box
     /// in the order of their internal indices.
-    fn points(&self) -> Points<S, Vec3d<S>> {
-        Points {
-            bbox: self.bbox(),
-            next_point: Some(self.bbox.min()),
-        }
+    fn into_points(self) -> Points<S, Vec3d<S>, Layout3d<S>> {
+        Points::new(self)
     }
 
     /// Returns the coefficients for index calculation.
@@ -200,11 +210,8 @@ where
 
     /// Returns an iterator over the points in the bounding box
     /// in the order of their internal indices.
-    fn points(&self) -> Points<S, Vec4d<S>> {
-        Points {
-            bbox: self.bbox(),
-            next_point: Some(self.bbox.min()),
-        }
+    fn into_points(self) -> Points<S, Vec4d<S>, Layout4d<S>> {
+        Points::new(self)
     }
 
     /// Returns the coefficients for index calculation.
@@ -214,32 +221,49 @@ where
 }
 
 #[derive(Clone, Debug)]
-pub struct Points<S, V>
+pub struct Points<S, V, L>
 where
     S: Integer,
     V: Vector<S>,
+    L: Layout<S, V>,
 {
-    bbox: BBox<S, V>,
+    layout: L,
     next_point: Option<Point<S, V>>,
 }
-impl<S, V> Iterator for Points<S, V>
+impl<S, V, L> Points<S, V, L>
 where
     S: Integer,
     V: Vector<S>,
+    L: Layout<S, V>,
+{
+    fn new(layout: L) -> Points<S, V, L> {
+        let next_point = Some(layout.bbox().min());
+        Points { layout, next_point }
+    }
+}
+impl<S, V, L> Iterator for Points<S, V, L>
+where
+    S: Integer,
+    V: Vector<S>,
+    L: Layout<S, V>,
+    usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: fmt::Debug,
 {
     type Item = Point<S, V>;
 
     fn next(&mut self) -> Option<<Self as Iterator>::Item> {
         let result = self.next_point;
         if let Some(p) = self.next_point {
+            let bbox = self.layout.bbox();
+
             // Move to next point
             let mut p = p;
             let p_coords = p.as_mut_slice();
 
-            let min = self.bbox.min();
+            let min = bbox.min();
             let min_coords = min.as_slice();
 
-            let max = self.bbox.max();
+            let max = bbox.max();
             let max_coords = max.as_slice();
 
             for i in 0..V::DIM {
@@ -257,6 +281,28 @@ where
             self.next_point = None;
         }
         result
+    }
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = {
+            match self.next_point {
+                None => 0,
+                Some(p) => self.layout.len() - self.layout.index(p).unwrap(),
+            }
+        };
+        (len, Some(len))
+    }
+}
+
+impl<S, V, L> ExactSizeIterator for Points<S, V, L>
+where
+    S: Integer,
+    V: Vector<S>,
+    L: Layout<S, V>,
+    usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: fmt::Debug,
+{
+    fn len(&self) -> usize {
+        self.size_hint().0
     }
 }
 

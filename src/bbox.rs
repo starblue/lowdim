@@ -1,6 +1,5 @@
 //! n-dimensional bounding boxes.
 
-use core::cmp::PartialOrd;
 use core::fmt;
 use core::ops::Bound;
 use core::ops::Range;
@@ -12,15 +11,18 @@ use rand::distributions::uniform::SampleUniform;
 #[cfg(feature = "random")]
 use rand::Rng;
 
+use crate::layout::Points;
 use crate::p2d;
 use crate::p3d;
 use crate::p4d;
 use crate::Integer;
+use crate::Layout;
+use crate::Layout2d;
+use crate::Layout3d;
+use crate::Layout4d;
 use crate::Point;
 use crate::Point2d;
-#[cfg(feature = "random")]
 use crate::Point3d;
-#[cfg(feature = "random")]
 use crate::Point4d;
 use crate::Vec2d;
 use crate::Vec3d;
@@ -320,31 +322,12 @@ where
     /// Returns an iterator over the points in the bounding box.
     ///
     /// Points are returned by row.
-    pub fn iter(&self) -> Iter<S>
+    pub fn iter(&self) -> Points<S, Vec2d<S>, Layout2d<S>>
     where
         usize: TryFrom<S>,
         <usize as TryFrom<S>>::Error: fmt::Debug,
     {
-        let next_point = Some(self.min);
-        Iter {
-            bbox: *self,
-            next_point,
-        }
-    }
-
-    /// Returns the sequential index for a given point.
-    ///
-    /// Points are counted by row.
-    pub fn seq_index(&self, p: Point2d<S>) -> usize
-    where
-        usize: TryFrom<S>,
-        <usize as TryFrom<S>>::Error: fmt::Debug,
-    {
-        assert!(self.contains(&p));
-        let dx = (p.x() - self.x_start()).to_usize();
-        let dy = (p.y() - self.y_start()).to_usize();
-        let w = self.x_len().to_usize();
-        dx + dy * w
+        Layout2d::new(*self).points()
     }
 
     /// Returns a random point inside the bounding box.
@@ -426,76 +409,6 @@ where
     BBox4d::from_points(p_min, p_max)
 }
 
-impl<'a, S: Integer> IntoIterator for &'a BBox2d<S>
-where
-    usize: TryFrom<S>,
-    <usize as TryFrom<S>>::Error: fmt::Debug,
-{
-    type Item = Point2d<S>;
-
-    type IntoIter = Iter<S>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.iter()
-    }
-}
-/// An iterator over the points in a 2d bounding box.
-pub struct Iter<S: Integer> {
-    bbox: BBox2d<S>,
-    next_point: Option<Point2d<S>>,
-}
-
-impl<S: Integer> Iterator for Iter<S>
-where
-    usize: TryFrom<S>,
-    <usize as TryFrom<S>>::Error: fmt::Debug,
-{
-    type Item = Point2d<S>;
-
-    fn next(&mut self) -> Option<Point2d<S>> {
-        match self.next_point {
-            Some(p) => {
-                // Move to next point
-                let new_x = p.x() + S::one();
-                self.next_point = {
-                    if new_x < self.bbox.x_end() {
-                        Some(p2d(new_x, p.y()))
-                    } else {
-                        let new_y = p.y() + S::one();
-                        if new_y < self.bbox.y_end() {
-                            Some(p2d(self.bbox.x_start(), new_y))
-                        } else {
-                            None
-                        }
-                    }
-                };
-                Some(p)
-            }
-            None => None,
-        }
-    }
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = {
-            match self.next_point {
-                None => 0,
-                Some(p) => self.bbox.area() - self.bbox.seq_index(p),
-            }
-        };
-        (len, Some(len))
-    }
-}
-
-impl<S: Integer> ExactSizeIterator for Iter<S>
-where
-    S: Copy + PartialOrd,
-    usize: TryFrom<S>,
-    <usize as TryFrom<S>>::Error: fmt::Debug,
-{
-    fn len(&self) -> usize {
-        self.size_hint().0
-    }
-}
-
 impl<S> BBox3d<S>
 where
     S: Integer,
@@ -575,6 +488,17 @@ where
     /// Returns the range of the z coordinate.
     pub fn z_range(&self) -> Range<S> {
         self.z_start()..self.z_end()
+    }
+
+    /// Returns an iterator over the points in the bounding box.
+    ///
+    /// Points are returned by row.
+    pub fn iter(&self) -> Points<S, Vec3d<S>, Layout3d<S>>
+    where
+        usize: TryFrom<S>,
+        <usize as TryFrom<S>>::Error: fmt::Debug,
+    {
+        Layout3d::new(*self).points()
     }
 
     /// Returns a random point inside the bounding box.
@@ -699,6 +623,17 @@ where
         self.w_start()..self.w_end()
     }
 
+    /// Returns an iterator over the points in the bounding box.
+    ///
+    /// Points are returned by row.
+    pub fn iter(&self) -> Points<S, Vec4d<S>, Layout4d<S>>
+    where
+        usize: TryFrom<S>,
+        <usize as TryFrom<S>>::Error: fmt::Debug,
+    {
+        Layout4d::new(*self).points()
+    }
+
     /// Returns a random point inside the bounding box.
     ///
     /// Uses a uniform distribution.
@@ -713,6 +648,49 @@ where
         let z = rng.gen_range(self.z_range());
         let w = rng.gen_range(self.w_range());
         p4d(x, y, z, w)
+    }
+}
+
+impl<'a, S> IntoIterator for &'a BBox<S, Vec2d<S>>
+where
+    S: Integer,
+    usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: fmt::Debug,
+{
+    type Item = Point2d<S>;
+
+    type IntoIter = Points<S, Vec2d<S>, Layout2d<S>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        Layout2d::new(*self).into_points()
+    }
+}
+impl<'a, S> IntoIterator for &'a BBox<S, Vec3d<S>>
+where
+    S: Integer,
+    usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: fmt::Debug,
+{
+    type Item = Point3d<S>;
+
+    type IntoIter = Points<S, Vec3d<S>, Layout3d<S>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        Layout3d::new(*self).into_points()
+    }
+}
+impl<'a, S> IntoIterator for &'a BBox<S, Vec4d<S>>
+where
+    S: Integer,
+    usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: fmt::Debug,
+{
+    type Item = Point4d<S>;
+
+    type IntoIter = Points<S, Vec4d<S>, Layout4d<S>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        Layout4d::new(*self).into_points()
     }
 }
 
@@ -1173,17 +1151,59 @@ mod tests {
     }
 
     #[test]
-    fn test_iter() {
-        let bb = bb2d(1..3, -1..1);
-        for p in bb.iter() {
-            println!("{:?}", p);
-        }
+    fn test_iter_2d() {
+        let bb = bb2d(1..=2, -1..=0);
         let v = bb.iter().collect::<Vec<_>>();
         assert_eq!(vec![p2d(1, -1), p2d(2, -1), p2d(1, 0), p2d(2, 0)], v);
     }
     #[test]
-    fn test_exact_size_iterator() {
-        let bb = bb2d(1..3, -1..1);
+    fn test_iter_3d() {
+        let bb = bb3d(1..=2, -1..=0, -2..=-1);
+        let v = bb.iter().collect::<Vec<_>>();
+        assert_eq!(
+            vec![
+                p3d(1, -1, -2),
+                p3d(2, -1, -2),
+                p3d(1, 0, -2),
+                p3d(2, 0, -2),
+                p3d(1, -1, -1),
+                p3d(2, -1, -1),
+                p3d(1, 0, -1),
+                p3d(2, 0, -1),
+            ],
+            v
+        );
+    }
+    #[test]
+    fn test_iter_4d() {
+        let bb = bb4d(1..=2, -1..=0, -2..=-1, 3..=4);
+        let v = bb.iter().collect::<Vec<_>>();
+        assert_eq!(
+            vec![
+                p4d(1, -1, -2, 3),
+                p4d(2, -1, -2, 3),
+                p4d(1, 0, -2, 3),
+                p4d(2, 0, -2, 3),
+                p4d(1, -1, -1, 3),
+                p4d(2, -1, -1, 3),
+                p4d(1, 0, -1, 3),
+                p4d(2, 0, -1, 3),
+                p4d(1, -1, -2, 4),
+                p4d(2, -1, -2, 4),
+                p4d(1, 0, -2, 4),
+                p4d(2, 0, -2, 4),
+                p4d(1, -1, -1, 4),
+                p4d(2, -1, -1, 4),
+                p4d(1, 0, -1, 4),
+                p4d(2, 0, -1, 4),
+            ],
+            v
+        );
+    }
+
+    #[test]
+    fn test_exact_size_iterator_2d() {
+        let bb = bb2d(1..=2, -1..=0);
         let mut it = bb.into_iter();
         assert_eq!((4, Some(4)), it.size_hint());
         assert_eq!(4, it.len());
@@ -1191,5 +1211,27 @@ mod tests {
         assert_eq!(Some(p2d(1, -1)), p);
         assert_eq!((3, Some(3)), it.size_hint());
         assert_eq!(3, it.len());
+    }
+    #[test]
+    fn test_exact_size_iterator_3d() {
+        let bb = bb3d(1..=2, -1..=0, -2..=-1);
+        let mut it = bb.into_iter();
+        assert_eq!((8, Some(8)), it.size_hint());
+        assert_eq!(8, it.len());
+        let p = it.next();
+        assert_eq!(Some(p3d(1, -1, -2)), p);
+        assert_eq!((7, Some(7)), it.size_hint());
+        assert_eq!(7, it.len());
+    }
+    #[test]
+    fn test_exact_size_iterator_4d() {
+        let bb = bb4d(1..=2, -1..=0, -2..=-1, 3..=4);
+        let mut it = bb.into_iter();
+        assert_eq!((16, Some(16)), it.size_hint());
+        assert_eq!(16, it.len());
+        let p = it.next();
+        assert_eq!(Some(p4d(1, -1, -2, 3)), p);
+        assert_eq!((15, Some(15)), it.size_hint());
+        assert_eq!(15, it.len());
     }
 }
