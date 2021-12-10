@@ -197,21 +197,6 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
         self * self
     }
 
-    /// Creates a vector of the 8 vectors with L∞ norm equal to 1.
-    fn unit_vecs_l_infty() -> Vec<Self> {
-        let mut result = Vec::new();
-        let zero = S::zero();
-        let one = S::one();
-        for y in [-one, zero, one] {
-            for x in [-one, zero, one] {
-                if x != zero || y != zero {
-                    result.push(v2d(x, y));
-                }
-            }
-        }
-        result
-    }
-
     fn componentwise_cmp(&self, other: &Vec2d<S>) -> Option<Ordering> {
         let x_ordering = Some(self.x().cmp(&other.x()));
         let y_ordering = Some(self.y().cmp(&other.y()));
@@ -507,21 +492,21 @@ mod tests {
 
     #[test]
     fn test_unit_vecs() {
-        let mut uv: Vec<Vec2d<i64>> = Vec2d::unit_vecs();
+        let mut uv = Vec2d::unit_vecs().collect::<Vec<Vec2d<i64>>>();
         uv.sort_by(Vec2d::lex_cmp);
         assert_eq!(vec![v2d(0, 1), v2d(1, 0)], uv);
     }
 
     #[test]
     fn test_unit_vecs_l1() {
-        let mut uv: Vec<Vec2d<i64>> = Vec2d::unit_vecs_l1();
+        let mut uv = Vec2d::unit_vecs_l1().collect::<Vec<Vec2d<i64>>>();
         uv.sort_by(Vec2d::lex_cmp);
         assert_eq!(vec![v2d(-1, 0), v2d(0, -1), v2d(0, 1), v2d(1, 0)], uv);
     }
 
     #[test]
     fn test_unit_vecs_l_infty() {
-        let mut uv: Vec<Vec2d<i64>> = Vec2d::unit_vecs_l_infty();
+        let mut uv = Vec2d::unit_vecs_l_infty().collect::<Vec<Vec2d<i64>>>();
         uv.sort_by(Vec2d::lex_cmp);
         assert_eq!(
             vec![

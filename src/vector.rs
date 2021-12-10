@@ -2,7 +2,7 @@
 
 use core::cmp::Ordering;
 use core::iter;
-use core::iter::once;
+use core::marker::PhantomData;
 use core::ops;
 
 use crate::Integer;
@@ -99,21 +99,16 @@ where
     /// This is also called the taxicab, Manhatten or city block norm.
     fn norm_l1(&self) -> S;
 
-    /// Creates a vector of the unit vectors.
-    fn unit_vecs() -> Vec<Self> {
-        (0..Self::DIM)
-            .map(|i| Self::with(|j| if i == j { S::one() } else { S::zero() }))
-            .collect::<Vec<_>>()
+    /// Returns an iterator that yields the unit vectors.
+    fn unit_vecs() -> UnitVecs<S, Self> {
+        UnitVecs::new()
     }
 
-    /// Creates a vector of the vectors to orthogonal neighbours.
+    /// Returns an iterator that yields the vectors to orthogonal neighbours.
     ///
     /// These are the vectors with L1 norm equal to 1.
-    fn unit_vecs_l1() -> Vec<Self> {
-        Self::unit_vecs()
-            .into_iter()
-            .flat_map(|uv| once(uv).chain(once(-uv)))
-            .collect::<Vec<_>>()
+    fn unit_vecs_l1() -> UnitVecsL1<S, Self> {
+        UnitVecsL1::new()
     }
 
     /// Returns the L∞ norm of the vector.
@@ -130,7 +125,9 @@ where
     /// Creates a vector of the vectors with L∞ norm equal to 1.
     ///
     /// These correspond to a single orthogonal or diagonal step.
-    fn unit_vecs_l_infty() -> Vec<Self>;
+    fn unit_vecs_l_infty() -> UnitVecsLInfty<S, Self> {
+        UnitVecsLInfty::new()
+    }
 
     /// Returns the partial ordering by component of two vectors.
     fn componentwise_cmp(&self, other: &Self) -> Option<Ordering>;
@@ -141,6 +138,178 @@ where
     /// This is useful as an arbitrary total ordering for sorting,
     /// but is not intended to be otherwise meaningful.
     fn lex_cmp(&self, other: &Self) -> Ordering;
+}
+
+/// An iterator that yields the unit vectors.
+#[derive(Clone, Debug)]
+pub struct UnitVecs<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    _s: PhantomData<S>,
+    _v: PhantomData<V>,
+    i: usize,
+}
+impl<S, V> UnitVecs<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    fn new() -> UnitVecs<S, V> {
+        UnitVecs {
+            _s: PhantomData,
+            _v: PhantomData,
+            i: 0,
+        }
+    }
+}
+impl<S, V> Iterator for UnitVecs<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    type Item = V;
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.i < V::DIM {
+            let v = V::with(|j| if j == self.i { S::one() } else { S::zero() });
+            self.i += 1;
+            Some(v)
+        } else {
+            None
+        }
+    }
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = V::DIM - self.i;
+        (len, Some(len))
+    }
+}
+impl<S, V> ExactSizeIterator for UnitVecs<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+}
+
+/// An iterator that yields the vectors to orthogonal neighbours.
+///
+/// These are the vectors with L1 norm equal to 1.
+#[derive(Clone, Debug)]
+pub struct UnitVecsL1<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    _s: PhantomData<S>,
+    _v: PhantomData<V>,
+    i: usize,
+}
+impl<S, V> UnitVecsL1<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    fn new() -> UnitVecsL1<S, V> {
+        UnitVecsL1 {
+            _s: PhantomData,
+            _v: PhantomData,
+            i: 0,
+        }
+    }
+}
+impl<S, V> Iterator for UnitVecsL1<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    type Item = V;
+    fn next(&mut self) -> Option<Self::Item> {
+        let i = self.i / 2;
+        if i < V::DIM {
+            let signed_one = if self.i % 2 == 0 { S::one() } else { -S::one() };
+            let v = V::with(|j| if j == i { signed_one } else { S::zero() });
+            self.i += 1;
+            Some(v)
+        } else {
+            None
+        }
+    }
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = 2 * V::DIM - self.i;
+        (len, Some(len))
+    }
+}
+impl<S, V> ExactSizeIterator for UnitVecsL1<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+}
+
+/// An iterator that yields the vectors to orthogonal and diagonal neighbours.
+///
+/// These are the vectors with L∞ norm equal to 1.
+#[derive(Clone, Debug)]
+pub struct UnitVecsLInfty<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    _s: PhantomData<S>,
+    _v: PhantomData<V>,
+    i: usize,
+}
+impl<S, V> UnitVecsLInfty<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    fn new() -> UnitVecsLInfty<S, V> {
+        UnitVecsLInfty {
+            _s: PhantomData,
+            _v: PhantomData,
+            i: 0,
+        }
+    }
+}
+impl<S, V> Iterator for UnitVecsLInfty<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    type Item = V;
+    fn next(&mut self) -> Option<Self::Item> {
+        let len = 3_usize.pow(V::DIM as u32) - 1;
+        if self.i < len {
+            // We skip the zero vector at the half point.
+            let half = len / 2;
+            let i = if self.i < half { self.i } else { self.i + 1 };
+
+            let v = V::with(|j| {
+                let d = i / 3_usize.pow(j as u32) % 3;
+                match d {
+                    0 => -S::one(),
+                    1 => S::zero(),
+                    2 => S::one(),
+                    _ => panic!("internal error"),
+                }
+            });
+            self.i += 1;
+            Some(v)
+        } else {
+            None
+        }
+    }
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = 3_usize.pow(V::DIM as u32) - 1 - self.i;
+        (len, Some(len))
+    }
+}
+impl<S, V> ExactSizeIterator for UnitVecsLInfty<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
 }
 
 #[doc(hidden)]

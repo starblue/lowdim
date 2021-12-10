@@ -253,25 +253,6 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
         self * self
     }
 
-    /// Creates a vector of the 80 vectors with L∞ norm equal to 1.
-    fn unit_vecs_l_infty() -> Vec<Self> {
-        let mut result = Vec::new();
-        let zero = S::zero();
-        let one = S::one();
-        for w in [-one, zero, one] {
-            for z in [-one, zero, one] {
-                for y in [-one, zero, one] {
-                    for x in [-one, zero, one] {
-                        if x != zero || y != zero || z != zero || w != zero {
-                            result.push(v4d(x, y, z, w));
-                        }
-                    }
-                }
-            }
-        }
-        result
-    }
-
     fn componentwise_cmp(&self, other: &Vec4d<S>) -> Option<Ordering> {
         let x_ordering = Some(self.x().cmp(&other.x()));
         let y_ordering = Some(self.y().cmp(&other.y()));
@@ -560,7 +541,7 @@ mod tests {
 
     #[test]
     fn test_unit_vecs() {
-        let mut uv: Vec<Vec4d<i64>> = Vec4d::unit_vecs();
+        let mut uv = Vec4d::unit_vecs().collect::<Vec<Vec4d<i64>>>();
         uv.sort_by(Vec4d::lex_cmp);
         assert_eq!(
             vec![
@@ -575,7 +556,7 @@ mod tests {
 
     #[test]
     fn test_unit_vecs_l1() {
-        let mut uv: Vec<Vec4d<i64>> = Vec4d::unit_vecs_l1();
+        let mut uv = Vec4d::unit_vecs_l1().collect::<Vec<Vec4d<i64>>>();
         uv.sort_by(Vec4d::lex_cmp);
         assert_eq!(
             vec![
@@ -594,7 +575,7 @@ mod tests {
 
     #[test]
     fn test_unit_vecs_l_infty() {
-        let mut uv: Vec<Vec4d<i64>> = Vec4d::unit_vecs_l_infty();
+        let mut uv = Vec4d::unit_vecs_l_infty().collect::<Vec<Vec4d<i64>>>();
         uv.sort_by(Vec4d::lex_cmp);
         assert_eq!(
             vec![

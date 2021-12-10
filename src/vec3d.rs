@@ -214,23 +214,6 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
         self * self
     }
 
-    /// Creates a vector of the 26 vectors with L∞ norm equal to 1.
-    fn unit_vecs_l_infty() -> Vec<Self> {
-        let mut result = Vec::new();
-        let zero = S::zero();
-        let one = S::one();
-        for z in [-one, zero, one] {
-            for y in [-one, zero, one] {
-                for x in [-one, zero, one] {
-                    if x != zero || y != zero || z != zero {
-                        result.push(v3d(x, y, z));
-                    }
-                }
-            }
-        }
-        result
-    }
-
     fn componentwise_cmp(&self, other: &Vec3d<S>) -> Option<Ordering> {
         let x_ordering = Some(self.x().cmp(&other.x()));
         let y_ordering = Some(self.y().cmp(&other.y()));
@@ -506,14 +489,14 @@ mod tests {
 
     #[test]
     fn test_unit_vecs() {
-        let mut uv: Vec<Vec3d<i64>> = Vec3d::unit_vecs();
+        let mut uv = Vec3d::unit_vecs().collect::<Vec<Vec3d<i64>>>();
         uv.sort_by(Vec3d::lex_cmp);
         assert_eq!(vec![v3d(0, 0, 1), v3d(0, 1, 0), v3d(1, 0, 0)], uv);
     }
 
     #[test]
     fn test_unit_vecs_l1() {
-        let mut uv: Vec<Vec3d<i64>> = Vec3d::unit_vecs_l1();
+        let mut uv = Vec3d::unit_vecs_l1().collect::<Vec<Vec3d<i64>>>();
         uv.sort_by(Vec3d::lex_cmp);
         assert_eq!(
             vec![
@@ -530,7 +513,7 @@ mod tests {
 
     #[test]
     fn test_unit_vecs_l_infty() {
-        let mut uv: Vec<Vec3d<i64>> = Vec3d::unit_vecs_l_infty();
+        let mut uv = Vec3d::unit_vecs_l_infty().collect::<Vec<Vec3d<i64>>>();
         uv.sort_by(Vec3d::lex_cmp);
         assert_eq!(
             vec![
