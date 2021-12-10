@@ -143,22 +143,13 @@ where
     }
 
     /// Creates a vector containing the orthogonal neighbors of a point.
-    pub fn neighbors_l1<'a>(&'a self) -> Vec<Self>
-    where
-        &'a V: VectorOps<S, V, V>,
-    {
-        V::unit_vecs_l1().into_iter().map(|v| self + v).collect()
+    pub fn neighbors_l1(&self) -> impl Iterator<Item = Self> {
+        NeighBorsIter::new(*self, V::unit_vecs_l1())
     }
 
     /// Creates a vector containing the orthogonal and diagonal neighbors of a point.
-    pub fn neighbors_l_infty<'a>(&'a self) -> Vec<Self>
-    where
-        &'a V: VectorOps<S, V, V>,
-    {
-        V::unit_vecs_l_infty()
-            .into_iter()
-            .map(|v| self + v)
-            .collect()
+    pub fn neighbors_l_infty(&self) -> impl Iterator<Item = Self> {
+        NeighBorsIter::new(*self, V::unit_vecs_l_infty())
     }
 
     /// Returns the componentwise partial ordering for this and another point.
@@ -528,6 +519,48 @@ where
     }
 }
 
+#[derive(Clone, Debug)]
+struct NeighBorsIter<S, V, I>
+where
+    S: Integer,
+    V: Vector<S>,
+    I: ExactSizeIterator<Item = V>,
+{
+    p: Point<S, V>,
+    iter: I,
+}
+impl<S, V, I> NeighBorsIter<S, V, I>
+where
+    S: Integer,
+    V: Vector<S>,
+    I: ExactSizeIterator<Item = V>,
+{
+    fn new(p: Point<S, V>, iter: I) -> Self {
+        NeighBorsIter { p, iter }
+    }
+}
+impl<S, V, I> Iterator for NeighBorsIter<S, V, I>
+where
+    S: Integer,
+    V: Vector<S>,
+    I: ExactSizeIterator<Item = V>,
+{
+    type Item = Point<S, V>;
+    fn next(&mut self) -> Option<<Self as Iterator>::Item> {
+        self.iter.next().map(|v| self.p + v)
+    }
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.iter.size_hint()
+    }
+}
+impl<S, V, I> ExactSizeIterator for NeighBorsIter<S, V, I>
+where
+    S: Integer,
+    V: Vector<S>,
+    I: ExactSizeIterator<Item = V>,
+{
+}
+
 #[cfg(test)]
 mod tests {
     use core::cmp::Ordering;
@@ -770,17 +803,53 @@ mod tests {
     }
 
     #[test]
-    fn test_neighbors_l1() {
+    fn test_neighbors_l1_2d() {
         let p = p2d(2, -3);
-        let mut ns: Vec<Point2d<i64>> = p.neighbors_l1();
+        let mut ns = p.neighbors_l1().collect::<Vec<Point2d<i64>>>();
         ns.sort_by(Point2d::lex_cmp);
         assert_eq!(vec![p2d(1, -3), p2d(2, -4), p2d(2, -2), p2d(3, -3)], ns);
     }
+    #[test]
+    fn test_neighbors_l1_3d() {
+        let p = p3d(2, -3, 5);
+        let mut ns = p.neighbors_l1().collect::<Vec<Point3d<i64>>>();
+        ns.sort_by(Point3d::lex_cmp);
+        assert_eq!(
+            vec![
+                p3d(1, -3, 5),
+                p3d(2, -4, 5),
+                p3d(2, -3, 4),
+                p3d(2, -3, 6),
+                p3d(2, -2, 5),
+                p3d(3, -3, 5),
+            ],
+            ns
+        );
+    }
+    #[test]
+    fn test_neighbors_l1_4d() {
+        let p = p4d(2, -3, 5, 0);
+        let mut ns = p.neighbors_l1().collect::<Vec<Point4d<i64>>>();
+        ns.sort_by(Point4d::lex_cmp);
+        assert_eq!(
+            vec![
+                p4d(1, -3, 5, 0),
+                p4d(2, -4, 5, 0),
+                p4d(2, -3, 4, 0),
+                p4d(2, -3, 5, -1),
+                p4d(2, -3, 5, 1),
+                p4d(2, -3, 6, 0),
+                p4d(2, -2, 5, 0),
+                p4d(3, -3, 5, 0),
+            ],
+            ns
+        );
+    }
 
     #[test]
-    fn test_unit_vecs_l_infty() {
+    fn test_neighbors_l_infty_2d() {
         let p = p2d(2, -3);
-        let mut ns: Vec<Point2d<i64>> = p.neighbors_l_infty();
+        let mut ns = p.neighbors_l_infty().collect::<Vec<Point2d<i64>>>();
         ns.sort_by(Point2d::lex_cmp);
         assert_eq!(
             vec![
