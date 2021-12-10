@@ -1,4 +1,4 @@
-//! 2-dimensional vectors.
+//! 2d vectors.
 
 use core::cmp::Ordering;
 use core::fmt;
@@ -22,14 +22,14 @@ use crate::VectorOps;
 
 const DIM: usize = 2;
 
-/// A two-dimensional discrete vector.
+/// A 2d discrete vector.
 #[derive(Clone, Copy, Default, Eq, PartialEq, Hash)]
 pub struct Vec2d<S = i64>([S; DIM])
 where
     S: Integer;
 
 impl<S: Integer> Vec2d<S> {
-    /// Creates a new 2d-vector from its coordinates.
+    /// Creates a new 2d vector from its coordinates.
     pub fn new(x: S, y: S) -> Vec2d<S> {
         Vec2d([x, y])
     }
@@ -225,7 +225,7 @@ impl<S: Integer> Vector<S> for Vec2d<S> {
     }
 }
 
-/// Creates a 2d-vector.
+/// Creates a 2d vector.
 ///
 /// This is a utility function for concisely representing vectors.
 pub fn v2d<S: Integer>(x: S, y: S) -> Vec2d<S> {

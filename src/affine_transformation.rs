@@ -71,13 +71,13 @@ where
     }
 }
 
-/// A 2-dimensional affine transformation.
+/// A 2d affine transformation.
 pub type AffineTransformation2d<S> = AffineTransformation<S, Matrix2d<S>>;
 
-/// A 3-dimensional affine transformation.
+/// A 3d affine transformation.
 pub type AffineTransformation3d<S> = AffineTransformation<S, Matrix3d<S>>;
 
-/// A 4-dimensional affine transformation.
+/// A 4d affine transformation.
 pub type AffineTransformation4d<S> = AffineTransformation<S, Matrix4d<S>>;
 
 #[cfg(test)]

@@ -130,14 +130,14 @@ where
     }
 }
 
-/// A two-dimensional array indexed by points in a bounding box.
+/// A 2d array indexed by points in a bounding box.
 ///
 /// The starting index and size is given by a rectangle,
 /// i.e. x- and y-index don't need to start at zero.
 pub type Array2d<S, T, L = <Vec2d<S> as Vector<S>>::DefaultLayout> = Array<S, Vec2d<S>, T, L>;
-/// A three-dimensional array indexed by points in a bounding box.
+/// A 3d array indexed by points in a bounding box.
 pub type Array3d<S, T, L> = Array<S, Vec3d<S>, T, L>;
-/// A four-dimensional array indexed by points in a bounding box.
+/// A 4d array indexed by points in a bounding box.
 pub type Array4d<S, T, L> = Array<S, Vec4d<S>, T, L>;
 
 impl<S, T> Array2d<S, T, <Vec2d<S> as Vector<S>>::DefaultLayout>

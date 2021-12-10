@@ -1,4 +1,4 @@
-//! 3-dimensional vectors.
+//! 3d vectors.
 
 use core::cmp::Ordering;
 use core::fmt;
@@ -22,14 +22,14 @@ use crate::VectorOps;
 
 const DIM: usize = 3;
 
-/// A three-dimensional discrete vector.
+/// A 3d discrete vector.
 #[derive(Clone, Copy, Default, Eq, PartialEq, Hash)]
 pub struct Vec3d<S = i64>([S; DIM])
 where
     S: Integer;
 
 impl<S: Integer> Vec3d<S> {
-    /// Creates a new 3d-vector from its coordinates.
+    /// Creates a new 3d vector from its coordinates.
     pub fn new(x: S, y: S, z: S) -> Vec3d<S> {
         Vec3d([x, y, z])
     }
@@ -246,7 +246,7 @@ impl<S: Integer> Vector<S> for Vec3d<S> {
     }
 }
 
-/// Creates a 3d-vector.
+/// Creates a 3d vector.
 ///
 /// This is a utility function for concisely representing vectors.
 pub fn v3d<S: Integer>(x: S, y: S, z: S) -> Vec3d<S> {

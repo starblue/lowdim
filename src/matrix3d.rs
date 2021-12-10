@@ -1,4 +1,4 @@
-//! 3-dimensional matrices.
+//! 3d matrices.
 
 use std::ops::Add;
 use std::ops::Mul;
@@ -12,7 +12,7 @@ use crate::Vec3d;
 
 const DIM: usize = 3;
 
-/// A three-dimensional discrete matrix.
+/// A 3d discrete matrix.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
 pub struct Matrix3d<S: Integer> {
     a: [[S; DIM]; DIM],

@@ -1,4 +1,4 @@
-//! 4-dimensional vectors.
+//! 4d vectors.
 
 use core::cmp::Ordering;
 use core::fmt;
@@ -22,14 +22,14 @@ use crate::VectorOps;
 
 const DIM: usize = 4;
 
-/// A four-dimensional discrete vector.
+/// A 4d discrete vector.
 #[derive(Clone, Copy, Default, Eq, PartialEq, Hash)]
 pub struct Vec4d<S = i64>([S; DIM])
 where
     S: Integer;
 
 impl<S: Integer> Vec4d<S> {
-    /// Creates a new 4d-vector from its coordinates.
+    /// Creates a new 4d vector from its coordinates.
     pub fn new(x: S, y: S, z: S, w: S) -> Vec4d<S> {
         Vec4d([x, y, z, w])
     }
@@ -295,7 +295,7 @@ impl<S: Integer> Vector<S> for Vec4d<S> {
     }
 }
 
-/// Creates a 4d-vector.
+/// Creates a 4d vector.
 ///
 /// This is a utility function for concisely representing vectors.
 pub fn v4d<S: Integer>(x: S, y: S, z: S, w: S) -> Vec4d<S> {

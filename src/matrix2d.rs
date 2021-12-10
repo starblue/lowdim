@@ -1,4 +1,4 @@
-//! 2-dimensional matrices.
+//! 2d matrices.
 
 use std::ops::Add;
 use std::ops::Mul;
@@ -12,7 +12,7 @@ use crate::Vec2d;
 
 const DIM: usize = 2;
 
-/// A two-dimensional discrete matrix.
+/// A 2d discrete matrix.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
 pub struct Matrix2d<S: Integer> {
     a: [[S; DIM]; DIM],
