@@ -3,11 +3,12 @@
 //! Provides vectors, matrices, points and more to simplify
 //! programming for 2d to 4d worlds.
 //! Features include:
+//! * Vector and point arithmetic
 //! * Bounding boxes and iterators over the points inside them
-//! * Arrays indexed by points
-//! * Rotations and reflections
+//! * Arrays indexed by points in bounding boxes
 //! * Taxicab (L1) and maximum (L∞) metrics
-//! * Orthogonal and king's move neighbourhoods
+//! * Iterators over orthogonal and king's move neighbourhoods
+//! * Rotations and reflections (currently only implemented for 2d)
 //!
 //! This was originally motivated by
 //! [Advent of Code](https://adventofcode.com/)

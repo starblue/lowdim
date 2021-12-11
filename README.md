@@ -11,7 +11,8 @@
 
 This is intended for discrete geometry,
 both for operations with discrete coordinates and arrays accessed by these.
-Operations include iterating over neighbours.
+Operations include vector and point arithmetic, iterating over neighbours,
+and iterating over points in bounding boxes.
 This is useful for example in
 
 - cellular automata
