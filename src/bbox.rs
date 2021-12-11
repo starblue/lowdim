@@ -651,6 +651,20 @@ where
     }
 }
 
+impl<S> IntoIterator for BBox<S, Vec2d<S>>
+where
+    S: Integer,
+    usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: fmt::Debug,
+{
+    type Item = Point2d<S>;
+
+    type IntoIter = Points<S, Vec2d<S>, Layout2d<S>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        Layout2d::new(self).into_points()
+    }
+}
 impl<'a, S> IntoIterator for &'a BBox<S, Vec2d<S>>
 where
     S: Integer,
@@ -665,6 +679,21 @@ where
         Layout2d::new(*self).into_points()
     }
 }
+
+impl<S> IntoIterator for BBox<S, Vec3d<S>>
+where
+    S: Integer,
+    usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: fmt::Debug,
+{
+    type Item = Point3d<S>;
+
+    type IntoIter = Points<S, Vec3d<S>, Layout3d<S>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        Layout3d::new(self).into_points()
+    }
+}
 impl<'a, S> IntoIterator for &'a BBox<S, Vec3d<S>>
 where
     S: Integer,
@@ -677,6 +706,21 @@ where
 
     fn into_iter(self) -> Self::IntoIter {
         Layout3d::new(*self).into_points()
+    }
+}
+
+impl<S> IntoIterator for BBox<S, Vec4d<S>>
+where
+    S: Integer,
+    usize: TryFrom<S>,
+    <usize as TryFrom<S>>::Error: fmt::Debug,
+{
+    type Item = Point4d<S>;
+
+    type IntoIter = Points<S, Vec4d<S>, Layout4d<S>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        Layout4d::new(self).into_points()
     }
 }
 impl<'a, S> IntoIterator for &'a BBox<S, Vec4d<S>>
