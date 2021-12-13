@@ -97,6 +97,34 @@ where
         let max = p0.max(p1);
         BBox { min, max }
     }
+    /// Constructs the minimal bounding box containing points from an iterator,
+    /// or `None` if the iterator is empty.
+    ///
+    /// # Example
+    /// ```
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
+    /// let points = vec![p2d(2, 3), p2d(-1, 4), p2d(1, 0)];
+    /// assert_eq!(Some(bb2d(-1..=2, 0..=4)), BBox2d::enclosing(&points));
+    /// ```
+    pub fn enclosing<'a, II>(ii: II) -> Option<BBox<S, V>>
+    where
+        S: 'a,
+        V: 'a,
+        II: IntoIterator<Item = &'a Point<S, V>>,
+    {
+        let mut iter = ii.into_iter();
+        if let Some(p0) = iter.next() {
+            let mut bbox = BBox::from_point(*p0);
+            for p in iter {
+                bbox = bbox.extend_to(*p);
+            }
+            Some(bbox)
+        } else {
+            None
+        }
+    }
     /// The minimal point in the bounding box.
     ///
     /// # Example
@@ -787,6 +815,17 @@ mod tests {
     fn test_from_corners() {
         let bb = BBox2d::from_corners(p2d(-2, 3), p2d(4, 7));
         assert_eq!(bb2d(-2..=4, 3..=7), bb);
+    }
+
+    #[test]
+    fn test_enclosing() {
+        let bb = BBox2d::enclosing(&vec![p2d(-2, 3), p2d(4, 7)]);
+        assert_eq!(Some(bb2d(-2..=4, 3..=7)), bb);
+    }
+    #[test]
+    fn test_enclosing_empty() {
+        let bb = <BBox2d<i64>>::enclosing(&vec![]);
+        assert_eq!(None, bb);
     }
 
     #[test]
