@@ -75,6 +75,13 @@ where
         BBox { min: p, max: p }
     }
     /// Constructs the smallest bounding box containing two points.
+    #[deprecated = "Use `from_corners` instead."]
+    pub fn from_points(p0: Point<S, V>, p1: Point<S, V>) -> BBox<S, V> {
+        let min = p0.min(p1);
+        let max = p0.max(p1);
+        BBox { min, max }
+    }
+    /// Constructs the smallest bounding box containing two points.
     ///
     /// # Example
     /// ```
@@ -83,9 +90,9 @@ where
     /// # use lowdim::BBox2d;
     /// let p0 = p2d(2, 3);
     /// let p1 = p2d(-1, 4);
-    /// assert_eq!(bb2d(-1..3, 3..5), BBox2d::from_points(p0, p1));
+    /// assert_eq!(bb2d(-1..3, 3..5), BBox2d::from_corners(p0, p1));
     /// ```
-    pub fn from_points(p0: Point<S, V>, p1: Point<S, V>) -> BBox<S, V> {
+    pub fn from_corners(p0: Point<S, V>, p1: Point<S, V>) -> BBox<S, V> {
         let min = p0.min(p1);
         let max = p0.max(p1);
         BBox { min, max }
@@ -360,6 +367,7 @@ where
         Bound::Excluded(s) => *s - S::one(),
         Bound::Unbounded => panic!("unbounded ranges are not allowed"),
     };
+    assert!(start <= end);
     start..=end
 }
 
@@ -372,9 +380,9 @@ where
 {
     let rx = to_range_inclusive(rx);
     let ry = to_range_inclusive(ry);
-    let p_min = p2d(*rx.start(), *ry.start());
-    let p_max = p2d(*rx.end(), *ry.end());
-    BBox2d::from_points(p_min, p_max)
+    let min = p2d(*rx.start(), *ry.start());
+    let max = p2d(*rx.end(), *ry.end());
+    BBox { min, max }
 }
 /// Creates a 3d bounding box from ranges of x, y and z coordinates.
 pub fn bb3d<S, RX, RY, RZ>(rx: RX, ry: RY, rz: RZ) -> BBox3d<S>
@@ -387,9 +395,9 @@ where
     let rx = to_range_inclusive(rx);
     let ry = to_range_inclusive(ry);
     let rz = to_range_inclusive(rz);
-    let p_min = p3d(*rx.start(), *ry.start(), *rz.start());
-    let p_max = p3d(*rx.end(), *ry.end(), *rz.end());
-    BBox3d::from_points(p_min, p_max)
+    let min = p3d(*rx.start(), *ry.start(), *rz.start());
+    let max = p3d(*rx.end(), *ry.end(), *rz.end());
+    BBox { min, max }
 }
 /// Creates a 4d bounding box from ranges of x, y, z and w coordinates.
 pub fn bb4d<S, RX, RY, RZ, RW>(rx: RX, ry: RY, rz: RZ, rw: RW) -> BBox4d<S>
@@ -404,9 +412,9 @@ where
     let ry = to_range_inclusive(ry);
     let rz = to_range_inclusive(rz);
     let rw = to_range_inclusive(rw);
-    let p_min = p4d(*rx.start(), *ry.start(), *rz.start(), *rw.start());
-    let p_max = p4d(*rx.end(), *ry.end(), *rz.end(), *rw.end());
-    BBox4d::from_points(p_min, p_max)
+    let min = p4d(*rx.start(), *ry.start(), *rz.start(), *rw.start());
+    let max = p4d(*rx.end(), *ry.end(), *rz.end(), *rw.end());
+    BBox { min, max }
 }
 
 impl<S> BBox3d<S>
@@ -769,8 +777,15 @@ mod tests {
     }
 
     #[test]
+    #[allow(deprecated)]
     fn test_from_points() {
         let bb = BBox2d::from_points(p2d(-2, 3), p2d(4, 7));
+        assert_eq!(bb2d(-2..=4, 3..=7), bb);
+    }
+
+    #[test]
+    fn test_from_corners() {
+        let bb = BBox2d::from_corners(p2d(-2, 3), p2d(4, 7));
         assert_eq!(bb2d(-2..=4, 3..=7), bb);
     }
 
