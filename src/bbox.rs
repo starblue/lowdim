@@ -1300,7 +1300,7 @@ mod tests {
     }
 
     #[test]
-    fn test_exact_size_iterator_2d() {
+    fn test_exact_size_iterator_2d_owned() {
         let bb = bb2d(1..=2, -1..=0);
         let mut it = bb.into_iter();
         assert_eq!((4, Some(4)), it.size_hint());
@@ -1311,7 +1311,18 @@ mod tests {
         assert_eq!(3, it.len());
     }
     #[test]
-    fn test_exact_size_iterator_3d() {
+    fn test_exact_size_iterator_2d_ref() {
+        let bb = &bb2d(1..=2, -1..=0);
+        let mut it = bb.into_iter();
+        assert_eq!((4, Some(4)), it.size_hint());
+        assert_eq!(4, it.len());
+        let p = it.next();
+        assert_eq!(Some(p2d(1, -1)), p);
+        assert_eq!((3, Some(3)), it.size_hint());
+        assert_eq!(3, it.len());
+    }
+    #[test]
+    fn test_exact_size_iterator_3d_owned() {
         let bb = bb3d(1..=2, -1..=0, -2..=-1);
         let mut it = bb.into_iter();
         assert_eq!((8, Some(8)), it.size_hint());
@@ -1322,8 +1333,30 @@ mod tests {
         assert_eq!(7, it.len());
     }
     #[test]
-    fn test_exact_size_iterator_4d() {
+    fn test_exact_size_iterator_3d_ref() {
+        let bb = &bb3d(1..=2, -1..=0, -2..=-1);
+        let mut it = bb.into_iter();
+        assert_eq!((8, Some(8)), it.size_hint());
+        assert_eq!(8, it.len());
+        let p = it.next();
+        assert_eq!(Some(p3d(1, -1, -2)), p);
+        assert_eq!((7, Some(7)), it.size_hint());
+        assert_eq!(7, it.len());
+    }
+    #[test]
+    fn test_exact_size_iterator_4d_owned() {
         let bb = bb4d(1..=2, -1..=0, -2..=-1, 3..=4);
+        let mut it = bb.into_iter();
+        assert_eq!((16, Some(16)), it.size_hint());
+        assert_eq!(16, it.len());
+        let p = it.next();
+        assert_eq!(Some(p4d(1, -1, -2, 3)), p);
+        assert_eq!((15, Some(15)), it.size_hint());
+        assert_eq!(15, it.len());
+    }
+    #[test]
+    fn test_exact_size_iterator_4d_ref() {
+        let bb = &bb4d(1..=2, -1..=0, -2..=-1, 3..=4);
         let mut it = bb.into_iter();
         assert_eq!((16, Some(16)), it.size_hint());
         assert_eq!(16, it.len());
