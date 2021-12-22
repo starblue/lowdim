@@ -1,5 +1,6 @@
 //! n-dimensional bounding boxes.
 
+use core::cmp::Ordering;
 use core::fmt;
 use core::ops::Bound;
 use core::ops::Range;
@@ -224,6 +225,26 @@ where
         let min = self.min().min(other.min());
         let max = self.max().max(other.max());
         BBox { min, max }
+    }
+
+    /// The intersection of two bounding boxes, or `None` if they don't intersect.
+    ///
+    /// # Example
+    /// ```
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
+    /// let bb0 = bb2d(-2..=3, -1..=2);
+    /// let bb1 = bb2d(-5..=4, 0..=5);
+    /// assert_eq!(Some(bb2d(-2..=3, 0..=2)), bb0.intersection(&bb1));
+    /// ```
+    pub fn intersection(&self, other: &BBox<S, V>) -> Option<BBox<S, V>> {
+        let min = self.min().max(other.min());
+        let max = self.max().min(other.max());
+        match min.componentwise_cmp(&max) {
+            Some(Ordering::Less) | Some(Ordering::Equal) => Some(BBox { min, max }),
+            _ => None,
+        }
     }
 
     /// Returns the smallest bounding box encompassing this box and a given point.
@@ -897,6 +918,19 @@ mod tests {
         let bb0 = bb2d(-2..3, -1..2);
         let bb1 = bb2d(-5..4, 2..5);
         assert_eq!(bb2d(-5..4, -1..5), bb0.lub(&bb1));
+    }
+
+    #[test]
+    fn test_intersection_nonempty() {
+        let bb0 = bb2d(-2..=3, -1..=2);
+        let bb1 = bb2d(-5..=4, 0..=5);
+        assert_eq!(Some(bb2d(-2..=3, 0..=2)), bb0.intersection(&bb1));
+    }
+    #[test]
+    fn test_intersection_empty() {
+        let bb0 = bb2d(-2..3, -1..2);
+        let bb1 = bb2d(-5..4, 2..5);
+        assert_eq!(None, bb0.intersection(&bb1));
     }
 
     #[test]
