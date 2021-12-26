@@ -402,71 +402,6 @@ where
     }
 }
 
-fn to_range_inclusive<S, R>(r: R) -> RangeInclusive<S>
-where
-    S: Integer,
-    R: RangeBounds<S>,
-{
-    let start = match r.start_bound() {
-        Bound::Included(s) => *s,
-        Bound::Excluded(s) => *s + S::one(),
-        Bound::Unbounded => panic!("unbounded ranges are not allowed"),
-    };
-    let end = match r.end_bound() {
-        Bound::Included(s) => *s,
-        Bound::Excluded(s) => *s - S::one(),
-        Bound::Unbounded => panic!("unbounded ranges are not allowed"),
-    };
-    assert!(start <= end);
-    start..=end
-}
-
-/// Creates a 2d bounding box from ranges of x and y coordinates.
-pub fn bb2d<S, RX, RY>(rx: RX, ry: RY) -> BBox2d<S>
-where
-    S: Integer,
-    RX: RangeBounds<S>,
-    RY: RangeBounds<S>,
-{
-    let rx = to_range_inclusive(rx);
-    let ry = to_range_inclusive(ry);
-    let min = p2d(*rx.start(), *ry.start());
-    let max = p2d(*rx.end(), *ry.end());
-    BBox { min, max }
-}
-/// Creates a 3d bounding box from ranges of x, y and z coordinates.
-pub fn bb3d<S, RX, RY, RZ>(rx: RX, ry: RY, rz: RZ) -> BBox3d<S>
-where
-    S: Integer,
-    RX: RangeBounds<S>,
-    RY: RangeBounds<S>,
-    RZ: RangeBounds<S>,
-{
-    let rx = to_range_inclusive(rx);
-    let ry = to_range_inclusive(ry);
-    let rz = to_range_inclusive(rz);
-    let min = p3d(*rx.start(), *ry.start(), *rz.start());
-    let max = p3d(*rx.end(), *ry.end(), *rz.end());
-    BBox { min, max }
-}
-/// Creates a 4d bounding box from ranges of x, y, z and w coordinates.
-pub fn bb4d<S, RX, RY, RZ, RW>(rx: RX, ry: RY, rz: RZ, rw: RW) -> BBox4d<S>
-where
-    S: Integer,
-    RX: RangeBounds<S>,
-    RY: RangeBounds<S>,
-    RZ: RangeBounds<S>,
-    RW: RangeBounds<S>,
-{
-    let rx = to_range_inclusive(rx);
-    let ry = to_range_inclusive(ry);
-    let rz = to_range_inclusive(rz);
-    let rw = to_range_inclusive(rw);
-    let min = p4d(*rx.start(), *ry.start(), *rz.start(), *rw.start());
-    let max = p4d(*rx.end(), *ry.end(), *rz.end(), *rw.end());
-    BBox { min, max }
-}
-
 impl<S> BBox3d<S>
 where
     S: Integer,
@@ -707,6 +642,71 @@ where
         let w = rng.gen_range(self.w_range());
         p4d(x, y, z, w)
     }
+}
+
+fn to_range_inclusive<S, R>(r: R) -> RangeInclusive<S>
+where
+    S: Integer,
+    R: RangeBounds<S>,
+{
+    let start = match r.start_bound() {
+        Bound::Included(s) => *s,
+        Bound::Excluded(s) => *s + S::one(),
+        Bound::Unbounded => panic!("unbounded ranges are not allowed"),
+    };
+    let end = match r.end_bound() {
+        Bound::Included(s) => *s,
+        Bound::Excluded(s) => *s - S::one(),
+        Bound::Unbounded => panic!("unbounded ranges are not allowed"),
+    };
+    assert!(start <= end);
+    start..=end
+}
+
+/// Creates a 2d bounding box from ranges of x and y coordinates.
+pub fn bb2d<S, RX, RY>(rx: RX, ry: RY) -> BBox2d<S>
+where
+    S: Integer,
+    RX: RangeBounds<S>,
+    RY: RangeBounds<S>,
+{
+    let rx = to_range_inclusive(rx);
+    let ry = to_range_inclusive(ry);
+    let min = p2d(*rx.start(), *ry.start());
+    let max = p2d(*rx.end(), *ry.end());
+    BBox { min, max }
+}
+/// Creates a 3d bounding box from ranges of x, y and z coordinates.
+pub fn bb3d<S, RX, RY, RZ>(rx: RX, ry: RY, rz: RZ) -> BBox3d<S>
+where
+    S: Integer,
+    RX: RangeBounds<S>,
+    RY: RangeBounds<S>,
+    RZ: RangeBounds<S>,
+{
+    let rx = to_range_inclusive(rx);
+    let ry = to_range_inclusive(ry);
+    let rz = to_range_inclusive(rz);
+    let min = p3d(*rx.start(), *ry.start(), *rz.start());
+    let max = p3d(*rx.end(), *ry.end(), *rz.end());
+    BBox { min, max }
+}
+/// Creates a 4d bounding box from ranges of x, y, z and w coordinates.
+pub fn bb4d<S, RX, RY, RZ, RW>(rx: RX, ry: RY, rz: RZ, rw: RW) -> BBox4d<S>
+where
+    S: Integer,
+    RX: RangeBounds<S>,
+    RY: RangeBounds<S>,
+    RZ: RangeBounds<S>,
+    RW: RangeBounds<S>,
+{
+    let rx = to_range_inclusive(rx);
+    let ry = to_range_inclusive(ry);
+    let rz = to_range_inclusive(rz);
+    let rw = to_range_inclusive(rw);
+    let min = p4d(*rx.start(), *ry.start(), *rz.start(), *rw.start());
+    let max = p4d(*rx.end(), *ry.end(), *rz.end(), *rw.end());
+    BBox { min, max }
 }
 
 impl<S, V> From<Point<S, V>> for BBox<S, V>
