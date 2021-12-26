@@ -1,6 +1,6 @@
 [package]
 name = "lowdim"
-version = "0.5.4"
+version = "0.5.5-alpha.0"
 authors = ["Juergen Stuber <juergen@jstuber.net>"]
 description = "Library for two- to four-dimensional integer geometry."
 homepage = "https://github.com/starblue/lowdim"
