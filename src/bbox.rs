@@ -72,6 +72,7 @@ where
     /// let p = p2d(2, 3);
     /// assert_eq!(bb2d(2..3, 3..4), BBox2d::from_point(p));
     /// ```
+    #[deprecated = "Use `from` instead."]
     pub fn from_point(p: Point<S, V>) -> BBox<S, V> {
         BBox { min: p, max: p }
     }
@@ -117,7 +118,7 @@ where
     {
         let mut iter = ii.into_iter();
         if let Some(p0) = iter.next() {
-            let mut bbox = BBox::from_point(*p0);
+            let mut bbox = BBox::from(*p0);
             for p in iter {
                 bbox = bbox.extend_to(*p);
             }
@@ -708,6 +709,17 @@ where
     }
 }
 
+impl<S, V> From<Point<S, V>> for BBox<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    /// Returns the bounding box which contains a single point.
+    fn from(p: Point<S, V>) -> BBox<S, V> {
+        BBox { min: p, max: p }
+    }
+}
+
 impl<S> IntoIterator for BBox<S, Vec2d<S>>
 where
     S: Integer,
@@ -820,6 +832,7 @@ mod tests {
     }
 
     #[test]
+    #[allow(deprecated)]
     fn test_from_point() {
         let bb = BBox2d::from_point(p2d(-2, 3));
         assert_eq!(bb2d(-2..=-2, 3..=3), bb);
@@ -1280,6 +1293,12 @@ mod tests {
         let mut rng = StdRng::seed_from_u64(42);
         let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
         assert_eq!(p4d(-1, 0, 3, -4), bb.random_point(&mut rng));
+    }
+
+    #[test]
+    fn test_from() {
+        let bb = BBox2d::from(p2d(-2, 3));
+        assert_eq!(bb2d(-2..=-2, 3..=3), bb);
     }
 
     #[test]
