@@ -809,6 +809,8 @@ where
 
 #[cfg(test)]
 mod tests {
+    use core::ops::Bound::Excluded;
+
     use crate::bb2d;
     use crate::bb3d;
     use crate::bb4d;
@@ -1293,6 +1295,46 @@ mod tests {
         let mut rng = StdRng::seed_from_u64(42);
         let bb = bb4d(-2..3, -1..2, 1..4, -5..-2);
         assert_eq!(p4d(-1, 0, 3, -4), bb.random_point(&mut rng));
+    }
+
+    #[test]
+    fn test_bb2d_incl() {
+        let bb = bb2d(0..=2, 1..=4);
+        assert_eq!(bb2d(0..3, 1..5), bb)
+    }
+    #[test]
+    fn test_bb2d_excl() {
+        let bb = bb2d((Excluded(-1), Excluded(3)), (Excluded(0), Excluded(5)));
+        assert_eq!(bb2d(0..3, 1..5), bb)
+    }
+    #[test]
+    fn test_bb3d_incl() {
+        let bb = bb3d(0..=2, 1..=4, 2..=6);
+        assert_eq!(bb3d(0..3, 1..5, 2..7), bb)
+    }
+    #[test]
+    fn test_bb3d_excl() {
+        let bb = bb3d(
+            (Excluded(-1), Excluded(3)),
+            (Excluded(0), Excluded(5)),
+            (Excluded(1), Excluded(7)),
+        );
+        assert_eq!(bb3d(0..3, 1..5, 2..7), bb)
+    }
+    #[test]
+    fn test_bb4d_incl() {
+        let bb = bb4d(0..=2, 1..=4, 2..=6, 3..=8);
+        assert_eq!(bb4d(0..3, 1..5, 2..7, 3..9), bb)
+    }
+    #[test]
+    fn test_bb4d_excl() {
+        let bb = bb4d(
+            (Excluded(-1), Excluded(3)),
+            (Excluded(0), Excluded(5)),
+            (Excluded(1), Excluded(7)),
+            (Excluded(2), Excluded(9)),
+        );
+        assert_eq!(bb4d(0..3, 1..5, 2..7, 3..9), bb)
     }
 
     #[test]
