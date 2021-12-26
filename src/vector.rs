@@ -1,6 +1,7 @@
 //! Traits for vectors.
 
 use core::cmp::Ordering;
+use core::hash::Hash;
 use core::iter;
 use core::marker::PhantomData;
 use core::ops;
@@ -26,7 +27,7 @@ where
 pub trait Vector<S>
 where
     S: Integer,
-    Self: Clone + Copy + Eq,
+    Self: Clone + Copy + Eq + Hash,
     Self: ops::Index<usize, Output = S>,
     Self: iter::FromIterator<S>,
     Self: VectorOps<S, Self>,

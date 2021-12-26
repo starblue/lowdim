@@ -18,7 +18,7 @@ use crate::Vec4d;
 use crate::Vector;
 
 /// An array indexed by points in a bounding box.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Array<S, V, T, L = <V as Vector<S>>::DefaultLayout>
 where
     S: Integer,

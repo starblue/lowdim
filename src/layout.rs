@@ -1,6 +1,7 @@
 //! Layout of a multidimensional array in one-dimensional storage.
 
-use std::fmt;
+use core::fmt;
+use core::hash::Hash;
 
 use crate::BBox;
 use crate::BBox2d;
@@ -27,7 +28,7 @@ use crate::Vector;
 /// in order of increasing index.
 pub trait Layout<S, V>
 where
-    Self: Sized + Clone,
+    Self: Sized + Clone + Eq + Hash,
     S: Integer,
     V: Vector<S>,
 {
@@ -82,7 +83,7 @@ where
     fn coeffs(&self) -> &[usize];
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Layout2d<S>
 where
     S: Integer,
@@ -128,7 +129,7 @@ where
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Layout3d<S>
 where
     S: Integer,
@@ -174,7 +175,7 @@ where
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Layout4d<S>
 where
     S: Integer,

@@ -1,6 +1,7 @@
 //! Contains traits defining required properties of the underlying integer types.
 
 use core::fmt;
+use core::hash::Hash;
 use core::iter;
 use core::ops;
 
@@ -29,10 +30,9 @@ where
 /// Required traits and operations for integers.
 pub trait Integer
 where
-    Self: Copy,
+    Self: Copy + Ord + Hash,
     Self: fmt::Display,
     Self: TryFrom<usize>,
-    Self: Ord,
     Self: IntegerOps,
 {
     /// Returns zero.
