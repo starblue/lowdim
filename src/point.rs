@@ -12,7 +12,7 @@
 //! The remainder is the mapping of any point into the bounding box,
 //! assuming that the space is filled with a regular grid of bounding boxes
 //! of the same size.  This allows to easily implement toroidal manifolds,
-//! were objects leaving the bounding box at the maximum for a coordinate
+//! where objects leaving the bounding box at the maximum for a coordinate
 //! reenter at the minimum or vice versa.
 //! This can be implemented by taking the remainder after every operation,
 //! similarly to computation modulo on numbers.
