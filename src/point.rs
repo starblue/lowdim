@@ -144,12 +144,12 @@ where
 
     /// Creates a vector containing the orthogonal neighbors of a point.
     pub fn neighbors_l1(&self) -> impl Iterator<Item = Self> {
-        NeighBorsIter::new(*self, V::unit_vecs_l1())
+        NeighborsIter::new(*self, V::unit_vecs_l1())
     }
 
     /// Creates a vector containing the orthogonal and diagonal neighbors of a point.
     pub fn neighbors_l_infty(&self) -> impl Iterator<Item = Self> {
-        NeighBorsIter::new(*self, V::unit_vecs_l_infty())
+        NeighborsIter::new(*self, V::unit_vecs_l_infty())
     }
 
     /// Returns the componentwise partial ordering for this and another point.
@@ -520,7 +520,7 @@ where
 }
 
 #[derive(Clone, Debug)]
-struct NeighBorsIter<S, V, I>
+struct NeighborsIter<S, V, I>
 where
     S: Integer,
     V: Vector<S>,
@@ -529,17 +529,17 @@ where
     p: Point<S, V>,
     iter: I,
 }
-impl<S, V, I> NeighBorsIter<S, V, I>
+impl<S, V, I> NeighborsIter<S, V, I>
 where
     S: Integer,
     V: Vector<S>,
     I: ExactSizeIterator<Item = V>,
 {
     fn new(p: Point<S, V>, iter: I) -> Self {
-        NeighBorsIter { p, iter }
+        NeighborsIter { p, iter }
     }
 }
-impl<S, V, I> Iterator for NeighBorsIter<S, V, I>
+impl<S, V, I> Iterator for NeighborsIter<S, V, I>
 where
     S: Integer,
     V: Vector<S>,
@@ -553,7 +553,7 @@ where
         self.iter.size_hint()
     }
 }
-impl<S, V, I> ExactSizeIterator for NeighBorsIter<S, V, I>
+impl<S, V, I> ExactSizeIterator for NeighborsIter<S, V, I>
 where
     S: Integer,
     V: Vector<S>,
