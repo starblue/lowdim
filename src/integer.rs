@@ -44,6 +44,12 @@ where
     /// Returns two.
     fn two() -> Self;
 
+    /// Returns the quotient of Euclidean division of `self` by `rhs`.
+    fn div_euclid(self, rhs: Self) -> Self;
+
+    /// Returns the remainder of Euclidean division of `self` by `rhs`.
+    fn rem_euclid(self, rhs: Self) -> Self;
+
     /// The absolute value function.
     fn abs(self) -> Self;
 
@@ -85,6 +91,12 @@ macro_rules! impl_integer {
             fn two() -> Self {
                 2
             }
+            fn div_euclid(self, rhs: Self) -> Self {
+                <$t>::div_euclid(self, rhs)
+            }
+            fn rem_euclid(self, rhs: Self) -> Self {
+                <$t>::rem_euclid(self, rhs)
+            }
             fn abs(self) -> Self {
                 <$t>::abs(self)
             }
@@ -105,6 +117,18 @@ impl_integer!(isize);
 #[cfg(test)]
 mod tests {
     use crate::Integer;
+
+    #[test]
+    fn test_div_euclid_i32() {
+        assert_eq!(1, Integer::div_euclid(5_i32, 3));
+        assert_eq!(-2, Integer::div_euclid(-5_i32, 3));
+    }
+
+    #[test]
+    fn test_rem_euclid_i32() {
+        assert_eq!(2, Integer::rem_euclid(5_i32, 3));
+        assert_eq!(1, Integer::rem_euclid(-5_i32, 3));
+    }
 
     #[test]
     fn test_abs_i32() {

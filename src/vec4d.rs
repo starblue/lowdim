@@ -9,6 +9,7 @@ use core::ops::Div;
 use core::ops::Index;
 use core::ops::Mul;
 use core::ops::Neg;
+use core::ops::Rem;
 use core::ops::Sub;
 use core::ops::SubAssign;
 
@@ -452,28 +453,57 @@ impl<S: Integer> Div<S> for Vec4d<S> {
     type Output = Vec4d<S>;
 
     fn div(self, other: S) -> Vec4d<S> {
-        Vec4d::with(|i| self[i] / other)
+        Vec4d::with(|i| self[i].div_euclid(other))
     }
 }
 impl<'a, S: Integer> Div<&'a S> for Vec4d<S> {
     type Output = Vec4d<S>;
 
     fn div(self, other: &'a S) -> Vec4d<S> {
-        Vec4d::with(|i| self[i] / other)
+        Vec4d::with(|i| self[i].div_euclid(*other))
     }
 }
 impl<'a, S: Integer> Div<S> for &'a Vec4d<S> {
     type Output = Vec4d<S>;
 
     fn div(self, other: S) -> Vec4d<S> {
-        Vec4d::with(|i| self[i] / other)
+        Vec4d::with(|i| self[i].div_euclid(other))
     }
 }
 impl<'a, S: Integer> Div<&'a S> for &'a Vec4d<S> {
     type Output = Vec4d<S>;
 
     fn div(self, other: &'a S) -> Vec4d<S> {
-        Vec4d::with(|i| self[i] / other)
+        Vec4d::with(|i| self[i].div_euclid(*other))
+    }
+}
+
+impl<S: Integer> Rem<S> for Vec4d<S> {
+    type Output = Vec4d<S>;
+
+    fn rem(self, other: S) -> Vec4d<S> {
+        Vec4d::with(|i| self[i].rem_euclid(other))
+    }
+}
+impl<'a, S: Integer> Rem<&'a S> for Vec4d<S> {
+    type Output = Vec4d<S>;
+
+    fn rem(self, other: &'a S) -> Vec4d<S> {
+        Vec4d::with(|i| self[i].rem_euclid(*other))
+    }
+}
+impl<'a, S: Integer> Rem<S> for &'a Vec4d<S> {
+    type Output = Vec4d<S>;
+
+    fn rem(self, other: S) -> Vec4d<S> {
+        Vec4d::with(|i| self[i].rem_euclid(other))
+    }
+}
+impl<'a, S: Integer> Rem<&'a S> for &'a Vec4d<S> {
+    type Output = Vec4d<S>;
+
+    fn rem(self, other: &'a S) -> Vec4d<S> {
+        Vec4d::with(|i| self[i].rem_euclid(*other))
     }
 }
 
@@ -789,11 +819,20 @@ mod tests {
 
     #[test]
     fn test_div_vs() {
-        let v = v4d(6, 14, 2, 8);
-        assert_eq!(v4d(3, 7, 1, 4), v / 2);
-        assert_eq!(v4d(3, 7, 1, 4), &v / 2);
-        assert_eq!(v4d(3, 7, 1, 4), v / &2);
-        assert_eq!(v4d(3, 7, 1, 4), &v / &2);
+        let v = v4d(-5, 14, 2, 8);
+        assert_eq!(v4d(-2, 4, 0, 2), v / 3);
+        assert_eq!(v4d(-2, 4, 0, 2), &v / 3);
+        assert_eq!(v4d(-2, 4, 0, 2), v / &3);
+        assert_eq!(v4d(-2, 4, 0, 2), &v / &3);
+    }
+
+    #[test]
+    fn test_rem_vs() {
+        let v = v4d(-5, 14, 2, 8);
+        assert_eq!(v4d(1, 2, 2, 2), v % 3);
+        assert_eq!(v4d(1, 2, 2, 2), &v % 3);
+        assert_eq!(v4d(1, 2, 2, 2), v % &3);
+        assert_eq!(v4d(1, 2, 2, 2), &v % &3);
     }
 
     #[test]

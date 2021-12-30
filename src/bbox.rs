@@ -194,8 +194,7 @@ where
     ///
     /// This is only the true center of the bounding box
     /// if the bounding box has odd dimensions.
-    /// Otherwise the coordinates of the center are rounded
-    /// according to the rules for integer division, i.e. towards zero.
+    /// Otherwise the coordinates of the center are rounded down.
     ///
     /// # Example
     /// ```

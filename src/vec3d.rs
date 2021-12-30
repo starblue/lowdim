@@ -9,6 +9,7 @@ use core::ops::Div;
 use core::ops::Index;
 use core::ops::Mul;
 use core::ops::Neg;
+use core::ops::Rem;
 use core::ops::Sub;
 use core::ops::SubAssign;
 
@@ -404,28 +405,57 @@ impl<S: Integer> Div<S> for Vec3d<S> {
     type Output = Vec3d<S>;
 
     fn div(self, other: S) -> Vec3d<S> {
-        Vec3d::with(|i| self[i] / other)
+        Vec3d::with(|i| self[i].div_euclid(other))
     }
 }
 impl<'a, S: Integer> Div<&'a S> for Vec3d<S> {
     type Output = Vec3d<S>;
 
     fn div(self, other: &'a S) -> Vec3d<S> {
-        Vec3d::with(|i| self[i] / other)
+        Vec3d::with(|i| self[i].div_euclid(*other))
     }
 }
 impl<'a, S: Integer> Div<S> for &'a Vec3d<S> {
     type Output = Vec3d<S>;
 
     fn div(self, other: S) -> Vec3d<S> {
-        Vec3d::with(|i| self[i] / other)
+        Vec3d::with(|i| self[i].div_euclid(other))
     }
 }
 impl<'a, S: Integer> Div<&'a S> for &'a Vec3d<S> {
     type Output = Vec3d<S>;
 
     fn div(self, other: &'a S) -> Vec3d<S> {
-        Vec3d::with(|i| self[i] / other)
+        Vec3d::with(|i| self[i].div_euclid(*other))
+    }
+}
+
+impl<S: Integer> Rem<S> for Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn rem(self, other: S) -> Vec3d<S> {
+        Vec3d::with(|i| self[i].rem_euclid(other))
+    }
+}
+impl<'a, S: Integer> Rem<&'a S> for Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn rem(self, other: &'a S) -> Vec3d<S> {
+        Vec3d::with(|i| self[i].rem_euclid(*other))
+    }
+}
+impl<'a, S: Integer> Rem<S> for &'a Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn rem(self, other: S) -> Vec3d<S> {
+        Vec3d::with(|i| self[i].rem_euclid(other))
+    }
+}
+impl<'a, S: Integer> Rem<&'a S> for &'a Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn rem(self, other: &'a S) -> Vec3d<S> {
+        Vec3d::with(|i| self[i].rem_euclid(*other))
     }
 }
 
@@ -688,11 +718,20 @@ mod tests {
 
     #[test]
     fn test_div_vs() {
-        let v = v3d(6, 14, 2);
-        assert_eq!(v3d(3, 7, 1), v / 2);
-        assert_eq!(v3d(3, 7, 1), &v / 2);
-        assert_eq!(v3d(3, 7, 1), v / &2);
-        assert_eq!(v3d(3, 7, 1), &v / &2);
+        let v = v3d(-5, 14, 2);
+        assert_eq!(v3d(-2, 4, 0), v / 3);
+        assert_eq!(v3d(-2, 4, 0), &v / 3);
+        assert_eq!(v3d(-2, 4, 0), v / &3);
+        assert_eq!(v3d(-2, 4, 0), &v / &3);
+    }
+
+    #[test]
+    fn test_rem_vs() {
+        let v = v3d(-5, 14, 2);
+        assert_eq!(v3d(1, 2, 2), v % 3);
+        assert_eq!(v3d(1, 2, 2), &v % 3);
+        assert_eq!(v3d(1, 2, 2), v % &3);
+        assert_eq!(v3d(1, 2, 2), &v % &3);
     }
 
     #[test]
