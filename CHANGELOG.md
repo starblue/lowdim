@@ -1,14 +1,32 @@
 # Change Log
 
-## [Unreleased][unreleased]
+## [Unreleased] - [unreleased]
 
-### Added
+### Breaking Changes
 
-### Changed
+### Additions
 
-### Fixed
+### Changes
+
+### Fixes
 
 ### Thanks
+
+## 0.6.0 - 2021-12-30
+
+### Breaking Changes
+- Change vector division to `div_euclid` and add remainder via `rem_euclid`.
+  This changes the rounding of vector division, and as a consequence also
+  the result of `BBox::center`, if the center has some negative coordinate and 
+  that coordinate needs rounding.
+
+### Additions
+- Add componentwise division and remainder for vectors,
+  also via `div_euclid` and `rem_euclid`.
+- Implement division and remainder for a point divided by a bounding box
+  to support toroidal manifolds,  where objects leaving the bounding box
+  at the maximum for a coordinate reenter at the minimum or vice versa.
+- Add `Point::distance_l2_squared`.
 
 ## 0.5.4 - 2021-12-26
 
