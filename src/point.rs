@@ -156,6 +156,22 @@ where
         (self - other).norm_l_infty()
     }
 
+    /// Returns the square of the distance to another point w.r.t. the L2 norm.
+    ///
+    /// This is the standard Euclidean distance used in continuous settings.
+    /// We use the square to avoid the square root and get discrete values.
+    ///
+    /// # Example
+    /// ```
+    /// # use lowdim::p4d;
+    /// let p0 = p4d(1, -2, 7, -4);
+    /// let p1 = p4d(2, -3, 7, 4);
+    /// assert_eq!(66, p0.distance_l2_squared(p1));
+    /// ```
+    pub fn distance_l2_squared(&self, other: Self) -> S {
+        (self - other).norm_l2_squared()
+    }
+
     /// Creates a vector containing the orthogonal neighbors of a point.
     pub fn neighbors_l1(&self) -> impl Iterator<Item = Self> {
         NeighborsIter::new(*self, V::unit_vecs_l1())
@@ -963,6 +979,25 @@ mod tests {
         let u = p4d(2, 7, 5, -4);
         let v = p4d(3, 1, 1, 4);
         assert_eq!(8, u.distance_l_infty(v));
+    }
+
+    #[test]
+    fn test_distance_l2_squared_2d() {
+        let u = p2d(2, 7);
+        let v = p2d(3, 1);
+        assert_eq!(37, u.distance_l2_squared(v));
+    }
+    #[test]
+    fn test_distance_l2_squared_3d() {
+        let u = p3d(2, 7, 5);
+        let v = p3d(3, 1, 1);
+        assert_eq!(53, u.distance_l2_squared(v));
+    }
+    #[test]
+    fn test_distance_l2_squared_4d() {
+        let u = p4d(2, 7, 5, -4);
+        let v = p4d(3, 1, 1, 4);
+        assert_eq!(117, u.distance_l2_squared(v));
     }
 
     #[test]
