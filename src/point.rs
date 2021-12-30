@@ -928,6 +928,44 @@ mod tests {
     }
 
     #[test]
+    fn test_distance_l1_2d() {
+        let u = p2d(2, 7);
+        let v = p2d(3, 1);
+        assert_eq!(7, u.distance_l1(v));
+    }
+    #[test]
+    fn test_distance_l1_3d() {
+        let u = p3d(2, 7, 5);
+        let v = p3d(3, 1, 1);
+        assert_eq!(11, u.distance_l1(v));
+    }
+    #[test]
+    fn test_distance_l1_4d() {
+        let u = p4d(2, 7, 5, -4);
+        let v = p4d(3, 1, 1, 4);
+        assert_eq!(19, u.distance_l1(v));
+    }
+
+    #[test]
+    fn test_distance_l_infty_2d() {
+        let u = p2d(2, 7);
+        let v = p2d(3, 1);
+        assert_eq!(6, u.distance_l_infty(v));
+    }
+    #[test]
+    fn test_distance_l_infty_3d() {
+        let u = p3d(2, 7, 5);
+        let v = p3d(3, 1, 1);
+        assert_eq!(6, u.distance_l_infty(v));
+    }
+    #[test]
+    fn test_distance_l_infty_4d() {
+        let u = p4d(2, 7, 5, -4);
+        let v = p4d(3, 1, 1, 4);
+        assert_eq!(8, u.distance_l_infty(v));
+    }
+
+    #[test]
     fn test_neighbors_l1_2d() {
         let p = p2d(2, -3);
         let mut ns = p.neighbors_l1().collect::<Vec<Point2d<i64>>>();
