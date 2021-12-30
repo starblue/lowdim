@@ -439,6 +439,64 @@ impl<'a, S: Integer> Rem<&'a S> for &'a Vec2d<S> {
     }
 }
 
+impl<S: Integer> Div<Vec2d<S>> for Vec2d<S> {
+    type Output = Vec2d<S>;
+
+    fn div(self, other: Vec2d<S>) -> Vec2d<S> {
+        Vec2d::with(|i| self[i].div_euclid(other[i]))
+    }
+}
+impl<'a, S: Integer> Div<&'a Vec2d<S>> for Vec2d<S> {
+    type Output = Vec2d<S>;
+
+    fn div(self, other: &'a Vec2d<S>) -> Vec2d<S> {
+        Vec2d::with(|i| self[i].div_euclid(other[i]))
+    }
+}
+impl<'a, S: Integer> Div<Vec2d<S>> for &'a Vec2d<S> {
+    type Output = Vec2d<S>;
+
+    fn div(self, other: Vec2d<S>) -> Vec2d<S> {
+        Vec2d::with(|i| self[i].div_euclid(other[i]))
+    }
+}
+impl<'a, S: Integer> Div<&'a Vec2d<S>> for &'a Vec2d<S> {
+    type Output = Vec2d<S>;
+
+    fn div(self, other: &'a Vec2d<S>) -> Vec2d<S> {
+        Vec2d::with(|i| self[i].div_euclid(other[i]))
+    }
+}
+
+impl<S: Integer> Rem<Vec2d<S>> for Vec2d<S> {
+    type Output = Vec2d<S>;
+
+    fn rem(self, other: Vec2d<S>) -> Vec2d<S> {
+        Vec2d::with(|i| self[i].rem_euclid(other[i]))
+    }
+}
+impl<'a, S: Integer> Rem<&'a Vec2d<S>> for Vec2d<S> {
+    type Output = Vec2d<S>;
+
+    fn rem(self, other: &'a Vec2d<S>) -> Vec2d<S> {
+        Vec2d::with(|i| self[i].rem_euclid(other[i]))
+    }
+}
+impl<'a, S: Integer> Rem<Vec2d<S>> for &'a Vec2d<S> {
+    type Output = Vec2d<S>;
+
+    fn rem(self, other: Vec2d<S>) -> Vec2d<S> {
+        Vec2d::with(|i| self[i].rem_euclid(other[i]))
+    }
+}
+impl<'a, S: Integer> Rem<&'a Vec2d<S>> for &'a Vec2d<S> {
+    type Output = Vec2d<S>;
+
+    fn rem(self, other: &'a Vec2d<S>) -> Vec2d<S> {
+        Vec2d::with(|i| self[i].rem_euclid(other[i]))
+    }
+}
+
 impl<S: Integer> AddAssign for Vec2d<S> {
     fn add_assign(&mut self, other: Vec2d<S>) {
         *self = Vec2d::with(|i| self[i] + other[i])
@@ -693,6 +751,26 @@ mod tests {
         assert_eq!(v2d(1, 2), &v % 3);
         assert_eq!(v2d(1, 2), v % &3);
         assert_eq!(v2d(1, 2), &v % &3);
+    }
+
+    #[test]
+    fn test_div_vv() {
+        let v0 = v2d(-5, 14);
+        let v1 = v2d(3, 5);
+        assert_eq!(v2d(-2, 2), v0 / v1);
+        assert_eq!(v2d(-2, 2), &v0 / v1);
+        assert_eq!(v2d(-2, 2), v0 / &v1);
+        assert_eq!(v2d(-2, 2), &v0 / &v1);
+    }
+
+    #[test]
+    fn test_rem_vv() {
+        let v0 = v2d(-5, 14);
+        let v1 = v2d(3, 5);
+        assert_eq!(v2d(1, 4), v0 % v1);
+        assert_eq!(v2d(1, 4), &v0 % v1);
+        assert_eq!(v2d(1, 4), v0 % &v1);
+        assert_eq!(v2d(1, 4), &v0 % &v1);
     }
 
     #[test]

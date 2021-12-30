@@ -459,6 +459,64 @@ impl<'a, S: Integer> Rem<&'a S> for &'a Vec3d<S> {
     }
 }
 
+impl<S: Integer> Div<Vec3d<S>> for Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn div(self, other: Vec3d<S>) -> Vec3d<S> {
+        Vec3d::with(|i| self[i].div_euclid(other[i]))
+    }
+}
+impl<'a, S: Integer> Div<&'a Vec3d<S>> for Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn div(self, other: &'a Vec3d<S>) -> Vec3d<S> {
+        Vec3d::with(|i| self[i].div_euclid(other[i]))
+    }
+}
+impl<'a, S: Integer> Div<Vec3d<S>> for &'a Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn div(self, other: Vec3d<S>) -> Vec3d<S> {
+        Vec3d::with(|i| self[i].div_euclid(other[i]))
+    }
+}
+impl<'a, S: Integer> Div<&'a Vec3d<S>> for &'a Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn div(self, other: &'a Vec3d<S>) -> Vec3d<S> {
+        Vec3d::with(|i| self[i].div_euclid(other[i]))
+    }
+}
+
+impl<S: Integer> Rem<Vec3d<S>> for Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn rem(self, other: Vec3d<S>) -> Vec3d<S> {
+        Vec3d::with(|i| self[i].rem_euclid(other[i]))
+    }
+}
+impl<'a, S: Integer> Rem<&'a Vec3d<S>> for Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn rem(self, other: &'a Vec3d<S>) -> Vec3d<S> {
+        Vec3d::with(|i| self[i].rem_euclid(other[i]))
+    }
+}
+impl<'a, S: Integer> Rem<Vec3d<S>> for &'a Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn rem(self, other: Vec3d<S>) -> Vec3d<S> {
+        Vec3d::with(|i| self[i].rem_euclid(other[i]))
+    }
+}
+impl<'a, S: Integer> Rem<&'a Vec3d<S>> for &'a Vec3d<S> {
+    type Output = Vec3d<S>;
+
+    fn rem(self, other: &'a Vec3d<S>) -> Vec3d<S> {
+        Vec3d::with(|i| self[i].rem_euclid(other[i]))
+    }
+}
+
 impl<S: Integer> AddAssign for Vec3d<S> {
     fn add_assign(&mut self, other: Vec3d<S>) {
         *self = Vec3d::with(|i| self[i] + other[i])
@@ -732,6 +790,26 @@ mod tests {
         assert_eq!(v3d(1, 2, 2), &v % 3);
         assert_eq!(v3d(1, 2, 2), v % &3);
         assert_eq!(v3d(1, 2, 2), &v % &3);
+    }
+
+    #[test]
+    fn test_div_vv() {
+        let v0 = v3d(-5, 14, 2);
+        let v1 = v3d(3, 5, 4);
+        assert_eq!(v3d(-2, 2, 0), v0 / v1);
+        assert_eq!(v3d(-2, 2, 0), &v0 / v1);
+        assert_eq!(v3d(-2, 2, 0), v0 / &v1);
+        assert_eq!(v3d(-2, 2, 0), &v0 / &v1);
+    }
+
+    #[test]
+    fn test_rem_vv() {
+        let v0 = v3d(-5, 14, 2);
+        let v1 = v3d(3, 5, 4);
+        assert_eq!(v3d(1, 4, 2), v0 % v1);
+        assert_eq!(v3d(1, 4, 2), &v0 % v1);
+        assert_eq!(v3d(1, 4, 2), v0 % &v1);
+        assert_eq!(v3d(1, 4, 2), &v0 % &v1);
     }
 
     #[test]

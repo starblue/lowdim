@@ -36,6 +36,10 @@ where
     Self: for<'a> ops::Div<&'a S, Output = Self>,
     Self: ops::Rem<S, Output = Self>,
     Self: for<'a> ops::Rem<&'a S, Output = Self>,
+    Self: ops::Div<Self, Output = Self>,
+    Self: for<'a> ops::Div<&'a Self, Output = Self>,
+    Self: ops::Rem<Self, Output = Self>,
+    Self: for<'a> ops::Rem<&'a Self, Output = Self>,
     Self: iter::Sum<Self> + for<'a> iter::Sum<&'a Self>,
 {
     /// The dimension of the vectors in this type.
