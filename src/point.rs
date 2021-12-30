@@ -1,18 +1,31 @@
 //! Points in the affine space.
 //!
 //! Points represent absolute positions in the space.
-//! So in conmtrast to vectors it doesn't make sense to add two points,
+//! So in contrast to vectors it doesn't make sense to add two points,
 //! or to multiply a point by a scalar value.
 //!
 //! A vector can be added to a point, representing a move in the space.
 //! Or conversely, two points can be subtracted to get back the vector
 //! representing the move between them.
 //!
+//! Division and remainder are implemented for points divided by a bounding box.
+//! The remainder is the mapping of any point into the bounding box,
+//! assuming that the space is filled with a regular grid of bounding boxes
+//! of the same size.  This allows to easily implement toroidal manifolds,
+//! were objects leaving the bounding box at the maximum for a coordinate
+//! reenter at the minimum or vice versa.
+//! This can be implemented by taking the remainder after every operation,
+//! similarly to computation modulo on numbers.
+//! The associated division operation tells the instance of the bounding box
+//! the point is in.
+//!
 //! This module implements 2d, 3d and 4d points.
 
 use core::cmp::Ordering;
 use core::fmt;
 use core::marker::PhantomData;
+use core::ops::Div;
+use core::ops::Rem;
 
 use core::ops::Add;
 use core::ops::AddAssign;
@@ -23,6 +36,7 @@ use core::ops::SubAssign;
 use crate::v2d;
 use crate::v3d;
 use crate::v4d;
+use crate::BBox;
 use crate::Integer;
 use crate::Vec2d;
 use crate::Vec3d;
@@ -481,6 +495,96 @@ where
     }
 }
 
+impl<S, V> Div<BBox<S, V>> for Point<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    type Output = V;
+
+    fn div(self, bbox: BBox<S, V>) -> V {
+        (self - bbox.min()) / bbox.lengths()
+    }
+}
+impl<'a, S, V> Div<&'a BBox<S, V>> for Point<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    type Output = V;
+
+    fn div(self, bbox: &'a BBox<S, V>) -> V {
+        (self - bbox.min()) / bbox.lengths()
+    }
+}
+impl<'a, S, V> Div<BBox<S, V>> for &'a Point<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    type Output = V;
+
+    fn div(self, bbox: BBox<S, V>) -> V {
+        (self - bbox.min()) / bbox.lengths()
+    }
+}
+impl<'a, S, V> Div<&'a BBox<S, V>> for &'a Point<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    type Output = V;
+
+    fn div(self, bbox: &'a BBox<S, V>) -> V {
+        (self - bbox.min()) / bbox.lengths()
+    }
+}
+
+impl<S, V> Rem<BBox<S, V>> for Point<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    type Output = Point<S, V>;
+
+    fn rem(self, bbox: BBox<S, V>) -> Point<S, V> {
+        bbox.min() + (self - bbox.min()) % bbox.lengths()
+    }
+}
+impl<'a, S, V> Rem<&'a BBox<S, V>> for Point<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    type Output = Point<S, V>;
+
+    fn rem(self, bbox: &'a BBox<S, V>) -> Point<S, V> {
+        bbox.min() + (self - bbox.min()) % bbox.lengths()
+    }
+}
+impl<'a, S, V> Rem<BBox<S, V>> for &'a Point<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    type Output = Point<S, V>;
+
+    fn rem(self, bbox: BBox<S, V>) -> Point<S, V> {
+        bbox.min() + (self - bbox.min()) % bbox.lengths()
+    }
+}
+impl<'a, S, V> Rem<&'a BBox<S, V>> for &'a Point<S, V>
+where
+    S: Integer,
+    V: Vector<S>,
+{
+    type Output = Point<S, V>;
+
+    fn rem(self, bbox: &'a BBox<S, V>) -> Point<S, V> {
+        bbox.min() + (self - bbox.min()) % bbox.lengths()
+    }
+}
+
 impl<S, V> AddAssign<V> for Point<S, V>
 where
     S: Integer,
@@ -566,6 +670,7 @@ mod tests {
     use core::cmp::Ordering;
     use core::convert::TryFrom;
 
+    use crate::bb2d;
     use crate::p2d;
     use crate::p3d;
     use crate::p4d;
@@ -740,6 +845,26 @@ mod tests {
         assert_eq!(v2d(-1, -6), p - &q);
         assert_eq!(v2d(-1, -6), &p - q);
         assert_eq!(v2d(-1, -6), &p - &q);
+    }
+
+    #[test]
+    fn test_div_pb() {
+        let p = p2d(2, 1);
+        let b = bb2d(3..=5, 4..=9);
+        assert_eq!(v2d(-1, -1), p / b);
+        assert_eq!(v2d(-1, -1), p / &b);
+        assert_eq!(v2d(-1, -1), &p / b);
+        assert_eq!(v2d(-1, -1), &p / &b);
+    }
+
+    #[test]
+    fn test_rem_pb() {
+        let p = p2d(2, 1);
+        let b = bb2d(3..=5, 4..=9);
+        assert_eq!(p2d(5, 7), p % b);
+        assert_eq!(p2d(5, 7), p % &b);
+        assert_eq!(p2d(5, 7), &p % b);
+        assert_eq!(p2d(5, 7), &p % &b);
     }
 
     #[test]
