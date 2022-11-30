@@ -158,11 +158,11 @@ where
     ///
     /// # Example
     /// ```
-    /// # use lowdim::p2d;
+    /// # use lowdim::v2d;
     /// # use lowdim::bb2d;
     /// # use lowdim::BBox2d;
     /// let b = bb2d(-1..3, 3..5);
-    /// assert_eq!(p2d(2, 4), b.max());
+    /// assert_eq!(v2d(4, 2), b.lengths());
     /// ```
     pub fn lengths(&self) -> V {
         self.max - self.min + V::ones()
