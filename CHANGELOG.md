@@ -12,6 +12,13 @@
 
 ### Thanks
 
+## 0.6.1 - 2023-04-10
+
+### Changes
+- Change `Array::with` to take an `FnMut` instead of an `Fn`.
+  This allows the function to have internal state that is mutable,
+  which is needed when using a random number generator.
+
 ## 0.6.0 - 2021-12-30
 
 ### Breaking Changes
