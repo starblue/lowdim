@@ -58,7 +58,7 @@ where
     /// that is filled using a function which takes a location as input.
     pub fn with<F>(bbox: BBox<S, V>, f: F) -> Self
     where
-        F: Fn(Point<S, V>) -> T,
+        F: FnMut(Point<S, V>) -> T,
         usize: TryFrom<S>,
         <usize as TryFrom<S>>::Error: fmt::Debug,
         <S as TryFrom<usize>>::Error: fmt::Debug,
