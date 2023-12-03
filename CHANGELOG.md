@@ -12,6 +12,12 @@
 
 ### Thanks
 
+## 0.7.0 - 2023-12-03
+
+### Breaking Changes
+- Rename the existing `BBox::extend_to` to `BBox::extended_to` to make room for
+  a new method `BBox::extend_to` which modifies the `BBox` in place.
+
 ## 0.6.1 - 2023-04-10
 
 ### Changes

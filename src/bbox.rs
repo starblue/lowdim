@@ -120,7 +120,7 @@ where
         if let Some(p0) = iter.next() {
             let mut bbox = BBox::from(*p0);
             for p in iter {
-                bbox = bbox.extend_to(*p);
+                bbox.extend_to(*p);
             }
             Some(bbox)
         } else {
@@ -256,12 +256,29 @@ where
     /// # use lowdim::BBox2d;
     /// let bb = bb2d(-2..3, -1..2);
     /// let p = p2d(3, 4);
-    /// assert_eq!(bb2d(-2..4, -1..5), bb.extend_to(p));
+    /// assert_eq!(bb2d(-2..4, -1..5), bb.extended_to(p));
     /// ```
-    pub fn extend_to(&self, p: Point<S, V>) -> BBox<S, V> {
+    pub fn extended_to(&self, p: Point<S, V>) -> BBox<S, V> {
         let min = self.min().min(p);
         let max = self.max().max(p);
         BBox { min, max }
+    }
+
+    /// Extends this box to encompass a given point.
+    ///
+    /// # Example
+    /// ```
+    /// # use lowdim::p2d;
+    /// # use lowdim::bb2d;
+    /// # use lowdim::BBox2d;
+    /// let mut bb = bb2d(-2..3, -1..2);
+    /// let p = p2d(3, 4);
+    /// bb.extend_to(p);
+    /// assert_eq!(bb2d(-2..4, -1..5), bb);
+    /// ```
+    pub fn extend_to(&mut self, p: Point<S, V>) {
+        self.min = self.min().min(p);
+        self.max = self.max().max(p);
     }
 
     /// Returns the closest point inside the bounding box for a given point.
@@ -949,9 +966,17 @@ mod tests {
 
     #[test]
     fn test_extend_to() {
+        let mut bb = bb2d(-2..3, -1..2);
+        let p = p2d(3, 4);
+        bb.extend_to(p);
+        assert_eq!(bb2d(-2..4, -1..5), bb);
+    }
+
+    #[test]
+    fn test_extended_to() {
         let bb = bb2d(-2..3, -1..2);
         let p = p2d(3, 4);
-        assert_eq!(bb2d(-2..4, -1..5), bb.extend_to(p));
+        assert_eq!(bb2d(-2..4, -1..5), bb.extended_to(p));
     }
 
     #[test]
